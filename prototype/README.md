@@ -1,6 +1,6 @@
 # MOONSHIFT browser prototype plan
 
-Status: planning complete only when the linked asset, technology, and validation plans are ready. Implementation requires explicit approval.
+Status: **planning complete; awaiting explicit implementation approval.** No application code, dependencies, or prepared assets have been added.
 
 This prototype will test whether the existing low-poly assets can support a clear, enjoyable browser game. It is a small playable slice of the team's provisional NASA Space Apps Challenge design, rather than the complete six-shift game.
 
