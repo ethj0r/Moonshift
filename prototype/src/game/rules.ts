@@ -16,6 +16,7 @@ export interface Snapshot {
   gardenTurns: number;
   harvested: boolean;
   branchReady: boolean;
+  activeRoute: Route | null;
   sheltered: boolean | null;
   crewLocation: 'habitat' | 'shelter';
   sampleReady: boolean;
@@ -57,7 +58,7 @@ export const itemName = (item: Item) => item === 'battery' ? 'Spare battery' : '
 export function initialSnapshot(): Snapshot {
   return { shift: 3, food: 3, missedMeals: 0, batteryUsed: false,
     placements: { battery: null, research: null }, gardenTurns: 1, harvested: false,
-    branchReady: false, sheltered: null, crewLocation: 'habitat', sampleReady: false,
+    branchReady: false, activeRoute: null, sheltered: null, crewLocation: 'habitat', sampleReady: false,
     message: 'none', routineSent: false };
 }
 
@@ -157,6 +158,7 @@ export function evaluate(state: Snapshot, draft: Draft): Evaluation {
   }
   if (state.shift === 4) {
     next.branchReady = routeAvailable && selected.has('fan');
+    next.activeRoute = next.branchReady ? draft.route : null;
     next.sheltered = next.branchReady && draft.moveCrew;
     next.crewLocation = next.sheltered ? 'shelter' : 'habitat';
     if (!next.sheltered) {
@@ -176,6 +178,7 @@ export function evaluate(state: Snapshot, draft: Draft): Evaluation {
       if (!selected.has('fan')) errors.push('Route correction needs one power unit for the fan.');
       if (!state.branchReady && routeAvailable && selected.has('fan')) {
         next.branchReady = true;
+        next.activeRoute = draft.route;
         effects.push('Air branch corrected. The earlier storm outcome stays unchanged.');
       }
     }
