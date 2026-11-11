@@ -28,6 +28,7 @@ There is no defensible cross-engine speed winner without implementing equivalent
 - Prefer the latest patched **Node.js 24 LTS** for a mature supported toolchain; Node 26 is also LTS. Avoid obsolete Node 20 even though the Vite guide still lists its minimum compatibility. [Node release status](https://nodejs.org/en/about/previous-releases).
 - Use **Vitest** for rules and **Playwright** for a small set of real browser flows. These are development dependencies. Choose current stable releases compatible with the selected Vite/Node versions. [Vitest guide](https://vitest.dev/guide/), [Playwright browsers](https://playwright.dev/docs/browsers).
 - Start without Drei, a global state library, physics, postprocessing, an animation framework, a router, or a UI kit. Add a narrowly imported helper only if it removes real work. No runtime CDN imports or remote asset dependency.
+- Follow [the UI specification](UI_DESIGN.md) for two small local WOFF2 font resources and original inline SVG icons. Font transfer has an 80 KiB target within the existing first-play budget; no external font service or icon font is required. Exact Outlanders font identity remains unresolved in [the research notes](UI_REFERENCES.md).
 
 Version claims above describe the research date, not a promise about versions available when work resumes. No package installation is part of planning.
 
@@ -46,13 +47,14 @@ After approval, keep the application isolated under `prototype/`:
 ```text
 prototype/
   README.md, ASSETS.md, TECHNOLOGY.md, VALIDATION.md
+  UI_REFERENCES.md, UI_DESIGN.md
   package.json, package-lock.json, index.html, vite.config.ts
   scripts/prepare-assets.*       # Explicit source allowlist; reproducible copies/preparation
   public/assets/                # Generated selected assets only
   src/
     game/                       # Scenario snapshot, types, evaluator, transitions, history
     scene/                      # Outpost, camera, model cache, cell picking, feedback
-    ui/                         # Intro, objective, action panel, DOM grid, result/summary
+    ui/                         # Title/menus, intro, HUD, action panel, DOM grid, results
     app.tsx, main.tsx, styles.css
   tests/                        # Rule invariants and a few browser journeys
 ```

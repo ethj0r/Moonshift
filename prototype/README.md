@@ -8,6 +8,8 @@ This prototype will test whether the existing low-poly assets can support a clea
 
 - [Asset audit and preparation](ASSETS.md): inspected files, reuse strategy, and required corrections.
 - [Technology decision](TECHNOLOGY.md): current alternatives, recommended stack, and architecture.
+- [Outlanders interface research](UI_REFERENCES.md): verified sources, inspected promotional art, and unresolved font/menu details.
+- [UI and menu design](UI_DESIGN.md): typography, screen layouts, buttons, icons, responsive behavior, and fidelity checks.
 - [Milestones and acceptance checks](VALIDATION.md): implementation sequence, playtests, and browser performance gates.
 
 ## Scope and feasibility question
@@ -25,7 +27,7 @@ These are hypotheses to test. Asset inspection supports feasibility; browser per
 
 ### Included
 
-- One brief introduction, one persistent 3D outpost, three shift results, a slice summary, and replay.
+- One small title menu and brief introduction, one persistent 3D outpost, three shift results, a slice summary, and replay. Pause, help, and two basic settings reuse the same dialog shell.
 - B.E.E.P., three astronaut models, habitat, workshop, garden, radio, main air unit, branch fan, and a 3×3 cargo board.
 - One battery occupying one cell and one research crate occupying two adjacent cells.
 - Select-and-place cargo controls, crate rotation, three alternate ventilation routes, draft preview, and one-time shift resolution.
@@ -95,7 +97,7 @@ Compose one shared sand-colored island with the cargo board near the front, habi
 
 Preserve [the project's art direction](../design_theme/01_art_direction.md): flat-shaded bevels, texture-free materials, cream `#F7E6C8`, terracotta `#E2683A`, sand `#E6CFB2`, sky `#7FC1F2`, and navy `#2C3A4E` for depth and readable text. Teal means active, amber requests attention, coral marks an alarm, and pink accents science. Labels, shapes, and patterns always accompany color.
 
-Use the system rounded sans-serif stack with a system sans-serif fallback, sentence-case labels, and large controls. This keeps text familiar and avoids a font download. Keep decorative UI quiet so the outpost is the main visual. Show one goal, food and power counts, and a compact action panel; technical diagnostics belong behind a development-only toggle.
+Follow [the UI and menu specification](UI_DESIGN.md), which supersedes the earlier system-font-only proposal. Begin with locally hosted Lilita One for display emphasis and Nunito Sans for readable controls, with system fallbacks. Both are explicitly provisional substitutes: the original Outlanders UI font has not been verified. Keep decorative UI quiet so the outpost is the main visual. Show one goal, food and power counts, and a compact action panel; technical diagnostics belong behind a development-only toggle.
 
 ### Camera
 

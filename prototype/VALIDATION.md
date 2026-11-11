@@ -8,11 +8,11 @@ Keep each commit focused on one reviewable behavior. Run the relevant check befo
 
 | Milestone | Deliverable and suggested commit boundary | Exit check |
 | --- | --- | --- |
-| M0: Plan | Scope/asset audit; technology decision; acceptance plan | Markdown links and measurements checked; implementation approval still required |
+| M0: Plan | Scope/asset audit; technology decision; interface research and UI specification; acceptance plan | Markdown links and measurements checked; verified evidence separated from approximations; implementation approval still required |
 | M1: Prove the art path | Isolated Vite/React/TypeScript scaffold and lockfile; then explicit asset preparation; then a static outpost scene | Production build loads the selected GLBs on desktop and a phone. Verify board mapping, corrected markers, crate footprint, light/color, shelter/corridor, and no confusing duplicate facilities. Record original/prepared bytes, primitives, and initial frame cost. |
 | M2: Prove the rules | Scenario snapshot and shared evaluator; then draft/commit/history transitions | Deterministic S3–S5 sequences pass the rule checks below, including replay and duplicate commit. No renderer is needed to run them. |
 | M3: Play the loop | S3 selection/placement/rotation; then S4 power/route/crew orders; then S5 jobs/messages/summary | Complete the whole slice using pointer, touch, and keyboard. Preview matches each result; failed actions explain how to recover. |
-| M4: Make consequences readable | Short B.E.E.P./crew/fan feedback; then contextual hints, responsive framing, and reduced motion | A new player can tell whether the fan is powered, crew actually sheltered, food is sufficient, and research was sent. Skipping animation changes no result. |
+| M4: Make consequences readable | Shared typography/buttons/icons and title/pause/help/settings menus; then short B.E.E.P./crew/fan feedback, contextual hints, responsive framing, and reduced motion | Follow the UI specification and review title, HUD, object panel, confirmation, and results against inspectable Outlanders references. A new player can tell whether the fan is powered, crew actually sheltered, food is sufficient, and research was sent. Skipping animation changes no result. |
 | M5: Measure and harden | Loading/retry/context recovery; then measured performance fixes; then browser regressions | Network, memory/replay, browser, and frame-time gates pass or specific limits are documented. Commit fixes separately from the evidence report. |
 | M6: Feasibility review | Playtest notes, representative screenshots, tested versions/devices, final measurements, and a go/revise decision | The prototype demonstrates the core loop and asset reuse. Record remaining risks before proposing the full six-shift game. |
 
@@ -48,6 +48,8 @@ Run an initial **3–5-person** formative test, preferably including the intende
 - Verify every action with keyboard only, visible focus, labeled dialog controls, focus return, and announced validation/results. Do not trap focus outside an open dialog.
 - Check 200% browser text zoom, reduced motion, touch without hover, and labels independent of color. Use native buttons and a navigable DOM grid matching the 3D board.
 - Selection, placement, toggles, and invalid-action feedback should appear within **100 ms** on target hardware. Disable repeated execution during resolving while keeping result reading and animation skipping responsive.
+- Apply [the UI fidelity checks](UI_DESIGN.md#implementation-and-fidelity-checks-after-approval): verify real font weights, line wrapping, icon/state consistency, text contrast, and a clear view of the board. Keep the original font identity and menu geometry marked approximate until actual reference frames support a stronger claim.
+- Exercise title → help/settings → back, pause → help/settings → resume, cancel/confirm restart, and summary → replay. Check modal focus handling and suppression of canvas input behind dialogs. Block font requests and repeat the key flows with system fallbacks; no clipped labels, shifted pick coordinates, or inaccessible controls.
 
 ## Browser and layout matrix
 
@@ -74,7 +76,7 @@ Measure the **production build**, served over HTTP, with debugging overlays disa
 
 | Area | Initial gate | Method |
 | --- | --- | --- |
-| First-play transfer | At most **2 MiB** total required network transfer; JS at most **450 KiB gzip** within that total | Cold-cache network trace with JS/CSS compression enabled; include models, poster, and thumbnail requests. Also report raw GLB bytes. |
+| First-play transfer | At most **2 MiB** total required network transfer; JS at most **450 KiB gzip** and fonts targeted at **80 KiB combined** within that total | Cold-cache network trace with JS/CSS compression enabled; include models, fonts, poster, and thumbnail requests. Also report raw GLB bytes. |
 | Time-to-play | DOM loading feedback within **1 second**; playable within **5 seconds** cold and **2 seconds** warm on the agreed reference laptop at 10 Mbps down / 150 ms RTT | Three cold and three warm production runs; record median and slowest. Apply 4× CPU slowdown on the laptop as an additional stress run, and separately test a real phone. Report uncompressed local-preview results separately. |
 | Poor network | At 1.6 Mbps / 300 ms RTT, show useful progress immediately and complete or offer recovery without an indefinite spinner | Test a cold run, offline transition, one failed GLB request, and Retry. Do not promise the 5-second target on this connection. |
 | Desktop frame pacing | Target 60 fps in active animation; median frame interval ≤17.5 ms and p95 ≤20 ms at the reference viewport | Profile a scripted 30-second sequence of placement, rotation, focus changes, and shelter movement. Exclude first-load compilation and intentionally idle demand-render periods. |
