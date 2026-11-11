@@ -1,0 +1,9 @@
+node_modules/
+dist/
+public/assets/models/
+public/assets/fonts/
+public/assets/LICENSE
+public/assets/asset-report.json
+test-results/
+playwright-report/
+.DS_Store
