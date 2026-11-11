@@ -1,6 +1,6 @@
 # UI, typography, and menu specification
 
-Status: **planning only; implementation still requires approval.** This extends the three-shift scope without adding campaign selection, new scenarios, or a full settings application.
+Status: **implemented after approval; reference-fidelity limits remain documented below.** This specification guides the three-shift prototype without adding campaign selection, new scenarios, or a full settings application. See [validation](VALIDATION.md) for implementation evidence.
 
 Use the original **Outlanders** as the primary reference for the interface as well as the world. Keep the settlement visible, place a small number of controls around its edges, and make contextual actions easy to reach. The developer/launch sources verify the intent to emphasize useful information and keep actions close at hand; the detailed treatment below is a MOONSHIFT adaptation. See [the research ledger](UI_REFERENCES.md) for source links and confidence labels.
 

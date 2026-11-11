@@ -2,6 +2,8 @@
 
 Research checked on **2026-11-11** against official project documentation and release pages. This is a fit assessment for the three-shift prototype, not a benchmark ranking. Recheck stable versions and peer dependencies when implementation is approved; commit exact resolved dependencies and the lockfile.
 
+Implementation uses pinned React/React DOM **19.3.0**, Fiber **9.8.2**, Three.js **0.187.0**, Vite **8.3.7**, TypeScript **7.0.2**, Vitest **5.1.0**, and Playwright **1.65.0**, resolved from npm. The available Node **22.14.0** satisfies the toolchain; no global runtime upgrade was needed. The lockfile records the complete dependency set. Browser outcomes are recorded in [validation](VALIDATION.md).
+
 ## Recommendation
 
 Use **TypeScript + React + React Three Fiber + Three.js + Vite**, with a **WebGL 2** renderer, native HTML/CSS controls, and local deterministic game state. Build static files; no server runtime is needed.

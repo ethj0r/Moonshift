@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "measure": "node scripts/measure-browser.mjs",
     "prebuild": "npm run prepare:assets",
     "build": "tsc --noEmit && vite build && node scripts/check-budget.mjs",
     "preview": "vite preview --host 127.0.0.1"

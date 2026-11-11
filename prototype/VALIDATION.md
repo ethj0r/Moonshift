@@ -1,6 +1,32 @@
 # Implementation milestones and acceptance checks
 
-All implementation milestones are pending explicit approval. The only completed work is repository inspection, asset metadata inspection, technology research, and this Markdown plan. Targets below are proposed acceptance criteria, not measured results.
+Implementation was approved and the local three-shift prototype is playable. The original acceptance targets remain below; the following section distinguishes measured results from outstanding hardware and human checks.
+
+## Recorded implementation results — 2026-11-11
+
+Environment: Node 22.14.0, macOS 27.0.1, isolated Playwright browser profiles. The graphics backend available to Chromium is **ANGLE / SwiftShader software rendering**. No claim about a physical mobile GPU or a particular laptop GPU follows from these runs.
+
+| Check | Result and limits |
+| --- | --- |
+| Rules | **Passed:** 14 deterministic tests, including the two battery strategies, food order, route constraints, unsafe outcomes, correction, preview purity, idempotent commit, and replay. |
+| Type checking/build | **Passed:** strict TypeScript and a static Vite production build. The build enforces payload budgets. The approximately 991 KB minified 3D chunk produces a size advisory; its gzip transfer is approximately 264 KB and is included in the budget. |
+| Browser flows | **Passed:** 20 checks across Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2, and emulated Pixel 7 at 390×844. They cover the full research path/replay, menu focus and settings, unsafe confirmation, actual 3D cell picking, and failed-model/font recovery. The final crew-path change was rechecked with eight targeted gameplay/picking runs. |
+| Asset preparation | **Passed/measured:** all 14 prepared GLBs passed the Khronos glTF validator with zero errors and zero warnings. They total 813,876 bytes / 117 mesh primitives. The source exports are unchanged; hashes and transformations are in the manifest. |
+| Build payload | **Measured:** approximately 341 KB gzip JavaScript, 41,748 bytes of local WOFF2 fonts, and 1.212 MB estimated total transfer. License files are conservatively included in the build-size total. |
+| Cold loading with gzip | **Measured:** three 10 Mbps / 150 ms RTT runs reached play in 2,614 / 2,519 / 2,534 ms; median 2,534 ms. Required resource transfer was 1,206,981 bytes; DOM content readiness was 406–422 ms. |
+| Warm loading | **Measured:** 987 / 994 / 975 ms; median 987 ms. A cache-disabled reload with 4× CPU slowdown took 2,538 ms; shader/browser caches may still differ from a first-ever device visit. |
+| Render counts | **Measured summary state:** 131 draw calls, 13,416 triangles, 135 geometries, 1 texture, and 6 programs. These counts stayed unchanged after 20 replays. This records an observed state, not an exhaustive proof of every view's maximum. |
+| Replay memory | **Measured:** comparable forced-GC JS heap samples were 8,994,316 and 10,200,664 bytes before/after 20 replays. Model requests remained at 14 total. This meets the initial growth threshold and shows no GPU-resource-count growth in that run; it does not prove the absence of all long-session leaks. |
+| Idle/recovery | **Measured:** zero extra render frames during a settled 10-second idle interval. Forced WebGL context loss recovered with the same committed Shift 3 state and 3 rations. The UI can also recover from a failed model request. A forced no-WebGL-2 run displayed Retry and kept Start disabled. |
+| Frame pacing | **Measured in software:** 40 contextual interactions spaced 750 ms apart yielded 1,606 samples, 24.9 ms median and 27 ms p95 render-callback interval. This misses the proposed desktop 60 fps timing target in SwiftShader; hardware 60 fps remains **unverified**. A separate empty-page/idle-page RAF check was approximately 16.7 ms. These are callback timings, not GPU presentation measurements. |
+| Responsive rendering | **Measured:** the emulated 390×844 phone used a 487×453 drawing buffer, within the pixel cap, and had no horizontal overflow. Desktop/phone screenshots were visually inspected. Mobile device emulation does not certify Safari or Android hardware behavior. |
+| Still unverified | Real iOS/Android devices, actual Chrome/Edge/Safari installations outside the test engines, previous major browser versions, the 1.6 Mbps failure/long-wait scenario, the 10-minute soak, and 3–5-person child/adult playtesting. Exact Outlanders font identity and pixel-level menu fidelity also remain unresolved. |
+
+Run `npm test`, `npm run build`, and `npm run test:browser` from this directory. `npm run measure` serves the static build with gzip and collects a repeatable loading/replay/context/idle/frame report using an isolated Chromium profile. It writes its raw report and screenshots to `/tmp`; committed evidence is linked below. No account, backend service, or deployment is involved.
+
+Evidence: [raw measurements](evidence/performance.json), [desktop storage view](evidence/desktop.png), and [phone title view](evidence/phone.png). The screenshots are development evidence and are not loaded by the game.
+
+The playable core and asset path are feasible at this scale. Before expanding the six-shift game, test the actual target devices and observe first-time players. Keep the hardware frame-rate gate open rather than treating a software-rendered automation run as a hardware benchmark.
 
 ## Milestones
 

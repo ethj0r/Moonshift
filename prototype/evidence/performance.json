@@ -1,0 +1,91 @@
+{
+  "browser": "158.0.8127.18",
+  "environment": "Isolated headless Chromium on local macOS; not a real-phone or GPU-fps certification",
+  "cold": [
+    {
+      "milliseconds": 2614,
+      "transferBytes": 1206981,
+      "domContentLoadedMs": 422
+    },
+    {
+      "milliseconds": 2519,
+      "transferBytes": 1206981,
+      "domContentLoadedMs": 406
+    },
+    {
+      "milliseconds": 2534,
+      "transferBytes": 1206981,
+      "domContentLoadedMs": 411
+    }
+  ],
+  "warm": [
+    {
+      "milliseconds": 987
+    },
+    {
+      "milliseconds": 994
+    },
+    {
+      "milliseconds": 975
+    }
+  ],
+  "cpuStress4xMilliseconds": 2538,
+  "warmedSummary": {
+    "calls": 131,
+    "triangles": 13416,
+    "geometries": 135,
+    "textures": 1,
+    "programs": 6,
+    "width": 1366,
+    "height": 768,
+    "frame": 23,
+    "renderedAt": 1804.5999999046326,
+    "heapBytes": 8994316
+  },
+  "after20Replays": {
+    "calls": 131,
+    "triangles": 13416,
+    "geometries": 135,
+    "textures": 1,
+    "programs": 6,
+    "width": 1366,
+    "height": 768,
+    "frame": 403,
+    "renderedAt": 18187,
+    "heapBytes": 10200664
+  },
+  "modelRequests": 14,
+  "idleFrameDelta": 0,
+  "contextRecoveryFood": "3",
+  "contextRecovery": "Recovered with the same committed Shift 3 snapshot",
+  "activeFrameCallbacks": {
+    "samples": 1606,
+    "medianMs": 24.90000009536743,
+    "p95Ms": 27,
+    "caveat": "Headless render callback intervals, excluding idle gaps; not GPU presentation times or mobile hardware performance"
+  },
+  "phoneLayoutMetrics": {
+    "calls": 127,
+    "triangles": 13260,
+    "geometries": 133,
+    "textures": 1,
+    "programs": 6,
+    "width": 487,
+    "height": 453,
+    "frame": 14,
+    "renderedAt": 1137.4000000953674
+  },
+  "graphicsBackend": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+  "recordedDate": "2026-11-11",
+  "frameBaseline": {
+    "emptyPageMedianMs": 16.7,
+    "idleGameMedianMs": 16.7,
+    "idleGameP95Ms": 16.8
+  },
+  "preparedModelValidation": {
+    "models": 14,
+    "validator": "Khronos gltf-validator",
+    "errors": 0,
+    "warnings": 0
+  }
+}

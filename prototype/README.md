@@ -1,8 +1,32 @@
 # MOONSHIFT browser prototype plan
 
-Status: **planning complete; awaiting explicit implementation approval.** No application code, dependencies, or prepared assets have been added.
+Status: **implemented locally following approval.** The playable slice uses the existing models, original interface artwork, local fonts, and deterministic game rules. See [validation](VALIDATION.md) for measured results and remaining device/playtest limits.
 
 This prototype will test whether the existing low-poly assets can support a clear, enjoyable browser game. It is a small playable slice of the team's provisional NASA Space Apps Challenge design, rather than the complete six-shift game.
+
+## Run locally
+
+Use Node.js 22.12 or newer and npm. From the repository root:
+
+```sh
+cd prototype
+npm ci
+npm run dev
+```
+
+Open the printed local URL, normally `http://127.0.0.1:5173`. Development and production builds prepare the selected models and local fonts automatically. Generated copies are ignored; the source exports remain unchanged.
+
+Choose **Start shift 3**, read the short briefing, then arrange the two cargo items. Use either the 3D board or the labeled grid. Mouse, touch, and keyboard controls use the same rules. Preferences persist locally; the active run is held in memory and refresh starts a fresh run.
+
+```sh
+npm test
+npm run build
+npx playwright install chromium firefox webkit
+npm run test:browser
+npm run measure
+```
+
+The build includes a payload-budget check. Browser tests use isolated profiles. The optional measurement command serves the production build with gzip on port 4174, collects loading/replay/rendering evidence, writes `/tmp/moonshift-performance.json`, and shuts down its test server. Headless and emulated-phone results do not certify real-device GPU performance.
 
 ## Planning documents
 
@@ -122,6 +146,6 @@ Use generous invisible pick surfaces rather than tiny decorative meshes. The DOM
 
 Selection needs an immediate outline/footprint and a clear invalid-placement reason. Commit animations should take about 0.5–1.5 seconds, remain skippable, and expose the same facts in a static result panel. Warm lighting and readable route arrows continue during the storm; avoid a dark screen, flashing effects, or a particle cloud that hides the puzzle.
 
-## Planning boundary
+## Development boundary
 
-Only Markdown planning files are authorized in this phase. Review the linked documents together; approve the proposed slice and stack before installing dependencies, preparing derived assets, scaffolding the app, or writing gameplay code. Implementation will remain within `prototype/`, with small meaningful commits and checks at each milestone. No deployment is part of this plan.
+Implementation was approved after the planning and UI research phases. The application and its tooling stay within `prototype/`; source art is reused without modifying the original exports. The full six-shift game, additional scenarios, audio, and deployment remain outside this prototype. Work is recorded in focused commits with rule, build, and browser checks.

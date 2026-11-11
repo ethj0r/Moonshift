@@ -2,6 +2,8 @@
 
 Inspected on 2026-11-11 from the repository's GLB JSON chunks and PNG headers. These are file and scene-structure measurements, not runtime benchmarks. Source assets remain unchanged during planning and implementation; any prepared copies will live under `prototype/`.
 
+The preparation pipeline is now implemented in [scripts/prepare-assets.mjs](scripts/prepare-assets.mjs). Its tracked [manifest](asset-manifest.json) records hashes, bounds, transformations, and counts for every selected source. It reduces the subset from **1,004,032 to 813,876 bytes**, **376 to 117 mesh primitives**, and **14,194 to 12,658 visible triangles** after removing obsolete/duplicate decoration and merging compatible geometry. Generated models live in `public/assets/models/`; the original exports are untouched. Buttons currently use original SVG pictograms; optional rendered item thumbnails and a loading poster were unnecessary for this playable slice.
+
 ## What exists
 
 | Inventory | Measured size | Implication |
