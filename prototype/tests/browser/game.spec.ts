@@ -142,9 +142,9 @@ test("the 3D board dispatches the same placements as the accessible grid", async
     camera.lookAt(target);
     camera.updateMatrixWorld();
     const point = new Vector3(
-      1.15 + (Math.floor(cell / 3) - 1) * 1.05,
+      1.15 + ((cell % 3) - 1) * 1.05,
       0.415,
-      3.1 + ((cell % 3) - 1) * 1.05,
+      3.1 + (Math.floor(cell / 3) - 1) * 1.05,
     ).project(camera);
     await page.mouse.click(
       box.x + ((point.x + 1) * box.width) / 2,

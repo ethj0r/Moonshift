@@ -4,6 +4,8 @@ Inspected on 2026-11-11 from the repository's GLB JSON chunks and PNG headers. T
 
 The preparation pipeline is now implemented in [scripts/prepare-assets.mjs](scripts/prepare-assets.mjs). Its tracked [manifest](asset-manifest.json) records hashes, bounds, transformations, and counts for every selected source. It reduces the subset from **1,004,032 to 813,876 bytes**, **376 to 117 mesh primitives**, and **14,194 to 12,658 visible triangles** after removing obsolete/duplicate decoration and merging compatible geometry. Generated models live in `public/assets/models/`; the original exports are untouched. Buttons currently use original SVG pictograms; optional rendered item thumbnails and a loading poster were unnecessary for this playable slice.
 
+The final logical grid uses **rows along GLB Z and columns along X**, so the top/middle/bottom vents align with the original 1/2/3-dot inlet markers. A2/B2/C2 lie at local `(0, surface, −1.05/0/+1.05)`. Model node indices are not logical cell IDs: for example, `Board_Tile_10` corresponds to A2. A horizontal crate follows X; a vertical crate follows Z. The 3D picking tests check the rendered board against the DOM grid.
+
 ## What exists
 
 | Inventory | Measured size | Implication |

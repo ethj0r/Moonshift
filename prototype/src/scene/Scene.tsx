@@ -291,9 +291,9 @@ function StaticIsland() {
 
 function cellPoint(cell: number, y = 0.4): Position {
   return [
-    BOARD[0] + (Math.floor(cell / 3) - 1) * 1.05,
+    BOARD[0] + ((cell % 3) - 1) * 1.05,
     y,
-    BOARD[2] + ((cell % 3) - 1) * 1.05,
+    BOARD[2] + (Math.floor(cell / 3) - 1) * 1.05,
   ];
 }
 
@@ -394,7 +394,7 @@ function CargoBoard(props: Props) {
             id={item}
             position={point}
             rotation={
-              placement ? (placement.vertical ? 0 : Math.PI / 2) : -0.15
+              placement ? (placement.vertical ? Math.PI / 2 : 0) : -0.15
             }
             scale={item === "research" ? 0.93 : 1}
             onClick={() => interactive && onItem(item)}
@@ -522,7 +522,10 @@ function AirRoute({ props }: { props: Props }) {
     if (!route) return null;
     const source = cellPoint(ROUTE_CELL[route], 0.16);
     return mergedBoxes([
-      { size: [0.08, 0.1, 2.1], at: [source[0], 0.16, source[2] - 1.4] },
+      {
+        size: [0.08, 0.1, Math.abs(source[2] - 0.65)],
+        at: [source[0], 0.16, (source[2] + 0.65) / 2],
+      },
       {
         size: [Math.abs(3.6 - source[0]) + 0.05, 0.1, 0.08],
         at: [(source[0] + 3.6) / 2, 0.16, 0.65],
