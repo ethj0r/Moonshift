@@ -16,7 +16,13 @@ export type IconName =
   | "help"
   | "settings"
   | "arrow"
-  | "warning";
+  | "warning"
+  | "shield"
+  | "eye"
+  | "speaker"
+  | "mail"
+  | "lock"
+  | "star";
 const paths: Record<IconName, string> = {
   food: "M5 5h14l2 4v12H3V9l2-4zm2 2v3h10V7H7zm3 6v5h4v-5h-4z",
   power: "M13 1 4 14h7l-1 9 10-14h-7l1-8z",
@@ -37,6 +43,12 @@ const paths: Record<IconName, string> = {
     "m9 1 6 0 1 4 4 1 3 5-3 3 0 4-5 3-3-2-4 2-5-3V14l-3-3 3-5 4-1 2-4zm3 7a4 4 0 1 0 0 8 4 4 0 0 0 0-8z",
   arrow: "M2 10h12V4l9 8-9 8v-6H2v-4z",
   warning: "M10 2h4l10 20H0L10 2zm0 6v7h4V8h-4zm0 9v3h4v-3h-4z",
+  shield: "M12 1 3 5v7c0 6 4 10 9 11 5-1 9-5 9-11V5l-9-4zm0 4 5 2v5c0 4-2 6-5 7V5z",
+  eye: "M12 4C6 4 2 9 1 12c1 3 5 8 11 8s10-5 11-8c-1-3-5-8-11-8zm0 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8z",
+  speaker: "M3 9h4l6-5v16l-6-5H3V9zm13-1a6 6 0 0 1 0 8l-2-2a3 3 0 0 0 0-4l2-2zm3-3a10 10 0 0 1 0 14l-2-2a7 7 0 0 0 0-10l2-2z",
+  mail: "M2 5h20v14H2V5zm2 3v9h16V8l-8 5-8-5zm1-1 7 4 7-4H5z",
+  lock: "M7 10V7a5 5 0 0 1 10 0v3h2v12H5V10h2zm3 0h4V7a2 2 0 0 0-4 0v3z",
+  star: "m12 1 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1 3-7z",
 };
 
 export function Icon({
