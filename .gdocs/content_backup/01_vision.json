@@ -1,0 +1,787 @@
+{
+  "tab": "01 Vision & Strategy",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 01 · VISION & STRATEGY"
+    },
+    {
+      "t": "h1",
+      "x": "Vision & Strategy"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what game are we making, for whom, and what will we refuse to build?"
+    },
+    {
+      "t": "ins",
+      "x": "Fill 1.1 last. Start with 1.3, because pillars decide what belongs in 1.4 and 1.7. Leave 1.6 and 1.9 in draft until the prototype is playable; market numbers and KPI targets change faster than the design."
+    },
+    {
+      "t": "h2",
+      "x": "1.1 One-page pitch"
+    },
+    {
+      "t": "ins",
+      "x": "Keep every answer to one clause. Read the finished table aloud in three minutes; anything you stumble on is a decision the team has not made."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Answer"
+      ],
+      "w": [
+        110,
+        394
+      ],
+      "rows": [
+        [
+          "Working title",
+          "{{Moonshift}}, a cozy lunar repair game."
+        ],
+        [
+          "Logline",
+          "{{A stranded repair robot has one shift to make a broken moon base breathe again.}}"
+        ],
+        [
+          "Genre / platform",
+          "{{Cozy spatial puzzle}} on {{PC and tablet}}."
+        ],
+        [
+          "Audience",
+          "{{Curious players aged 9 and up who like tidy, low-pressure puzzles.}}"
+        ],
+        [
+          "Player fantasy",
+          "{{Be the small machine that quietly holds a whole outpost together.}}"
+        ],
+        [
+          "Core loop (3 verbs)",
+          "{{Choose cargo, route air, repair the room}} before the shift timer ends."
+        ],
+        [
+          "Unique selling proposition / business model",
+          "{{A base-builder you can finish in a weekend}}; {{premium, one price}}."
+        ],
+        [
+          "Scope / target release",
+          "{{6 rooms, 12 shifts, 3–4 hours}}; {{demo in 6 weeks, release in 9 months}}."
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Why it matters: this is the only page every discipline reads before kickoff, so a disagreement here costs an hour instead of a milestone. Good pitch test: a producer can repeat the logline from memory, an artist can name the mood, and an engineer can name the risk. If the table needs a second page, it is a plan, not a pitch."
+    },
+    {
+      "t": "quote",
+      "x": "{{A stranded repair robot has one shift to make a broken moon base breathe again.}} *One character, one deadline, one verb, one stake: that is why it works.*"
+    },
+    {
+      "t": "p",
+      "x": "Run the read as a meeting, not a recital. Give each discipline one question: design asks whether the loop is clear, art asks whether the mood is achievable, engineering asks what could break, and production asks what must be cut. Write the answers in the margin; the pitch is done when the margin is empty."
+    },
+    {
+      "t": "h2",
+      "x": "1.2 High concept"
+    },
+    {
+      "t": "ins",
+      "x": "Write the elevator pitch before the feature list. Keep it under 100 words, name one protagonist and one problem, and stop before the twist. The X meets Y line is a shortcut for tone, not a promise of features."
+    },
+    {
+      "t": "fill",
+      "x": "Elevator pitch (max 100 words): {{A small repair robot wakes on a silent lunar outpost with one working air tank and a crew arriving at sunrise. Salvage cargo, reconnect pipes, and coax each room back to life across six shifts. Every choice spends something: power, air, or time. The base is small, the problems are legible, and the ending is a place you rebuilt with your own hands.}}"
+    },
+    {
+      "t": "fill",
+      "x": "X meets Y: {{the tidy spatial puzzles of Unpacking}} meets {{the resource pressure of a one-room survival game}}, wrapped in {{a toy-like lunar diorama}}."
+    },
+    {
+      "t": "p",
+      "x": "Why it matters: the pitch is the tie-breaker when two features compete for the same week. If a feature cannot be explained through the pitch, it belongs in a prototype, not the schedule."
+    },
+    {
+      "t": "h3",
+      "x": "The player promise"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "You will always understand why a room failed.",
+        "Every repair makes the base visibly warmer and busier.",
+        "A missed shift costs a retry, never a save file."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Minute to minute"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Scan the room: read the air gauge, the blocked vents, and the one glowing fault.",
+        "Choose: spend a battery, reroute a pipe, or dismantle a crate for parts.",
+        "Place: drag the part onto the grid; the preview shows the new air path before you commit.",
+        "Confirm and watch: the fan spins up, the gauge climbs, the shift timer keeps running."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Good high concept: a stranger can describe the game to a friend after one hearing, and the description contains a verb. If the description is only a setting, rewrite it until someone is doing something."
+    },
+    {
+      "t": "h2",
+      "x": "1.3 Design pillars"
+    },
+    {
+      "t": "ins",
+      "x": "Write three to five pillars, no more. Each pillar must be able to reject a feature the team likes. If two pillars can never conflict, merge them. Test each against the last three arguments the team had."
+    },
+    {
+      "t": "callout",
+      "label": "Rule",
+      "x": "A pillar that cannot reject a feature is a value, not a pillar. If every idea passes the test, rewrite the pillar until something fails."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Pillar",
+        "What it means",
+        "We will",
+        "We won't"
+      ],
+      "w": [
+        96,
+        140,
+        134,
+        134
+      ],
+      "rows": [
+        [
+          "Legible first",
+          "Every state is readable from the default camera without text.",
+          "Use shape, colour, and glow to show faults.",
+          "Hide a critical rule in a tooltip."
+        ],
+        [
+          "Small, finished places",
+          "One outpost, a few rooms, each with a clear before and after.",
+          "Polish each room until it feels inhabited.",
+          "Add a second biome to chase variety."
+        ],
+        [
+          "Pressure without panic",
+          "Timers create decisions, not reflexes; failure is recoverable.",
+          "Pause the timer while the player reads.",
+          "Add enemies or twitch combat."
+        ],
+        [
+          "Repair is the story",
+          "The base's condition carries the narrative; no cutscenes required.",
+          "Let rebuilt rooms change what characters say.",
+          "Explain the backstory in a text dump."
+        ],
+        [
+          "Touch-first",
+          "Every action works with one finger on a small screen.",
+          "Design the UI at tablet size first.",
+          "Ship a PC layout with tiny hit targets."
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Decision test"
+    },
+    {
+      "t": "p",
+      "x": "Put every proposed feature through three questions, in order: Does it make one pillar stronger? Which pillar does it weaken? What do we remove to pay for it? A feature that strengthens none goes to the cut list, not the backlog."
+    },
+    {
+      "t": "fill",
+      "x": "Kill rule: {{if a feature fails two pillars, we cut it this milestone, even if it is already prototyped.}}"
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: each pillar has a scar. Name one feature the team killed because of it, and one argument it settled. A pillar with no scar is a poster, not a constraint."
+    },
+    {
+      "t": "h2",
+      "x": "1.4 Non-goals and scope boundaries"
+    },
+    {
+      "t": "ins",
+      "x": "Write non-goals as sentences a new hire can act on. Name the genre you are not making, the feature you will not build, and the audience you will not chase. Revisit this list at every milestone; it is cheaper to defend than to rediscover."
+    },
+    {
+      "t": "p",
+      "x": "Non-goals protect the pillars. They are not insults to good ideas; they are a promise that the team will not spend this budget on them."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "This is not an open-world builder. The outpost is one map with fixed rooms.",
+        "This is not a survival game. Air is a puzzle resource, not a hunger bar.",
+        "This is not a narrative RPG. Characters speak in short radio lines, not dialogue trees.",
+        "This is not a live-service game. There is no season pass, store, or daily login.",
+        "This is not a horror game. Alarms and darkness signal problems, never threat."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Cut-list philosophy"
+    },
+    {
+      "t": "p",
+      "x": "Keep a ranked cut list from day one. Cut from the bottom, never from the pillars. A feature is safe only when it has an owner, a test, and a place in the build; everything else is optional by default. When the schedule slips, cut the bottom item without a meeting."
+    },
+    {
+      "t": "p",
+      "x": "Write each non-goal as a refusal with a reason: we will not add online co-op because it doubles the test matrix and the puzzle needs one decision-maker. A refusal without a reason invites the same request next month."
+    },
+    {
+      "t": "h3",
+      "x": "Scope guardrails"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Constraint",
+        "Limit",
+        "Consequence"
+      ],
+      "w": [
+        110,
+        150,
+        244
+      ],
+      "rows": [
+        [
+          "Team",
+          "{{4 people, part-time}}",
+          "No feature that needs a dedicated specialist."
+        ],
+        [
+          "Time",
+          "{{12 weeks to demo}}",
+          "One vertical slice, not three half-levels."
+        ],
+        [
+          "Budget",
+          "{{USD 2,000 for art and audio}}",
+          "Buy assets only for the slice; placeholder elsewhere."
+        ],
+        [
+          "Content",
+          "{{6 rooms, 12 shifts}}",
+          "Reuse room shells with new fault sets."
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a contractor can read this section and know which request to decline without asking you. If every non-goal needs a meeting to interpret, rewrite it as a sentence with a verb."
+    },
+    {
+      "t": "h2",
+      "x": "1.5 Target audience and motivations"
+    },
+    {
+      "t": "ins",
+      "x": "Describe two segments, not a demographic. For each, name what they want to feel and what they will tolerate. Then check the age rating: the youngest player you name sets the reading level, text size, and failure tone."
+    },
+    {
+      "t": "p",
+      "x": "Primary: {{players who play puzzle games to unwind and finish something in a sitting}}. Secondary: {{parents and educators looking for a calm co-play game with a child}}."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Persona",
+        "Context",
+        "Motivation",
+        "What they need"
+      ],
+      "w": [
+        100,
+        140,
+        120,
+        144
+      ],
+      "rows": [
+        [
+          "The unwinder",
+          "{{30-minute commute or evening wind-down}}",
+          "Mastery and completion",
+          "Clear goals, no punishment for pausing."
+        ],
+        [
+          "The tinkerer",
+          "{{Plays on a tablet, likes optimisation}}",
+          "Expression and mastery",
+          "Visible numbers, multiple valid layouts."
+        ],
+        [
+          "The co-player",
+          "{{Sits with a child aged 9}}",
+          "Story and care",
+          "Read-aloud text, no shaming fail state."
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Motivations"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Mastery: the air network becomes predictable, then optimisable.",
+        "Expression: room layouts and cargo choices show the player's style.",
+        "Story: the outpost's recovery is the narrative reward.",
+        "Competition: optional shift scores, never ranked ladders."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Accessibility needs"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Remappable controls, one-hand mode, and no held input longer than {{1 s}}.",
+        "Subtitles for radio lines, with speaker labels and a size slider.",
+        "Colour-blind safe status icons: shape plus colour, never colour alone.",
+        "Assist mode that slows timers by {{50%}} without changing rewards.",
+        "Minimum body text {{18 px at 1080p}}, scalable to {{200%}}."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Age rating: {{PEGI 3 / ESRB E}} if there is no violence, no fear, and no online chat. Any threat imagery or jump scare pushes the rating up and narrows the audience; decide before art production, not after."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: every accessibility feature has a platform setting, a default, and a test. A promise in this section without a menu entry is marketing."
+    },
+    {
+      "t": "h2",
+      "x": "1.6 Market and competitive landscape"
+    },
+    {
+      "t": "ins",
+      "x": "Pick five comps the team has actually played. For each, write what you borrow and what you avoid. Prices are launch prices in your largest market; date them, because they age badly."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Title",
+        "Genre / platform",
+        "Price",
+        "Why it matters",
+        "Borrow / avoid"
+      ],
+      "w": [
+        96,
+        110,
+        54,
+        130,
+        114
+      ],
+      "rows": [
+        [
+          "{{Unpacking}}",
+          "{{Cozy puzzle, PC / console}}",
+          "{{USD 20}}",
+          "{{Proves a tidy, wordless story sells}}",
+          "Borrow: environmental storytelling. Avoid: no systems pressure."
+        ],
+        [
+          "{{Outlanders}}",
+          "{{Small-scale builder, PC / Apple}}",
+          "{{USD 10}}",
+          "{{Closest tone and camera}}",
+          "Borrow: diorama readability. Avoid: mobile-style timer loops."
+        ],
+        [
+          "{{Mini Motorways}}",
+          "{{Systems puzzle, PC / mobile}}",
+          "{{USD 10}}",
+          "{{Elegant network building}}",
+          "Borrow: instant path preview. Avoid: endless score chase."
+        ],
+        [
+          "{{A Short Hike}}",
+          "{{Exploration, PC / console}}",
+          "{{USD 8}}",
+          "{{A finite world players finish}}",
+          "Borrow: warmth and brevity. Avoid: open-world scope."
+        ],
+        [
+          "{{Firewatch}}",
+          "{{Narrative, PC / console}}",
+          "{{USD 20}}",
+          "{{Radio voice as companionship}}",
+          "Borrow: distant voice. Avoid: dialogue-heavy runtime."
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Date every price and note the region. A comp table without dates becomes a fiction within two store sales, and the team starts pricing against ghosts."
+    },
+    {
+      "t": "p",
+      "x": "Choose comps that share two of three traits: audience, session length, or price. A comp that shares only a mood teaches you nothing about the market. Play each for at least an hour and note the moment you stopped."
+    },
+    {
+      "t": "fill",
+      "x": "Differentiation: {{we are the only cozy base game where the air network is the puzzle, not the backdrop; one screen, one shift, one visible consequence.}}"
+    },
+    {
+      "t": "p",
+      "x": "Positioning map: draw two axes, {{pressure (calm to urgent)}} and {{scale (one room to open world)}}. Plot the five comps, then mark the empty quadrant you want. If two comps already sit there, sharpen an axis until the space is real."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: the comps table changes one decision. If it only confirms what the team already believed, add a comp that scares you and write the avoid column first."
+    },
+    {
+      "t": "h2",
+      "x": "1.7 Platform and business model"
+    },
+    {
+      "t": "ins",
+      "x": "Choose platforms by where the audience already plays, not by engine convenience. Then state the price and the monetization boundary in one sentence each; ambiguity here becomes a store page problem later."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Platform",
+        "Why",
+        "Input",
+        "Certification note"
+      ],
+      "w": [
+        90,
+        160,
+        100,
+        154
+      ],
+      "rows": [
+        [
+          "{{PC (Steam)}}",
+          "{{Puzzle audience, easy demo distribution}}",
+          "{{Mouse + keyboard}}",
+          "{{No cert; Steam Deck check at 60 fps.}}"
+        ],
+        [
+          "{{Tablet (iPad)}}",
+          "{{Touch-first, co-play on the sofa}}",
+          "{{Touch}}",
+          "{{Apple review: no external purchase links.}}"
+        ],
+        [
+          "{{Switch}}",
+          "{{Handheld co-play, strong family market}}",
+          "{{Gamepad + touch}}",
+          "{{Nintendo lotcheck; controller-first menus.}}"
+        ]
+      ]
+    },
+    {
+      "t": "fill",
+      "x": "Price: {{USD 14.99}} at launch, {{USD 9.99}} in the first sale. Demo: {{first two shifts, save carries to the full game}}."
+    },
+    {
+      "t": "fill",
+      "x": "Monetization: {{premium, one-time purchase. No ads, no currency packs, no energy timers.}}"
+    },
+    {
+      "t": "p",
+      "x": "DLC and live ops: {{one paid expansion of six shifts if the base game sells 20k copies; otherwise no roadmap. Patches fix defects, not content cadence.}}"
+    },
+    {
+      "t": "h3",
+      "x": "Certification implications"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every platform needs a controller-only path, even touch-first builds.",
+        "Cloud saves and suspend/resume must survive a shift timer.",
+        "Age gates and privacy notices are required if you collect any telemetry.",
+        "Store assets and screenshots must show real gameplay, not concept art."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: the business model fits in one sentence a player can repeat without feeling tricked. If it needs a diagram to explain why the price is fair, it is probably not premium."
+    },
+    {
+      "t": "h2",
+      "x": "1.8 References and inspiration"
+    },
+    {
+      "t": "ins",
+      "x": "Collect references by discipline, not by vibe. For each, write the exact trait you want and the trait you must not copy. A reference without a do-not-copy line becomes an accidental clone."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Reference",
+        "Medium",
+        "Steal this",
+        "Do not copy"
+      ],
+      "w": [
+        100,
+        64,
+        180,
+        160
+      ],
+      "rows": [
+        [
+          "{{Outlanders}}",
+          "{{Game}}",
+          "{{Toy-like diorama scale and warm palette}}",
+          "{{Its characters, buildings, or UI layout}}"
+        ],
+        [
+          "{{Wall-E}}",
+          "{{Film}}",
+          "{{Lonely machine care through small gestures}}",
+          "{{The plot, the ship, or the branded robot}}"
+        ],
+        [
+          "{{The Martian}}",
+          "{{Book / film}}",
+          "{{Problem-solving as suspense}}",
+          "{{Its survival stakes and tone}}"
+        ],
+        [
+          "{{Apollo 13 mission logs}}",
+          "{{Archive}}",
+          "{{Procedure, checklists, calm radio voices}}",
+          "{{Real call signs or crew names}}"
+        ],
+        [
+          "{{Miniature diorama photography}}",
+          "{{Art}}",
+          "{{Tilt-shift depth and handmade imperfection}}",
+          "{{A specific photographer's compositions}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Mood board and research links"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Mood board: {{[link]}}, {{warm lunar outpost, chunky props, long shadows}}.",
+        "Competitor research: {{[link]}}, {{store pages, reviews, price history}}.",
+        "Accessibility references: {{[link]}}, {{Game Accessibility Guidelines, console checklists}}."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Keep links in one shared board, not in chat. Review the board at the start of each milestone and delete references the team no longer uses."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: each reference names a trait small enough to draw. A vibe is not a reference; chunky bevels, warm sand, and long soft shadows are."
+    },
+    {
+      "t": "h2",
+      "x": "1.9 Success metrics and risks"
+    },
+    {
+      "t": "ins",
+      "x": "Choose three to five metrics you can measure in the demo. A target without a measurement method is a wish. For risks, write the mitigation as an action with a date, not a sentiment."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Metric",
+        "Target",
+        "Measurement"
+      ],
+      "w": [
+        130,
+        110,
+        264
+      ],
+      "rows": [
+        [
+          "Demo completion",
+          "{{70% of starts reach shift 3}}",
+          "{{Build telemetry, first 200 players}}"
+        ],
+        [
+          "Time to first repair",
+          "{{under 90 s}}",
+          "{{Recorded playtest, median}}"
+        ],
+        [
+          "Puzzle retry rate",
+          "{{under 2.5 attempts per room}}",
+          "{{Telemetry: room_id, attempts}}"
+        ],
+        [
+          "Wishlist conversion",
+          "{{12% demo to wishlist}}",
+          "{{Steam demo page UTM}}"
+        ],
+        [
+          "Session length",
+          "{{20–35 min median}}",
+          "{{Telemetry: session_start and session_end}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Targets are for the demo, not the launch. A demo that hits its completion target tells you the first hour works; it says nothing about the ending. Keep one metric per audience promise, and delete any metric nobody would act on."
+    },
+    {
+      "t": "p",
+      "x": "Separate leading from lagging metrics. Wishlist conversion is lagging; time to first repair is leading. Put one leading metric per pillar on the dashboard, and review it weekly. A dashboard with twelve numbers is a screensaver, not a decision tool."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Risk",
+        "Likelihood",
+        "Impact",
+        "Mitigation"
+      ],
+      "w": [
+        150,
+        72,
+        72,
+        210
+      ],
+      "rows": [
+        [
+          "{{Puzzle difficulty spikes in shift 4}}",
+          "{{High}}",
+          "{{High}}",
+          "{{Playtest room 4 weekly; add a skip after 3 fails.}}"
+        ],
+        [
+          "{{Art scope exceeds a 4-person team}}",
+          "{{Medium}}",
+          "{{High}}",
+          "{{Reuse 6 room shells; no new biome before launch.}}"
+        ],
+        [
+          "{{Touch controls feel imprecise}}",
+          "{{Medium}}",
+          "{{High}}",
+          "{{Tablet prototype in week 2; grid snapping only.}}"
+        ],
+        [
+          "{{Timer stress hurts the cozy audience}}",
+          "{{Medium}}",
+          "{{Medium}}",
+          "{{Assist mode and pause-while-reading in scope.}}"
+        ],
+        [
+          "{{Store visibility below forecast}}",
+          "{{High}}",
+          "{{Medium}}",
+          "{{Demo and festival submissions booked by month 3.}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Assumptions to validate in the prototype"
+    },
+    {
+      "t": "check",
+      "x": [
+        "Players understand the air path without a tutorial paragraph.",
+        "A {{60-second}} cargo choice feels tense, not rushed.",
+        "The diorama camera reads on a small tablet.",
+        "Players retry a failed room without quitting.",
+        "The ending lands in {{under 4 hours}}."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: every risk has a date and a name. A mitigation without a date is a hope, and a hope does not survive a milestone review."
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Tick these only when the artefact exists and someone outside the design team has read it. A verbal agreement is not done."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The one-page pitch fits one screen and reads in under three minutes.",
+        "Each pillar has a written feature it has rejected.",
+        "Non-goals name at least three features the team has already cut.",
+        "Two audience personas are backed by five playtest observations.",
+        "Five comps have dated prices and a borrow / avoid note.",
+        "Every KPI has a named measurement source.",
+        "The top five risks have an owner and a mitigation date.",
+        "Open questions have owners and dates, not someday."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this table short and alive. If a question has no owner, it is not a question; it is a rumour."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "w": [
+        300,
+        110,
+        94
+      ],
+      "rows": [
+        [
+          "{{Is the shift timer core to the fantasy or a layer we can remove?}}",
+          "{{Design lead}}",
+          "{{Prototype review, week 3}}"
+        ],
+        [
+          "{{Which platform leads the demo build?}}",
+          "{{Tech lead}}",
+          "{{Week 2}}"
+        ],
+        [
+          "{{Do we need voice acting for the radio, or is text enough?}}",
+          "{{Audio lead}}",
+          "{{Vertical slice, week 8}}"
+        ],
+        [
+          "{{What is the minimum age rating we will accept?}}",
+          "{{Producer}}",
+          "{{Before art lock}}"
+        ]
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}
