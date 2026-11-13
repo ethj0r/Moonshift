@@ -1,8 +1,6 @@
-# MOONSHIFT browser prototype plan
+# MOONSHIFT browser prototype
 
-Status: **implemented locally following approval.** The playable slice uses the existing models, original interface artwork, local fonts, and deterministic game rules. See [validation](VALIDATION.md) for measured results and remaining device/playtest limits.
-
-This prototype will test whether the existing low-poly assets can support a clear, enjoyable browser game. It is a small playable slice of the team's provisional NASA Space Apps Challenge design, rather than the complete six-shift game.
+Status: **branch `gdd-v2` implements GDD v2** ("Panduan Cepat versi 2" + "Desain Interaksi untuk Anak"). The whole session is playable: cargo opener, shifts S1–S5, pickup, and a three-screen debrief, in a third-person view where B.E.E.P. walks around the outpost and does things by hand.
 
 ## Run locally
 
@@ -13,10 +11,10 @@ cd prototype
 npm ci
 npm run dev
 ```
-
+n
 Open the printed local URL, normally `http://127.0.0.1:5173`. Development and production builds prepare the selected models and local fonts automatically. Generated copies are ignored; the source exports remain unchanged.
 
-Choose **Start shift 3**, read the short briefing, then arrange the two cargo items. Use either the 3D board or the labeled grid. Mouse, touch, and keyboard controls use the same rules. Preferences persist locally; the active run is held in memory and refresh starts a fresh run.
+Pick a pilot card (Cadet or Specialist), then **Mission 1**. Walk with WASD/arrows or tap the ground; press **E** or tap an amber-ringed object to use it. **Walk to…** lists every usable object for keyboard, switch, and screen-reader players. Preferences and badges persist locally; the active run is held in memory.
 
 ```sh
 npm test
@@ -35,117 +33,57 @@ The build includes a payload-budget check. Browser tests use isolated profiles. 
 - [Outlanders interface research](UI_REFERENCES.md): verified sources, inspected promotional art, and unresolved font/menu details.
 - [UI and menu design](UI_DESIGN.md): typography, screen layouts, buttons, icons, responsive behavior, and fidelity checks.
 - [Milestones and acceptance checks](VALIDATION.md): implementation sequence, playtests, and browser performance gates.
+- [Usability review](USABILITY.md): kid walkthrough findings, fixes, the HCI and learning theory behind them, and a child-testing protocol.
 
-## Scope and feasibility question
+## What GDD v2 changes in the prototype
 
-Build one compact lunar outpost and the connected **S3 → S4 → S5** sequence. Target a first session of **3–5 minutes**, with immediate replay. This follows the brainstorming document's proposed build order and exposes the relationship between storage, ventilation, power, food, and research.
+Rules live in `src/game/rules.ts` (pure, unit-tested); in-game text in `src/game/content.ts`; world layout and the per-stage list of usable objects in `src/game/world.ts`.
 
-The prototype should answer four questions:
-
-1. Can a player understand and select the existing assets from an elevated isometric view?
-2. Is arranging cargo, seeing its consequences, and committing a plan satisfying?
-3. Can the scene load quickly and remain responsive on an ordinary laptop and phone?
-4. Can the art be adapted with small preparation steps rather than extensive remodeling?
-
-These are hypotheses to test. Asset inspection supports feasibility; browser performance and enjoyment have not yet been demonstrated.
-
-### Included
-
-- One small title menu and brief introduction, one persistent 3D outpost, three shift results, a slice summary, and replay. Pause, help, and two basic settings reuse the same dialog shell.
-- B.E.E.P., three astronaut models, habitat, workshop, garden, radio, main air unit, branch fan, and a 3×3 cargo board.
-- One battery occupying one cell and one research crate occupying two adjacent cells.
-- Select-and-place cargo controls, crate rotation, three alternate ventilation routes, draft preview, and one-time shift resolution.
-- One flexible power unit each shift; one disposable battery can add one unit on S4 or S5.
-- Storm preparation, a crew movement order, two-turn garden progress, food consumption, one S5 job, and one S5 message.
-- Pointer, touch, and keyboard operation; reduced motion; a short contextual hint; explicit loading and recovery states.
-
-### Deferred
-
-Cargo selection, the 60-second challenge, S1's pipe puzzle, S2's workshop decision, S6 pickup, the full ending system, and the NASA archive remain outside this slice. Also defer free building, continuous production, pathfinding, physics, full character rigs, audio, live data, accounts, saved sessions, and elaborate weather effects.
-
-Do not add a second scenario, extra cargo, or a camera system to make the demo look larger. Measure this slice first. The modest cargo count tests readability and interaction; it does not establish the depth of the final storage puzzle.
-
-## Starting scenario
-
-Start immediately before S3 with a coherent snapshot of earlier decisions:
-
-| State | Value and reason |
+| GDD v2 rule | Where it shows up |
 | --- | --- |
-| Earlier cargo | I01 battery + I04 garden kit + I05 research crate = 4 transport slots |
-| S1 | Main air repaired; I03 not brought, so the middle route remains locked |
-| S2 | Workshop retained; garden kit installed; one garden care turn completed |
-| Crew | Three astronauts at the habitat, controlled as one group |
-| Food | 3 team rations before S3; S1 and S2 consumed one each from the original 5 |
-| Storage | Battery and research crate in the placement tray; installed kit occupies no storage cell |
-| Power | 3 base units: 2 reserved for main air and 1 flexible; unused power does not carry over |
-| Other state | Garden not harvested; battery unused; research not prepared; no missed meals; correction profile enabled |
+| Shield = mass, not fans. 3×3 storage ring around the shelter; each covered cell +1, water tank +2 | S3 wall building, Shield meter, Particle goggles |
+| Earth's reply arrives one shift later; contact windows (Mission 1: S2, S5) | Radio + antenna dial, envelope in the HUD, water tank unlocks in S3 |
+| Every item is used **or** walled, never both; wall items lock during S4 | Battery/food/kit availability, debrief lesson |
+| Power: 3/shift = 2 air + 1 free; spare joint makes shelter air cost 1 | Power meter, S1 spare joint |
+| Workshop keep vs take apart; research needs workshop + S4 lamp + S5 radio | S2 doors, S4 lamp, S5 send |
+| Food 5, need 6; pack +2, garden +2 after two cares in different shifts | Food meter, harvest gesture |
+| Two endings, no game over; dose bars, one lesson, branch map, badges | Pickup card, debrief |
+| Mission card; New mission (random card) unlocks after Safe and Sound | Opening brief, title menu |
 
-The summary should explain this setup in one short paragraph. Players do not have to learn the omitted shifts before playing.
+### How a shift plays (Interaksi §5)
 
-## Core loop
+Camera intro → crew line (read aloud in Cadet) → one guess (never graded) that starts with a **What you know** card (one short sentence over a diagram drawn from the game's own pieces, `src/ui/KnowArt.tsx`; spoken in Cadet) and explains each option on hover, focus, or first tap → free play → live meter preview → **Run shift** → one cause-and-effect card with **Why?**.
 
-**Read one objective → inspect the outpost → edit a reversible plan → see the predicted result → run the shift → watch the consequence → continue.**
+Hands-on actions, not just menu choices: walking and carrying crates/tank to cells, packing the backpack at the lander, turning the pipe joint (drag/arrow dial), pointing the antenna at Earth, holding to open the food pack, tapping pots to harvest, pressing **Move crew** and watching the crew walk to the shelter, and the **Particle goggles** that draw particle lines stopping at crates and passing through gaps. Hint ladder levels 0–2 run on idle timers (Cadet 15/30 s, Specialist 25/45 s); **Ask crew** steps up a level at once. Cadet mode can skip a gesture with **Do it for me**.
 
-Nothing is consumed while arranging a plan. Preview and execution use the same rule evaluator. A short animation communicates a committed result; no timed input is required.
+### Cutscenes, visual text and guidance
 
-| Step | Player decision | Required behavior |
-| --- | --- | --- |
-| S3: Store the cargo | Place the battery and rotate/place the research crate | Reject overlap and out-of-bounds placement. Require all cargo stored and at least one available route before commit. Consume one ration: 3 → 2. |
-| S4: Shelter the crew | Adjust cargo, choose a route, power the fan, order all crew to shelter; optionally use the battery to also tend the garden | A route, fan power, and movement order are separate requirements. Confirm proceeding without protection. Garden care can produce +2 food before the ration is consumed. |
-| S5: Prepare for the last shift | Ensure food, choose research preparation or an eligible air-route correction, and allocate power to garden/radio/fan | At most one job and one message. Research may be prepared and sent in this shift. A second garden turn harvests once. Manual cargo moves are locked. |
-| Slice summary | Inspect consequences and replay | Show storm protection, meals, food reserved for S6, branch readiness, and research/message results. Explain one actual decision chain. |
+- In-engine cutscenes (`src/game/cutscenes.ts`): **opening** (cargo lander drops in with a retro flame, thud + dust, crew and B.E.E.P., the Sun), **flare** (S3: flash, Sun bursts, warm sky; the second shot depends on whether Earth's warning arrived), **storm** (S4: orbit over the shelter), and **rescue** (rescue lander descends, B.E.E.P. dances if everyone is safe, "Earth: data received!"). They use letterbox bars with a short caption and a picture strip per shot (`src/ui/Pics.tsx`); Cadet hears the full sentence. **Skip scene**/Escape skips. The opening plays once per page load. The opening and the S1 pipe name things on the world itself (crew, cargo lander, Sun and its particle beams, fan, bent joint, habitat); later shifts drop these tags.
+- Text is never plain: `src/ui/Rich.tsx` renders `**bold**` and `{c:…}` markup and auto-colours keywords (food green, power amber, shield teal, Earth blue, storm coral, research pink) and numbers. Speakers get coloured portraits. Result cards show icon-coded effects and before→after chips (Meals 4→3, Shield 0→4, Crew outside→shelter).
+- Visual guidance (`nextGoal` in `src/game/world.ts`): a live route of flowing dots from B.E.E.P. to the nearest useful object, a bobbing arrow over it, and a glowing arrow on the HUD button to press next (E action, Move crew, Run shift). It is always on for Cadet and appears after the first hint for Specialist. It's a nudge: other choices still work.
 
-At S5 the radio can send a station report or prepared research. It does not request pickup. Air-route correction requires an available route, one job, and one fan power unit; it repairs readiness without changing S4's recorded protection outcome. If the branch was ready but the player omitted the crew movement order, correction is unavailable.
+### Not built yet
 
-For example, use the battery in S4 for fan + garden: food progresses **3 → 2 → 3 → 2**, the crew shelters, and S5 can power the radio and send research. Alternatively, save the battery for S5: fan only in S4, then garden + radio in S5 yields the same final food and research result. Leaving research unsent remains a valid crew-first outcome.
-
-The slice reports **Ready for the final shift** when the crew sheltered, no meal was missed, and at least one ration remains after S5. Otherwise it reports **Needs another plan** with the recorded causes. Research is a separate bonus. Neither label claims pickup has occurred or replaces the full game's endings.
-
-### Rules that must remain intact
-
-- A2, B2, and C2 are air openings. The middle opening additionally needs the omitted S1 connection, so it is visibly locked in this scenario.
-- Available ventilation, a powered fan, and crew relocation are distinct states. Crew use one separate corridor and shelter door.
-- Shelter walls reduce radiation exposure; the fan supplies air. The prototype calculates no radiation dose.
-- Food additions precede the end-of-shift meal. One ration feeds all three astronauts. Food never becomes negative.
-- S3 requires a viable route; S4 can proceed unsheltered only after confirmation. Both require every remaining item to be stored.
-- S5 forecasts both remaining meals. A shortfall can be acknowledged, and the result must reflect it.
-- The research crate stays in storage after research is sent. A consumed battery frees its cell.
-- Canceling battery use restores its previous cell when free; otherwise return it to the tray during S4 and block commit until placed. In S5 placement is locked, so restoration is straightforward.
-- Commit is idempotent: repeated clicks or Enter presses cannot consume a second ration or battery.
+Ghost-run preview ("Coba Dulu"), hint level 3 (ghost B.E.E.P.), Class mode, live "Today's Sun" panel, archive logs/stickers, autosave between shifts, and real dose numbers (bars are a relative comparison until CRaTER/OSDR numbers are chosen, as the GDD notes). The water tank is a procedural placeholder model.
 
 ## Visual direction and game feel
 
 Use **Outlanders** as the primary reference for the miniature settlement, quiet observation, chunky silhouettes, clear actions, and small visible consequences. The [official game page](https://www.pomelogames.com/outlanders/) and the local [reference images](../references/) inform this direction. The camera treatment below is an adaptation for MOONSHIFT, not a claim about the reference game's engine or exact projection.
 
-Compose one shared sand-colored island with the cargo board near the front, habitat and shelter behind it, and garden/workshop/radio around the sides. Avoid arranging every model on its own showcase pedestal. B.E.E.P. moves briefly toward the selected work area; the astronauts move together along a fixed corridor when ordered. The board and the chosen route remain visible during the storm result.
+Compose one shared sand-colored island: cargo lander and item shelf at the front, the 3×3 shelter ring on the right, habitat, garden, workshop, and radio around the rest. Avoid showcase pedestals. B.E.E.P. is player-driven; the crew walk on their own (to the pipe in S1, the workshop doors in S2, the shelter in S4, the rescue lander at pickup).
 
 Preserve [the project's art direction](../design_theme/01_art_direction.md): flat-shaded bevels, texture-free materials, cream `#F7E6C8`, terracotta `#E2683A`, sand `#E6CFB2`, sky `#7FC1F2`, and navy `#2C3A4E` for depth and readable text. Teal means active, amber requests attention, coral marks an alarm, and pink accents science. Labels, shapes, and patterns always accompany color.
 
-Follow [the UI and menu specification](UI_DESIGN.md), which supersedes the earlier system-font-only proposal. Begin with locally hosted Lilita One for display emphasis and Nunito Sans for readable controls, with system fallbacks. Both are explicitly provisional substitutes: the original Outlanders UI font has not been verified. Keep decorative UI quiet so the outpost is the main visual. Show one goal, food and power counts, and a compact action panel; technical diagnostics belong behind a development-only toggle.
+Follow [the UI and menu specification](UI_DESIGN.md), which supersedes the earlier system-font-only proposal. Begin with locally hosted Lilita One for display emphasis and Nunito Sans for readable controls, with system fallbacks. Both are explicitly provisional substitutes: the original Outlanders UI font has not been verified. Keep decorative UI quiet so the outpost is the main visual. The HUD carries only the three meters (Power, Food, Shield), the contact window, the crew bubble, the archive data panel, and the bottom bar (Ask crew, Scan, Particle goggles, the action button, Run shift); technical diagnostics belong behind `?diagnostics`.
 
-### Camera
+### Camera and controls
 
-- One orthographic camera, roughly 45° around the island and **35–45° above the ground**, initially around 40°. This avoids ambiguity between elevation and Blender camera Euler rotation.
-- In Three.js Y-up coordinates, begin on the asset-front side around `(d, 1.2d, d)` looking at the island center; verify silhouettes against the renders before finalizing. Imported GLB fronts face +Z.
-- Fixed azimuth and elevation. Two bounded zoom buttons and a reset view are enough; no free orbit, camera collision, or drag-to-pan.
-- Frame the whole useful play area on desktop. On phones, switch to a closer board framing during placement and a wider framing for shelter results, with an explicit overview button.
-- Resize the orthographic frustum to the available canvas rectangle, accounting for the action panel. Keep the selected cell and its destination visible. Reduced motion makes focus changes immediate.
-
-### Controls and feedback
-
-| Input | Action |
-| --- | --- |
-| Click/tap an item, then a cell | Select cargo and place it; preview its full footprint before committing placement |
-| Rotate button or R while cargo controls are focused | Rotate the two-cell crate around the logical anchor; reject invalid rotation without losing the last valid draft |
-| Click/tap a facility or its labeled action button | Open its small contextual action panel |
-| Tab, arrow keys, Enter/Space | Navigate labeled controls and the equivalent 3×3 DOM grid; perform every game action without canvas pointing |
-| Escape or Cancel | Close the active panel or cancel selection; preserve the committed state |
-| Run shift | Validate, request a risk confirmation when needed, resolve once, then show the result |
-
-Use generous invisible pick surfaces rather than tiny decorative meshes. The DOM grid mirrors the 3D board through the same action dispatcher and displays coordinates, occupancy, route state, and focus. Route controls have text labels and 1/2/3-dot markers. Do not require hover or drag gestures. Use at least 44×44 CSS-pixel controls; on narrow screens let the DOM grid handle cells too small to tap reliably in 3D.
-
-Selection needs an immediate outline/footprint and a clear invalid-placement reason. Commit animations should take about 0.5–1.5 seconds, remain skippable, and expose the same facts in a static result panel. Warm lighting and readable route arrows continue during the storm; avoid a dark screen, flashing effects, or a particle cloud that hides the puzzle.
+- Perspective third-person camera that follows behind and above B.E.E.P. Turn the view when a building is in the way: the ⟲ ⟳ buttons in the bottom bar, **Q**/**Z** (45° steps), or right-drag. WASD turns with the view, so W always walks "into" the screen.
+- Decision clues: standing at (or just after using) a choice shows a card with both sides of the trade-off (e.g. *Use it: +2 meals* or *Save it: +1 shield cell*) and one "think" question built from the mission's numbers. The cargo bay shows what the outpost needs (storm shield, meals, free power). Clues never say which option is right.
+- Switches to a top view near the shelter in S3 (and with the goggles on) so cells are easy to aim at, and to a close view during hand gestures.
+- Tap the ground to walk, tap an amber ring to walk there and use it, or use WASD/arrows and E. Space/Scan shows labels, G toggles goggles, R turns the tank, Escape pauses.
+- Every drag has a tap/keyboard alternative (dial buttons and arrow keys, the shelter-map grid, Walk to…). Reduced motion snaps the camera and removes particle snow.
 
 ## Development boundary
 
-Implementation was approved after the planning and UI research phases. The application and its tooling stay within `prototype/`; source art is reused without modifying the original exports. The full six-shift game, additional scenarios, audio, and deployment remain outside this prototype. Work is recorded in focused commits with rule, build, and browser checks.
+Implementation was approved after the planning and UI research phases. The application and its tooling stay within `prototype/`; source art is reused without modifying the original exports. Recorded voice and deployment remain outside this prototype (crew lines use the browser's text-to-speech). Sound effects and music are synthesized in `src/audio.ts` with Web Audio, so there are no audio files: generative calm music, a slower minor-key mood for the flare and storm, a warm theme at rescue, and short effects for taps, pickups, thuds, packing, the radio and the flare. Settings has separate Sound effects and Music switches. Work is recorded in focused commits with rule, build, and browser checks.
