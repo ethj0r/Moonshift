@@ -14,7 +14,6 @@ const models = [
   ["crew-a", "01_Characters/MOONSHIFT_CHR_Crew_A.glb"],
   ["crew-b", "01_Characters/MOONSHIFT_CHR_Crew_B.glb"],
   ["crew-c", "01_Characters/MOONSHIFT_CHR_Crew_C.glb"],
-  ["board", "03_AirSystem/MOONSHIFT_AIR_Placement_Board_3x3.glb", "board"],
   ["fan", "03_AirSystem/MOONSHIFT_AIR_Fan_Branch.glb", "rotor"],
   ["main-air", "03_AirSystem/MOONSHIFT_AIR_Main_Air_Unit.glb"],
   ["battery", "02_Items/MOONSHIFT_ITM_Battery_Portable.glb"],
@@ -28,6 +27,12 @@ const models = [
   ["workshop", "04_Facilities/MOONSHIFT_FAC_Workshop_Intact.glb"],
   ["radio", "04_Facilities/MOONSHIFT_FAC_Radio_Station.glb"],
   ["rocks", "05_Opening_Environment/MOONSHIFT_ENV_Terrain_Rocks.glb"],
+  ["food", "02_Items/MOONSHIFT_ITM_Food_Pack.glb", "normalize-yaw"],
+  ["kit", "02_Items/MOONSHIFT_ITM_Garden_Kit.glb", "normalize-yaw"],
+  ["supply", "02_Items/MOONSHIFT_ITM_Crate_Small_1Tile.glb", "normalize-yaw"],
+  ["spare", "02_Items/MOONSHIFT_ITM_Air_Component.glb", "normalize-yaw"],
+  ["workshop-dismantled", "04_Facilities/MOONSHIFT_FAC_Workshop_Dismantled.glb"],
+  ["lander", "05_Opening_Environment/MOONSHIFT_ENV_Cargo_Lander_Damaged.glb"],
 ];
 const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 const multiply = (a, b) =>
