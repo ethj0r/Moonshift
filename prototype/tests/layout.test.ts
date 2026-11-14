@@ -14,7 +14,7 @@ it("every object B.E.E.P. can use is reachable in every shift", () => {
       const state: State = {
         ...initialState(MISSION_1),
         stage,
-        cargo: stage === 0 ? [] : [...CARGO_IDS].filter((id) => id !== "research").concat(stage === 4 || stage === 5 ? ["research"] : []),
+        cargo: stage === 0 ? [] : CARGO_IDS.filter((id) => id !== "research" || stage === 4 || stage === 5),
         workshop: stage > 2 ? workshop : null,
         gardenCare: stage === 4 ? 1 : 0,
         forecast: stage >= 3 ? "arrived" : "none",

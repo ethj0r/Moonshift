@@ -44,6 +44,7 @@ import {
   itemCell,
   OBSTACLES,
   PIPE,
+  PIPE_ENDS,
   SHELTER,
   YARD,
   type Gesture,
@@ -404,16 +405,31 @@ function Pipe({ angle, flowing, animate }: { angle: number; flowing: boolean; an
     if (beads.current && flowing && animate)
       beads.current.children.forEach((bead) => {
         bead.position.x -= delta * 1.4; // from the air machine (+x) into the habitat (-x)
-        if (bead.position.x < -0.75) bead.position.x += 1.5;
+        if (bead.position.x < left) bead.position.x += right - left;
       });
   });
   const z = PIPE[1] - 0.25;
+  // Pipe ends in the group's local x: from the habitat wall to the main air unit's face.
+  const left = PIPE_ENDS[0] - PIPE[0];
+  const right = PIPE_ENDS[1] - PIPE[0];
+  const half = 0.31; // half the joint's length
+  const segments: [number, number][] = [
+    [left, -half],
+    [half, right],
+  ];
   return (
     <group position={[PIPE[0], 0.45, z]}>
-      {[-0.55, 0.55].map((x) => (
-        <mesh key={x} position={[x, 0, 0]} rotation-z={Math.PI / 2}>
-          <cylinderGeometry args={[0.12, 0.12, 0.45, 8]} />
+      {segments.map(([a, b]) => (
+        <mesh key={a} position={[(a + b) / 2, 0, 0]} rotation-z={Math.PI / 2}>
+          <cylinderGeometry args={[0.12, 0.12, b - a, 8]} />
           <meshStandardMaterial color="#c9ccd4" flatShading />
+        </mesh>
+      ))}
+      {/* Flanges where the pipe enters each wall. */}
+      {[left + 0.06, right - 0.06].map((x) => (
+        <mesh key={x} position={[x, 0, 0]} rotation-z={Math.PI / 2}>
+          <cylinderGeometry args={[0.17, 0.17, 0.06, 8]} />
+          <meshStandardMaterial color="#8a8f9c" flatShading />
         </mesh>
       ))}
       <group ref={joint}>
@@ -431,7 +447,7 @@ function Pipe({ angle, flowing, animate }: { angle: number; flowing: boolean; an
         ))}
       {flowing && (
         <group ref={beads}>
-          {[-0.7, -0.3, 0.1, 0.5].map((x) => (
+          {[0, 0.25, 0.5, 0.75].map((f) => left + (right - left) * f).map((x) => (
             <mesh key={x} position={[x, 0.24, 0]}>
               <sphereGeometry args={[0.05, 6, 4]} />
               <meshBasicMaterial color="#8fd3ff" />

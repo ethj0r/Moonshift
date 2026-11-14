@@ -45,6 +45,12 @@ export const FACILITY = {
 };
 /** The air pipe runs straight east from the habitat wall to the main air unit (same z). */
 export const PIPE: Vec2 = [-0.55, -0.55];
+/**
+ * Where the pipe meets each wall (x), measured by ray casts at pipe height: the habitat's east
+ * wall is 0.95 east of its centre, the main air unit's west face 0.55 west of its centre (scale 0.85).
+ * Both ends sink 0.05 into the wall so there is no gap.
+ */
+export const PIPE_ENDS: [number, number] = [FACILITY.habitat[0] + 0.9, FACILITY.mainAir[0] - 0.5];
 /** Where the crew stands outside the habitat door. */
 export const CREW_HOME: Vec2[] = [
   [-3.2, 1.9],
