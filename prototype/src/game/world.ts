@@ -64,7 +64,7 @@ export const OBSTACLES: { at: Vec2; r: number }[] = [
 ];
 export const ISLAND = { rx: 7.0, rz: 6.2, cz: 0.25 };
 
-export type Gesture = "pipe" | "antenna" | "harvest" | "foodpack";
+export type Gesture = "pipe" | "antenna" | "harvest" | "foodpack" | "workshop";
 export interface Interactable {
   id: string;
   label: string;
@@ -118,8 +118,6 @@ export function interactables(
         : YARD[id];
       list.push({ id: `pick:${id}`, label: `Pick up the ${wallName(id).toLowerCase()}`, at });
     }
-    if (state.forecast !== "arrived")
-      list.push({ id: "tank", label: "Water tank: too heavy to move in time", at: YARD.tank, info: true });
   }
 
   if (s === 1) {
@@ -132,15 +130,17 @@ export function interactables(
       });
   }
   if (s === 2) {
+    // One place, two decisions: keep the workshop or take it apart (review: one point, not two).
     list.push({
-      id: "door:keep",
-      label: plan.workshop === "keep" ? "Workshop: keep ✓" : "Keep the workshop",
-      at: [FACILITY.workshop[0] - 0.8, FACILITY.workshop[1] + 1.4],
-    });
-    list.push({
-      id: "door:dismantle",
-      label: plan.workshop === "dismantle" ? "Workshop: taken apart ✓" : "Take the workshop apart",
-      at: [FACILITY.workshop[0] + 0.9, FACILITY.workshop[1] + 1.4],
+      id: "workshop",
+      label:
+        plan.workshop === "keep"
+          ? "Workshop: kept ✓ · change"
+          : plan.workshop === "dismantle"
+            ? "Workshop: taken apart ✓ · change"
+            : "Workshop: keep it or take it apart?",
+      at: [FACILITY.workshop[0], FACILITY.workshop[1] + 1.4],
+      gesture: "workshop",
     });
   }
   if (s === 4) {
@@ -175,7 +175,7 @@ export function interactables(
       : !windowOpen(state)
         ? "Radio: Earth can't hear us now"
         : purpose === "forecast"
-          ? "Ask Earth about the Sun · 1 power"
+          ? "Radio Earth · 1 power"
           : purpose === "research"
             ? "Send research to Earth · 1 power"
             : "Radio: nothing to send",
@@ -206,7 +206,6 @@ export function interactables(
   }
   const chosen = [
     plan.installSpare && "spare",
-    plan.workshop && `door:${plan.workshop}`,
     plan.moveCrew && "shelter",
     plan.openFood && "foodpack",
     plan.battery === "cargo" && "battery",
@@ -235,7 +234,7 @@ export function nextGoal(state: State, plan: Plan, carrying: WallId | null, thin
       return plan.pipeFixed ? done : go(["pipe"]);
     case 2:
       if (radioPurpose(state) === "forecast" && !plan.power.includes("radio")) return go(["radio"]);
-      return plan.workshop ? done : go(["door:keep", "door:dismantle"], true);
+      return plan.workshop ? done : go(["workshop"]);
     case 3: {
       if (carrying) {
         // Only squares the carried item really fits (the tank needs two).

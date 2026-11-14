@@ -1221,3 +1221,38 @@ b.num { color: var(--terra); }
   background: rgba(247, 230, 200, 0.6);
   border-radius: 4px;
 }
+.choice-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.choice-row .button {
+  flex: 1 1 180px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 64px;
+}
+.choice-row .button small {
+  font-weight: 400;
+  font-size: 0.8em;
+}
+.help-items {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 12px;
+  display: grid;
+  gap: 8px;
+}
+.help-items li {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.help-items span {
+  color: #6b604f;
+  font-size: 0.9em;
+}
+.help-items b {
+  font-weight: 400;
+}

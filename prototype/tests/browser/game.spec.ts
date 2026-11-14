@@ -67,15 +67,20 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   // S1: turn the pipe joint by hand.
   await brief(page, "Into the habitat");
   await walkTo(page, "Turn the pipe");
+  await expect(page.getByRole("button", { name: "Do it for me" })).toHaveCount(0);
   await turn(page, 9);
   await expect(page.getByRole("button", { name: /Run shift/ })).toBeEnabled({ timeout: 5000 });
   await runShift(page, "Start shift 2");
+  // Result cards: no repeated "ate one meal" line, and a crew member reacts.
+  await expect(page.getByText("The crew ate one meal.")).toHaveCount(0);
 
   // S2: keep the workshop, point the antenna and ask Earth.
   await brief(page, "Garden lamp");
-  await walkTo(page, "Keep the workshop");
+  // One workshop point, two decisions.
+  await walkTo(page, /Workshop: keep it or take it apart/);
+  await page.getByRole("button", { name: /Keep it/ }).click();
   await expect(page.getByText(/Choose: keep the workshop/)).toHaveCount(0, { timeout: 15000 });
-  await walkTo(page, /Ask Earth about the Sun/);
+  await walkTo(page, /Radio Earth/);
   await turn(page, 9);
   await page.getByRole("button", { name: /Send · 1 power/ }).click();
   await expect(page.getByText("1 message: reply next shift")).toBeVisible();

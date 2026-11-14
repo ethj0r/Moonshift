@@ -283,12 +283,15 @@ function itemPlacements(props: SceneProps) {
   const { state, plan, carrying } = props;
   const wall = state.stage === 3 ? plan.wall : state.wall;
   const out: { id: WallId | "research"; at: P3; vertical?: boolean }[] = [];
+  // Opening: the cargo only lies in the yard once the lander has touched down (shot 2 onward).
+  if (props.cine?.id === "opening" && props.cine.shot === 0) return out;
   const packed = (id: string) => (state.stage === 0 ? !plan.cargo.includes(id as never) : state.cargo.includes(id as never));
   const visible: Record<WallId | "research", boolean> = {
     supply1: state.stage > 0 && state.mission.supplies >= 1,
     supply2: state.stage > 0 && state.mission.supplies >= 2,
     supply3: state.stage > 0 && state.mission.supplies >= 3,
-    tank: state.stage > 0,
+    // The water tank is only brought out after Earth's storm warning (review: no tank from Shift 1).
+    tank: state.stage >= 3 && state.forecast === "arrived",
     food: packed("food") && !state.foodOpened && !plan.openFood,
     battery: packed("battery") && !state.batteryUsed && plan.battery !== "cargo",
     kit: packed("kit") && state.gardenCare === 0 && !plan.power.includes("garden"),
@@ -961,6 +964,7 @@ function CameraRig({ props, beep, labels }: { props: SceneProps; beep: React.Ref
       antenna: [FACILITY.radio[0], FACILITY.radio[1] + 0.4],
       harvest: FACILITY.garden,
       foodpack: YARD.food,
+      workshop: FACILITY.workshop,
     };
     const nearShelter = Math.hypot(b.x - SHELTER[0], b.z - SHELTER[1]) < 3.4;
     const cine = props.cine;

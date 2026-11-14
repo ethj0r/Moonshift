@@ -34,7 +34,7 @@ export function briefLine(state: State): Line {
       return { speaker: "technician", text: "The air pipe is bent. **Turn it straight.**" };
     case 2:
       return state.mission.windows.includes(2)
-        ? { speaker: "commander", text: "**Ask Earth** about the Sun." }
+        ? { speaker: "commander", text: "Earth can hear us this shift. **Use the radio.**" }
         : { speaker: "commander", text: "Power is short. Choose with care." };
     case 3:
       return { speaker: "commander", text: "**Big solar flare!** Particles in **about one hour**." };
@@ -53,8 +53,8 @@ export function extraLines(state: State): Line[] {
   if (state.stage === 3 && state.forecast === "arrived")
     lines.push(
       state.mission.storm.key === "sep2017"
-        ? { speaker: "earth", text: "Earth says: NASA saw a cloud leave the Sun at **2,650 km every second**. Their model **predicts** it will brush past us. Get ready!" }
-        : { speaker: "earth", text: "Earth says: a big sunspot is very active. Get ready." },
+        ? { speaker: "earth", text: "NASA saw a cloud leave the Sun at **2,650 km every second**. Their model **predicts** it will brush past us. Get ready!" }
+        : { speaker: "earth", text: "A big sunspot is very active. Get ready." },
     );
   if (state.stage === 3)
     lines.push(
@@ -150,7 +150,7 @@ export function hint(state: State, level: 1 | 2): Line {
         : scan("Drag around the pipe to turn it.");
     case 2:
       return level === 1
-        ? { speaker: "commander", text: "Pick a door: keep or take apart." }
+        ? { speaker: "commander", text: "Go to the workshop: keep it, or take it apart." }
         : scan("One free power cell. Where will it go?");
     case 3:
       return level === 1
@@ -164,6 +164,36 @@ export function hint(state: State, level: 1 | 2): Line {
       return level === 1
         ? { speaker: "commander", text: "Two more meals until rescue." }
         : scan("Tap a plate to see what fills it.");
+  }
+}
+
+/** An astronaut reacts to what this shift really did (review: crew dialog on each result). */
+export function crewReaction(before: State, after: State): Line | null {
+  switch (before.stage) {
+    case 0:
+      return { speaker: "commander", text: after.cargo.length ? "Good haul, B.E.E.P. Let's see what this can do." : "Empty hands? We'll make do." };
+    case 1:
+      return { speaker: "technician", text: "Phew, I can breathe easy again! Nice work, B.E.E.P." };
+    case 2:
+      return after.forecast === "sent"
+        ? { speaker: "commander", text: "Message is out. Earth will answer next shift." }
+        : { speaker: "commander", text: "No call to Earth this time. We'll watch the Sun ourselves." };
+    case 3:
+      return after.shield >= after.mission.storm.need
+        ? { speaker: "technician", text: "That wall looks thick enough. Good building!" }
+        : { speaker: "technician", text: "Hmm, I can still see gaps in that wall." };
+    case 4:
+      return !after.crewMoved
+        ? { speaker: "commander", text: "We stayed in the habitat. That was a lot of particles." }
+        : after.shield >= after.mission.storm.need
+          ? { speaker: "commander", text: "We're safe behind your wall. Thank you!" }
+          : { speaker: "commander", text: "We sheltered, but some particles got through the gaps." };
+    case 5:
+      return after.food >= 1
+        ? { speaker: "researcher", text: "Enough food until the rescue lander. Great planning!" }
+        : { speaker: "researcher", text: "Our plates are almost empty. Let's hope rescue is quick." };
+    default:
+      return null;
   }
 }
 
@@ -182,8 +212,8 @@ export const WHY: Partial<Record<Stage, { cadet: string; specialist: string }>> 
     specialist: "Packing is a trade: an item you use for its effect can't also be mass in the wall.",
   },
   1: {
-    cadet: "Air does not move by itself here.",
-    specialist: "In low gravity, warm air doesn't rise much, so stale air sits still. Fans and pipes must push it.",
+    cadet: "The fan pushes air through the pipe. With the pipe fixed, the habitat breathes again, and the crew can save their backup air for another emergency.",
+    specialist: "In low gravity, warm air doesn't rise much, so stale air sits still. The fan must push it through the pipe. Now the main air works again, so the crew stops using their backup air and keeps it for an emergency.",
   },
   2: {
     cadet: "Earth is far. Messages wait for a window.",
@@ -322,11 +352,12 @@ export function clue(state: State, plan: Plan, id: string): Clue | null {
         b: wallSide,
         think: "In the storm, what will you be short of: **power** or **shield**?",
       };
+    case "workshop":
     case "door:keep":
     case "door:dismantle":
       return {
         title: "The workshop",
-        a: { icon: "research", label: "Keep it", text: "Its **lamp** can keep plant samples alive" },
+        a: { icon: "research", label: "Keep it", text: "Its **sample lamp** keeps the research plants alive in the storm. It does not light the garden" },
         b: { icon: "power", label: "Take apart", text: "Get a **workshop battery**: +1 power, or a wall cell" },
         think: state.cargo.includes("research")
           ? "You packed the **research crate**. What do the samples need?"
@@ -341,7 +372,7 @@ export function clue(state: State, plan: Plan, id: string): Clue | null {
           }
         : {
             title: "Radio",
-            a: { icon: "mail", label: "Ask Earth", text: "Costs **1** power now. The reply comes **next shift**" },
+            a: { icon: "mail", label: "Radio Earth", text: "Costs **1** power now. The reply comes **next shift**" },
             think: `Earth hears us only in **S${state.mission.windows.join("** and **S")}**. Could news about the Sun help you build the wall?`,
           };
     case "battery":
@@ -377,7 +408,7 @@ export function clue(state: State, plan: Plan, id: string): Clue | null {
     const usable = w in CARGO ? CARGO[w as CargoId].use : null;
     return {
       title: w === "tank" ? "Water tank" : w.startsWith("supply") ? "Supply crate" : CARGO[w as CargoId]?.name ?? "Item",
-      a: { icon: "shield", label: "Wall", text: w === "tank" ? "Water blocks a lot: **2** cells" : "**+1** shield cell" },
+      a: { icon: "shield", label: "Wall", text: w === "tank" ? "Water blocks a lot: **2** cells" : w.startsWith("supply") ? "**+1** shield cell. Spare parts: being a wall is its only job" : "**+1** shield cell" },
       b: usable ? { icon: "lock", label: "But then", text: `No more: ${usable}` } : undefined,
       think: `Shield now **${shield}**, the storm needs **${need}**. Which side is still open?`,
     };

@@ -18,6 +18,7 @@ export type Sfx =
   | "thud"
   | "flare"
   | "radio"
+  | "crackle"
   | "fanfare";
 
 /** Chords are semitones from the root (I–vi–IV–V, i–VI–VII–v, I–V–vi–IV). density = chance of a melody note per eighth. */
@@ -145,6 +146,11 @@ const SFX: Record<Sfx, () => void> = {
   radio: () => {
     [0, 0.12, 0.24].forEach((at) => tone(1320, 0.07, { type: "square", gain: 0.03, at }));
     noise(0.4, { type: "bandpass", freq: 2500, gain: 0.04, at: 0.35 });
+  },
+  // Radio static for crew and Earth calls (review: calls should sound like a radio).
+  crackle: () => {
+    noise(0.55, { type: "bandpass", freq: 1800, gain: 0.06, q: 0.6 });
+    [0.08, 0.22, 0.4].forEach((at) => noise(0.06, { type: "highpass", freq: 3000, gain: 0.05, at }));
   },
   fanfare: () =>
     [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i > 3 ? 0.6 : 0.25, { type: "triangle", gain: 0.08, at: [0, 0.15, 0.3, 0.45, 0.7, 0.85][i] })),

@@ -52,3 +52,19 @@ it("choices are pointed at equally, and taken-back actions are marked as undo", 
   const sent = { ...s2.plan, power: ["radio"] } as typeof s2.plan;
   expect(interactables(s2.state, sent, null).find((t) => t.id === "radio")!.undo).toBe(true);
 });
+
+it("the workshop is one place with two decisions", () => {
+  const s2 = at(2);
+  const ws = interactables(s2.state, s2.plan, null).filter((t) => t.id === "workshop" || t.id.startsWith("door:"));
+  expect(ws.map((t) => t.id)).toEqual(["workshop"]);
+  expect(ws[0].gesture).toBe("workshop");
+  const sent = { ...s2.plan, power: ["radio"] } as typeof s2.plan; // after the radio call, the guide points at the workshop
+  expect(nextGoal(s2.state, sent, null, interactables(s2.state, sent, null), false).targets).toEqual(["workshop"]);
+});
+
+it("the crew reacts to what really happened in the shift", async () => {
+  const { crewReaction } = await import("../src/game/content");
+  const s4 = at(4);
+  expect(crewReaction(s4.state, { ...s4.state, crewMoved: false })!.text).toMatch(/stayed in the habitat/);
+  expect(crewReaction(s4.state, { ...s4.state, crewMoved: true, shield: 7 })!.text).toMatch(/safe/);
+});

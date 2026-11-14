@@ -4,6 +4,7 @@ import {
   batteryAvailable,
   branchPath,
   CARGO,
+  CARGO_IDS,
   cellName,
   DEBRIEF,
   doseBars,
@@ -35,7 +36,7 @@ import {
   type Plan,
   type WallId,
 } from "./game/rules";
-import { AHA, briefLine, CELL_HINT, clue, DATA_BOOK, dataPanel, STORM_TIMELINE, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
+import { AHA, briefLine, CELL_HINT, clue, crewReaction, DATA_BOOK, dataPanel, STORM_TIMELINE, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
 import { interactables, nextGoal, type Gesture, type Vec2 } from "./game/world";
 import { Dialog } from "./ui/Dialog";
 import { angleGap, Dial, Hold, Pots } from "./ui/Gestures";
@@ -201,7 +202,8 @@ export default function App() {
   function say(line: Line, voice = cadet && settings.voice) {
     setBubble(line);
     if (line.speaker === "beep") sfx("beep");
-    if (voice) speak(line.text);
+    else if (line.speaker === "earth" || line.text.startsWith("*kshh*")) sfx("crackle");
+    if (voice) speak(line.text.replace(/\*kshh\*/g, ""));
   }
   function update(next: Plan) {
     if (!playing) return;
@@ -457,8 +459,8 @@ export default function App() {
     if (!playing) return;
     if (carrying) return say({ speaker: "beep", text: "Put down what B.E.E.P. is carrying first." });
     if (preview.errors.length) return say({ speaker: "beep", text: preview.errors[0] });
-    if (preview.risks.length) return setModal("risk");
-    commit(false);
+    // Review: no warning before a risky plan; the child sees the consequence instead (no game over).
+    commit(true);
   }
   function commit(acceptRisk: boolean) {
     if (stage === 0 && settings.timer && cargoStart && Date.now() - cargoStart <= 60000) setFastCargo(true);
@@ -541,7 +543,7 @@ export default function App() {
             <span key={i} className={`cell ${i < preview.power.used ? "used" : "free"} ${i >= preview.power.free ? "over" : ""}`} />
           ))}
         </span>
-        {!cadet && <small>{airUnits} air · {preview.power.free} free</small>}
+        <small>{cadet ? "New power each shift" : `${airUnits} air · ${preview.power.free} free · new each shift`}</small>
         {batteryKind && stage >= 1 && stage <= 5 && phase === "play" && (
           <button className="chip" disabled={!playing} aria-pressed={plan.battery !== "none"} onClick={() => toggleBattery(batteryKind)}>
             {plan.battery !== "none" ? "Unplug battery" : "+1 battery"}
@@ -661,7 +663,7 @@ export default function App() {
             <span>LUNAR SOUTH POLE OUTPOST</span>
           </div>
           <h1>MOONSHIFT</h1>
-          <p className="title-subtitle">Build a shelter. Keep the crew fed.</p>
+          <p className="title-subtitle">Help B.E.E.P. the robot keep three astronauts safe.</p>
           <p className="title-description">You are B.E.E.P. A real solar storm from NASA data is coming. You have five shifts.</p>
           <div className="mode-cards" role="radiogroup" aria-label="Pilot card">
             {(["cadet", "specialist"] as const).map((mode) => (
@@ -674,7 +676,7 @@ export default function App() {
               >
                 <Icon name={mode === "cadet" ? "crew" : "research"} size={26} />
                 <strong>{mode === "cadet" ? "Cadet" : "Specialist"}</strong>
-                <span>{mode === "cadet" ? "Pictures and voice" : "Numbers and data"}</span>
+                <span>{mode === "cadet" ? "Ages 7–9 · pictures, short words, read aloud" : "Ages 10–12 · real NASA numbers and units"}</span>
               </button>
             ))}
           </div>
@@ -684,7 +686,7 @@ export default function App() {
             </button>
             {progress.newMission && (
               <button className="button menu-button" disabled={!ready || sceneError} onClick={() => startGame(randomMission())}>
-                New mission
+                New mission · random storm
               </button>
             )}
             <button className="button menu-button" onClick={() => setModal("help")}>
@@ -779,16 +781,16 @@ export default function App() {
               </span>
               <div className="needs" aria-label="What the outpost needs">
                 <span className="need kw-s">
-                  <Icon name="shield" size={15} /> Storm shield <b>{state.mission.storm.need}</b>
-                  <small>crates: {state.mission.supplies}</small>
+                  <Icon name="cargo" size={15} /> Crates <b>{state.mission.supplies}</b>
+                  <small>at the outpost</small>
                 </span>
                 <span className="need kw-f">
-                  <Icon name="food" size={15} /> Meals <b>6</b>
-                  <small>have: {state.food}</small>
+                  <Icon name="food" size={15} /> Meals <b>{state.food}</b>
+                  <small>the crew eats 6</small>
                 </span>
                 <span className="need kw-p">
-                  <Icon name="power" size={15} /> Free power <b>1</b>
-                  <small>each shift</small>
+                  <Icon name="power" size={15} /> Power <b>1</b>
+                  <small>free each shift</small>
                 </span>
               </div>
               <div className="slots">
@@ -974,9 +976,9 @@ export default function App() {
           {stage === 0 && briefStep < lines.length && (
             <div className="mission-card" aria-label="Mission card">
               {[
-                { key: "storm", icon: "warning" as IconName, title: `${state.mission.storm.label} storm`, text: `Real storm from NASA records. Scale S${state.mission.storm.scale}: the shield needs ${state.mission.storm.need}.` },
-                { key: "supply", icon: "cargo" as IconName, title: `${state.mission.supplies} supply crate${state.mission.supplies > 1 ? "s" : ""}`, text: "Already at the outpost. Each can be one wall cell." },
-                { key: "window", icon: "radio" as IconName, title: `Radio: S${state.mission.windows.join(" + S")}`, text: "Earth can hear us only in these shifts. Replies come a shift later." },
+                { key: "supply", icon: "cargo" as IconName, title: `${state.mission.supplies} supply crate${state.mission.supplies > 1 ? "s" : ""}`, text: `*kshh* B.E.E.P., we have ${state.mission.supplies} crate${state.mission.supplies > 1 ? "s" : ""} of spare parts here. *kshh*` },
+                { key: "base", icon: "crew" as IconName, title: "Habitat, garden, workshop", text: "*kshh* Air in the habitat, a small garden, a workshop and a radio. That's our outpost. *kshh*" },
+                { key: "storm", icon: "warning" as IconName, title: "The Sun", text: "*kshh* The Sun might get stormy. Keep an ear on the radio. *kshh*" },
               ].map((card) => (
                 <button
                   key={card.key}
@@ -984,6 +986,7 @@ export default function App() {
                   onClick={() => {
                     setMissionInfo(card.key);
                     say({ speaker: "commander", text: card.text });
+                    if (!card.text.startsWith("*kshh*")) sfx("crackle");
                   }}
                 >
                   <Icon name={card.icon} size={28} />
@@ -1136,6 +1139,36 @@ export default function App() {
               </button>
             </>
           )}
+          {gesture === "workshop" && (
+            <>
+              <h2>The workshop</h2>
+              <p>Keep it for science, or take it apart for a battery.</p>
+              <div className="choice-row">
+                <button
+                  className={`button ${plan.workshop === "keep" ? "primary" : ""}`}
+                  aria-pressed={plan.workshop === "keep"}
+                  onClick={() => {
+                    update({ ...plan, workshop: "keep", battery: plan.battery === "workshop" ? "none" : plan.battery });
+                    setGesture(null);
+                  }}
+                >
+                  <Icon name="research" /> Keep it
+                  <small>Sample lamp for the research plants</small>
+                </button>
+                <button
+                  className={`button ${plan.workshop === "dismantle" ? "primary" : ""}`}
+                  aria-pressed={plan.workshop === "dismantle"}
+                  onClick={() => {
+                    update({ ...plan, workshop: "dismantle" });
+                    setGesture(null);
+                  }}
+                >
+                  <Icon name="power" /> Take it apart
+                  <small>Workshop battery: +1 power, or a wall cell</small>
+                </button>
+              </div>
+            </>
+          )}
           {gesture === "harvest" && (
             <>
               <h2>Harvest the garden</h2>
@@ -1163,22 +1196,6 @@ export default function App() {
             </>
           )}
           <div className="gesture-actions">
-            {cadet && (
-              <button
-                className="text-button"
-                onClick={() => {
-                  if (gesture === "pipe") {
-                    setPipeAngle(0);
-                    update({ ...plan, pipeFixed: true });
-                  } else if (gesture === "antenna") addPower("radio");
-                  else if (gesture === "harvest") addPower("garden");
-                  else update({ ...plan, openFood: true });
-                  setGesture(null);
-                }}
-              >
-                Do it for me
-              </button>
-            )}
             <button className="text-button" onClick={() => setGesture(null)}>
               Cancel
             </button>
@@ -1257,7 +1274,7 @@ export default function App() {
         >
           <BeforeAfter before={session.last.before} after={state} />
           <ul className="result-list">
-            {session.last.effects.map((effect) => (
+            {session.last.effects.filter((effect) => effect !== "The crew ate one meal.").map((effect) => (
               <li key={effect} className={`fx-${effectIcon(effect)}`}>
                 <Icon name={effectIcon(effect)} size={18} />
                 <span>
@@ -1269,14 +1286,29 @@ export default function App() {
           {stage === PICKUP ? (
             <p className="crew-quote">{ending(state) === "safe" ? "“You built us a wall and kept us fed. We're going home.”" : "“The rescue lander is here. Let's see what to try next.”"}</p>
           ) : (
-            AHA[session.last.stage] && (
+            <>
+              {(() => {
+                const r = crewReaction(session.last.before, state);
+                return (
+                  r && (
+                    <p className="crew-quote">
+                      <Portrait speaker={r.speaker} /> <strong>{SPEAKER[r.speaker]}:</strong>
+                      <span className="line-text">
+                        <Rich text={r.text} />
+                      </span>
+                    </p>
+                  )
+                );
+              })()}
+            {AHA[session.last.stage] && (
               <p className="crew-quote">
                 <Portrait speaker="beep" /> <strong>B.E.E.P.:</strong>
                 <span className="line-text">
                   <Rich text={AHA[session.last.stage]!} />
                 </span>
               </p>
-            )
+            )}
+            </>
           )}
           {WHY[session.last.stage] && stage !== PICKUP && (
             <>
@@ -1397,6 +1429,38 @@ export default function App() {
                   <p>Every item is used now, or saved as a wall. Not both.</p>
                 </div>
               </div>
+              <div className="help-row">
+                <Icon name="power" size={30} />
+                <div>
+                  <h3>Power</h3>
+                  <p>Every shift brings 3 new power. The air always uses 2, so 1 is free. The radio, the garden and the sample lamp each use 1. A battery adds 1 for one shift. Power you don't use is not saved.</p>
+                </div>
+              </div>
+              <div className="help-row">
+                <Icon name="food" size={30} />
+                <div>
+                  <h3>Food</h3>
+                  <p>The crew eats 1 meal every shift and 1 more while waiting for rescue.</p>
+                </div>
+              </div>
+              <h3>The items</h3>
+              <ul className="help-items">
+                {CARGO_IDS.map((id) => (
+                  <li key={id}>
+                    <b>
+                      <strong>{CARGO[id].name}</strong> · {CARGO[id].slots} slot{CARGO[id].slots > 1 ? "s" : ""}
+                    </b>
+                    <span>Use: {CARGO[id].use}</span>
+                    <span>{CARGO[id].wall}</span>
+                  </li>
+                ))}
+                <li>
+                  <b>
+                    <strong>Supply crate</strong> · already at the outpost
+                  </b>
+                  <span>Spare parts. Its only job: one wall cell.</span>
+                </li>
+              </ul>
               <p className="hint">Space or Scan shows labels. G toggles Particle goggles. R turns the water tank. Escape pauses.</p>
               <button className="button primary" onClick={closeModal}>
                 Got it
@@ -1527,7 +1591,7 @@ function BeforeAfter({ before, after }: { before: Snapshot; after: Snapshot }) {
   const rows: { icon: IconName; label: string; from: string | number; to: string | number; kind: string }[] = [];
   if (before.stage >= 1 && before.food !== after.food) rows.push({ icon: "food", label: "Meals", from: before.food, to: after.food, kind: "f" });
   if (before.shield !== after.shield) rows.push({ icon: "shield", label: "Shield", from: before.shield, to: after.shield, kind: "s" });
-  if (before.forecast === "none" && after.forecast === "sent") rows.push({ icon: "mail", label: "Earth", from: "no message", to: "sent", kind: "e" });
+  if (before.forecast === "none" && after.forecast === "sent") rows.push({ icon: "mail", label: "Earth's reply", from: "none", to: "next shift", kind: "e" });
   if (!before.crewMoved && after.crewMoved) rows.push({ icon: "crew", label: "Crew", from: "outside", to: "shelter", kind: "s" });
   if (!rows.length) return null;
   return (
@@ -1548,9 +1612,11 @@ function BeforeAfter({ before, after }: { before: Snapshot; after: Snapshot }) {
 function DoseBars({ state, cadet, animate, full = false }: { state: Parameters<typeof doseBars>[0]; cadet: boolean; animate: boolean; full?: boolean }) {
   const bars = doseBars(state);
   const rows = [
-    { key: "habitat", label: "If they stayed in the habitat", value: bars.habitat },
-    { key: "yours", label: state.crewMoved ? "In your shelter" : "Where the crew waited", value: bars.yours },
-    ...(full ? [{ key: "full", label: "Shelter with a full wall", value: bars.full }] : []),
+    state.crewMoved
+      ? { key: "habitat", label: "If they stayed in the habitat", value: bars.habitat }
+      : { key: "yours", label: "Your crew (stayed in the habitat)", value: bars.yours },
+    ...(state.crewMoved ? [{ key: "yours", label: "In your shelter", value: bars.yours }] : []),
+    ...(full || !state.crewMoved ? [{ key: "full", label: "Shelter with the thickest wall", value: bars.full }] : []),
   ];
   return (
     <div className={`dose panel ${animate ? "grow" : ""}`} aria-label="Particle dose comparison">
@@ -1673,7 +1739,7 @@ function Debrief(props: {
           </button>
           {props.canNewMission && (
             <button className="button" onClick={props.onNewMission}>
-              New mission
+              New mission · random storm
             </button>
           )}
           <button className="text-button" onClick={props.onFinish}>

@@ -445,7 +445,7 @@ export function evaluate(state: State, plan: Plan): Evaluation {
     if (plan.workshop === "dismantle")
       effects.unshift("Workshop taken apart: one workshop battery.");
     else if (plan.workshop === "keep")
-      effects.unshift("Workshop kept. The sample cooler keeps running.");
+      effects.unshift("Workshop kept. Its sample lamp can keep the research plants alive in the storm.");
     next.requests.commander = next.forecast !== "none";
   }
   if (state.stage === 3) {
@@ -566,8 +566,8 @@ export function lesson(state: State): { text: string; tip: string } {
       };
     if (state.forecast !== "arrived")
       return {
-        text: "Without Earth's warning, the water tank was too heavy to move.",
-        tip: "Try this next time: use the radio early to ask about the Sun.",
+        text: "Without Earth's warning, there was no time to bring the water tank.",
+        tip: "Try this next time: use the radio in Shift 2.",
       };
     return {
       text: "Gaps in the wall let particles through.",
