@@ -36,13 +36,14 @@ import {
   type Plan,
   type WallId,
 } from "./game/rules";
-import { AHA, briefLine, CELL_HINT, clue, crewReaction, DATA_BOOK, dataPanel, STORM_TIMELINE, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
+import { AHA, briefLine, CELL_HINT, clue, crewReaction, DATA_BOOK, dataPanel, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
 import { interactables, nextGoal, type Gesture, type Vec2 } from "./game/world";
 import { Dialog } from "./ui/Dialog";
 import { angleGap, Dial, Hold, Pots } from "./ui/Gestures";
 import { Icon, type IconName } from "./ui/Icons";
 import { plain, Rich } from "./ui/Rich";
 import { KnowArt } from "./ui/KnowArt";
+import { StormChainArt, WhyArt } from "./ui/WhyArt";
 import { initAudio, setAudio, setMusic, sfx, type Mood } from "./audio";
 import { cutscene, type Cine, type CutsceneId } from "./game/cutscenes";
 import type { Speaker } from "./game/content";
@@ -656,6 +657,7 @@ export default function App() {
         </SceneBoundary>
       </div>
 
+      {titleMenu && <div className="title-shade" aria-hidden="true" />}
       {titleMenu ? (
         <section className="title-menu" aria-label="Main menu">
           <div className="mission-patch">
@@ -1275,6 +1277,7 @@ export default function App() {
           title={stage === PICKUP ? (ending(state) === "safe" ? "Safe and Sound!" : "Rescue at Last") : stage === 0 ? "Your cargo is in." : `Shift ${stage} done.`}
           onClose={next}
         >
+          {stage !== PICKUP && <WhyArt stage={session.last.stage} state={state} before={session.last.before} />}
           <BeforeAfter before={session.last.before} after={state} />
           <ul className="result-list">
             {session.last.effects.filter((effect) => effect !== "The crew ate one meal.").map((effect) => (
@@ -1303,14 +1306,6 @@ export default function App() {
                   )
                 );
               })()}
-            {AHA[session.last.stage] && (
-              <p className="crew-quote">
-                <Portrait speaker="beep" /> <strong>B.E.E.P.:</strong>
-                <span className="line-text">
-                  <Rich text={AHA[session.last.stage]!} />
-                </span>
-              </p>
-            )}
             </>
           )}
           {WHY[session.last.stage] && stage !== PICKUP && (
@@ -1320,6 +1315,11 @@ export default function App() {
               </button>
               {showWhy && (
                 <p className="why">
+                  {AHA[session.last.stage] && (
+                    <>
+                      <Rich text={AHA[session.last.stage]!} />{" "}
+                    </>
+                  )}
                   <Rich text={cadet ? WHY[session.last.stage]!.cadet : WHY[session.last.stage]!.specialist} />
                 </p>
               )}
@@ -1641,28 +1641,6 @@ function DoseBars({ state, cadet, animate, full = false }: { state: Parameters<t
   );
 }
 
-/** The real event chain behind the storm (NASA DONKI), shown in the debrief. */
-function StormTimeline({ state, cadet }: { state: Snapshot; cadet: boolean }) {
-  const steps = STORM_TIMELINE[state.mission.storm.key];
-  if (!steps) return null;
-  return (
-    <div className="storm-timeline panel" aria-label="What really happened">
-      <span className="meter-name">
-        {cadet ? "What really happened" : "Real event chain"} · {state.mission.storm.label}
-      </span>
-      <ol>
-        {steps.map((s) => (
-          <li key={s.time}>
-            <b>{s.time}</b>
-            <span>{cadet ? s.kid : s.what}</span>
-          </li>
-        ))}
-      </ol>
-      <small className="hint">{cadet ? "From NASA's space weather log." : "Times in UTC, 10 Sep 2017 unless dated. Source: NASA DONKI."}</small>
-    </div>
-  );
-}
-
 function Debrief(props: {
   page: number;
   setPage: (n: number) => void;
@@ -1689,7 +1667,7 @@ function Debrief(props: {
       {props.page === 0 && (
         <>
           <DoseBars state={state} cadet={props.cadet} animate={false} full />
-          <StormTimeline state={state} cadet={props.cadet} />
+          {state.mission.storm.key === "sep2017" && <StormChainArt cadet={props.cadet} />}
           <p className="fiction-note in-panel">This mission was a story. The storm really happened on {state.mission.storm.label === "September 2017" ? "10 September 2017" : `${state.mission.storm.label}`}.</p>
         </>
       )}

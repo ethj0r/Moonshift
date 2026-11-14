@@ -1257,3 +1257,19 @@ b.num { color: var(--terra); }
   font-weight: 400;
 }
 .tone-nasa { --tone: #215d9c; }
+.why-art {
+  display: block;
+  width: 100%;
+  max-height: 170px;
+  margin: 4px 0 10px;
+  font-family: inherit;
+}
+/* Calmer result card: the drawing explains; numbers and lines are plain text, not coloured pills. */
+.kw { background: none !important; padding: 0; }
+.result-list li svg,
+.result-list [class^="fx-"] svg,
+.result-list li[class*="fx-"] svg { background: none !important; padding: 0; color: var(--ink); }
+.before-after { gap: 18px; margin: 4px 0; }
+.ba { padding: 0; background: none !important; color: var(--ink) !important; border-radius: 0; font-size: 1rem; }
+.ba b { font-size: 1.15rem; }
+.crew-quote { border-left: none; padding: 4px 0; }

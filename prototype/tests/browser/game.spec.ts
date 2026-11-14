@@ -44,7 +44,7 @@ async function turn(page: Page, times: number) {
 }
 
 test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ page }) => {
-  test.setTimeout(480000); // headless software GL is slow; real browsers finish far sooner
+  test.setTimeout(900000); // headless software GL is slow; real browsers finish far sooner
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   // Headless GL is slow; keep frames cheap so walking stays quick.

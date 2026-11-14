@@ -1,7 +1,7 @@
 // Short in-engine cutscenes (Interaksi §5 "Kamera" + §9 adegan). Each shot is a
 // camera dolly from → to with one caption. Captions use Rich markup.
 import { ending, type State } from "./rules";
-import { FACILITY, SHELTER } from "./world";
+import { BEEP_START, CREW_HOME, FACILITY, PICKUP_SPOTS, RESCUE_PAD, SHELTER, YARD } from "./world";
 
 export type P3 = [number, number, number];
 export type CutsceneId = "opening" | "flare" | "storm" | "rescue";
@@ -24,8 +24,12 @@ export interface Cine {
 export const SUN: P3 = [-24, 13, -32];
 /** Earth sits low on the horizon at the lunar south pole, near the Sun in this view. */
 export const EARTH: P3 = [-14, 6, -38];
-export const RESCUE_AT: [number, number] = [1.0, 1.2];
+export const RESCUE_AT: [number, number] = RESCUE_PAD;
 const L = FACILITY.lander;
+/** Middle of the crew group outside the habitat, and of the pickup group by the pad. */
+const C = CREW_HOME[1];
+const P = PICKUP_SPOTS[1];
+const B = BEEP_START;
 
 export function cutscene(id: CutsceneId, state: State): Shot[] {
   switch (id) {
@@ -46,8 +50,8 @@ export function cutscene(id: CutsceneId, state: State): Shot[] {
         },
         {
           ms: 3200,
-          from: { pos: [-1.2, 2.8, 4.8], look: [-1.9, 1, 0.9] },
-          to: { pos: [0.9, 1.9, 5.4], look: [0.8, 0.7, 2.8] },
+          from: { pos: [C[0] + 0.9, 2.8, C[1] + 3.9], look: [C[0], 1, C[1]] },
+          to: { pos: [B[0] + 0.1, 1.9, B[1] + 2.6], look: [B[0], 0.7, B[1]] },
           caption: "Three astronauts wait for rescue. **You** help them.",
         },
         {
@@ -69,14 +73,14 @@ export function cutscene(id: CutsceneId, state: State): Shot[] {
         state.forecast === "arrived"
           ? {
               ms: 2800,
-              from: { pos: [-0.2, 2.6, 5], look: [-1.2, 0.8, 1.2] },
-              to: { pos: [0.4, 2.2, 4.4], look: [-1.0, 0.7, 1.3] },
+              from: { pos: [YARD.tank[0] + 0.7, 2.6, YARD.tank[1] + 3.6], look: [YARD.tank[0], 0.8, YARD.tank[1]] },
+              to: { pos: [YARD.tank[0] + 1.3, 2.2, YARD.tank[1] + 3.0], look: [YARD.tank[0], 0.7, YARD.tank[1]] },
               caption: "Earth warned us yesterday, so the {s:water tank} can help. **Good call!**",
             }
           : {
               ms: 2800,
-              from: { pos: [-0.5, 2.6, 5.2], look: [-1.9, 1, 0.9] },
-              to: { pos: [0.2, 2.2, 4.6], look: [-1.9, 1, 0.9] },
+              from: { pos: [C[0] + 1.4, 2.6, C[1] + 4.3], look: [C[0], 1, C[1]] },
+              to: { pos: [C[0] + 2.1, 2.2, C[1] + 3.7], look: [C[0], 1, C[1]] },
               caption: "No warning from Earth! {d:Particles} arrive in **about 1 hour**.",
             },
       ];
@@ -90,8 +94,8 @@ export function cutscene(id: CutsceneId, state: State): Shot[] {
         },
         {
           ms: 2400,
-          from: { pos: [-0.8, 2.4, 4.6], look: [-1.9, 1, 0.9] },
-          to: { pos: [-0.4, 2.1, 4.2], look: [-1.9, 1, 0.9] },
+          from: { pos: [C[0] + 1.1, 2.4, C[1] + 3.7], look: [C[0], 1, C[1]] },
+          to: { pos: [C[0] + 1.5, 2.1, C[1] + 3.3], look: [C[0], 1, C[1]] },
           caption: `Quick, **move the crew** to the {s:shelter}! It has a shield of **${state.shield}**.`,
         },
       ];
@@ -99,14 +103,14 @@ export function cutscene(id: CutsceneId, state: State): Shot[] {
       return [
         {
           ms: 3400,
-          from: { pos: [6, 2.4, 9], look: [RESCUE_AT[0], 7, RESCUE_AT[1]] },
-          to: { pos: [6, 2.8, 9], look: [RESCUE_AT[0], 1, RESCUE_AT[1]] },
+          from: { pos: [RESCUE_AT[0] - 5, 2.4, RESCUE_AT[1] + 7.8], look: [RESCUE_AT[0], 7, RESCUE_AT[1]] },
+          to: { pos: [RESCUE_AT[0] - 5, 2.8, RESCUE_AT[1] + 7.8], look: [RESCUE_AT[0], 1, RESCUE_AT[1]] },
           caption: "A **rescue lander** drops down from lunar orbit.",
         },
         {
           ms: 3000,
-          from: { pos: [3.2, 2.6, 7.2], look: [0.6, 0.8, 2.4] },
-          to: { pos: [2.6, 2.2, 6.4], look: [0.6, 0.8, 2.4] },
+          from: { pos: [P[0] + 2.6, 2.6, P[1] + 4.8], look: [P[0], 0.8, P[1]] },
+          to: { pos: [P[0] + 2.0, 2.2, P[1] + 4.0], look: [P[0], 0.8, P[1]] },
           caption:
             ending(state) === "safe"
               ? "Everyone is {s:safe} and {f:fed}. **Time to go home!**"

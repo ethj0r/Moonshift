@@ -279,16 +279,6 @@ export const DATA_BOOK: DataSource[] = [
   { name: "NASA OSDR · OSD-267", text: "Red lettuce grown on the Space Station in 2014, compared with lettuce grown on Earth.", used: "The research crate's plant samples", url: "https://osdr.nasa.gov/bio/repo/data/studies/OSD-267" },
 ];
 
-/** Real event chain for the debrief timeline (NASA DONKI, linked events of 10 Sep 2017). */
-export const STORM_TIMELINE: Partial<Record<State["mission"]["storm"]["key"], { time: string; kid: string; what: string }[]>> = {
-  sep2017: [
-    { time: "15:35", kid: "Flare", what: "X8.2 flare" },
-    { time: "16:09", kid: "Cloud leaves the Sun", what: "CME, 2,650 km/s" },
-    { time: "16:45", kid: "Particles arrive", what: "Protons >10 MeV" },
-    { time: "13 Sep", kid: "Model: cloud brushes Earth", what: "WSA-ENLIL: glancing blow at Earth" },
-  ],
-};
-
 export const GLOSSARY: Record<string, string> = {
   "Solar flare": "A bright flash on the Sun. It can send fast particles our way.",
   Particles: "Tiny bits flying from the Sun, faster than anything on Earth.",

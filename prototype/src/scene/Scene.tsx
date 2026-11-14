@@ -33,7 +33,12 @@ import {
 } from "../game/rules";
 import {
   BEEP_START,
+  BERM,
   cellPos,
+  CREW_HOME,
+  PICKUP_SPOTS,
+  RESCUE_PAD,
+  SOLAR_TOWERS,
   FACILITY,
   ISLAND,
   itemCell,
@@ -89,7 +94,7 @@ let consumers = 0;
 let cleanupTimer: ReturnType<typeof setTimeout> | undefined;
 const BASE = import.meta.env.BASE_URL;
 const FOCUS_RADIUS = 1.25;
-const SPEED = 3.2;
+const SPEED = 4.2; // the outpost is wider now (landing pad far from the habitat)
 
 async function loadAssets(onProgress: (value: number) => void) {
   if (models.size === manifest.models.length) {
@@ -186,28 +191,83 @@ function Model({
 
 const at3 = ([x, z]: Vec2, y = 0): P3 => [x, y, z];
 
+/** A flat lunar plain to the horizon (no floating island), with craters, rocks and the outpost's infrastructure. */
 function Island({ onGround }: { onGround: (point: Vec3Like) => void }) {
   return (
     <>
-      <mesh position={[0, -0.36, ISLAND.cz]} scale={[1.06, 1, 0.93]}>
-        <cylinderGeometry args={[7.25, 6.9, 0.65, 10]} />
-        <meshStandardMaterial color="#9c7e6e" flatShading roughness={1} />
-      </mesh>
       <mesh
-        position={[0, -0.045, ISLAND.cz]}
-        scale={[1.06, 1, 0.93]}
+        rotation-x={-Math.PI / 2}
+        position={[0, -0.01, 0]}
         onClick={(event) => {
           event.stopPropagation();
           onGround(event.point);
         }}
       >
-        <cylinderGeometry args={[7.25, 7.25, 0.07, 10]} />
-        <meshStandardMaterial color="#e6cfb2" flatShading roughness={1} />
+        <circleGeometry args={[110, 48]} />
+        <meshStandardMaterial color="#e6cfb2" roughness={1} />
       </mesh>
-      <Model id="rocks" position={[-5.9, 0.1, -1.6]} scale={0.8} rotation={0.5} />
-      <Model id="rocks" position={[5.6, 0.1, -1.8]} scale={0.65} rotation={2} />
-      <Model id="rocks" position={[3.0, 0.1, -4.9]} scale={0.6} rotation={1} />
+      {TERRAIN.craters.map(([x, z, s], i) => (
+        <Model key={`c${i}`} id="crater" position={[x, 0.0, z]} scale={s} rotation={i} />
+      ))}
+      {TERRAIN.rocks.map(([x, z, s], i) => (
+        <Model key={`r${i}`} id="rocks" position={[x, 0.05, z]} scale={s} rotation={i * 1.3} />
+      ))}
+      {/* Landing zone far from the habitat, behind a regolith berm (NASA: keep exhaust ejecta off the outpost). */}
+      <Model id="landing-pad" position={at3(FACILITY.lander, 0)} />
+      <Model id="landing-pad" position={at3(RESCUE_PAD, 0)} scale={0.6} />
+      <Model id="berm" position={at3(BERM.at, 0)} rotation={BERM.yaw} scale={BERM.scale} />
+      {TERRAIN.lights.map(([x, z], i) => (
+        <Model key={`l${i}`} id="path-light" position={[x, 0, z]} />
+      ))}
+      {/* Vertical solar arrays on tall masts catch the low south-pole Sun (NASA VSAT); cables run to the air unit. */}
+      {SOLAR_TOWERS.map((at, i) => (
+        <group key={`s${i}`}>
+          <Model id="solar-tower" position={at3(at, 0)} rotation={SOLAR_YAW} />
+          <Cable from={at} to={[FACILITY.mainAir[0] + 0.5, FACILITY.mainAir[1] - 0.2]} />
+        </group>
+      ))}
     </>
+  );
+}
+
+/** Scenery positions: craters and rocks on the plain, lights along the walk to the pads. [x, z, scale] */
+const TERRAIN = {
+  craters: [
+    [-9.0, -5.5, 2.2],
+    [4.0, -8.2, 1.6],
+    [-10.5, 4.5, 1.8],
+    [12.5, -6.5, 2.4],
+    [-3.5, 9.5, 1.5],
+    [-15, -12, 3.5],
+    [18, 12, 3],
+  ] as [number, number, number][],
+  rocks: [
+    [-9.2, 1.0, 0.8],
+    [3.0, 8.4, 0.7],
+    [-5.6, 6.2, 0.6],
+    [11.0, -1.4, 0.7],
+    [-4.8, -7.2, 0.9],
+    [14, 4, 1.1],
+  ] as [number, number, number][],
+  lights: [
+    [5.0, 2.6],
+    [6.8, 1.7],
+    [11.6, 5.2],
+  ] as [number, number][],
+};
+/** The solar blankets face the Sun, which skims the horizon at the lunar south pole. */
+const SOLAR_YAW = Math.atan2(SUN[0], SUN[2]);
+
+/** A power cable lying on the ground between two points. */
+function Cable({ from, to }: { from: Vec2; to: Vec2 }) {
+  const dx = to[0] - from[0];
+  const dz = to[1] - from[1];
+  const len = Math.hypot(dx, dz);
+  return (
+    <mesh position={[(from[0] + to[0]) / 2, 0.03, (from[1] + to[1]) / 2]} rotation-y={Math.atan2(dx, dz)}>
+      <boxGeometry args={[0.07, 0.04, len]} />
+      <meshStandardMaterial color="#3b3a46" flatShading />
+    </mesh>
   );
 }
 type Vec3Like = { x: number; z: number };
@@ -443,10 +503,10 @@ function Rings({ props, focus }: { props: SceneProps; focus: string | null }) {
 
 /** Opening shot 4: particles drawn as coral beams from the Sun toward the outpost. */
 const SUN_TARGETS: P3[] = [
-  [-3, 0.8, -1],
-  [0, 0.8, -2],
-  [-1.5, 0.8, 1],
-  [2, 0.8, -0.5],
+  [FACILITY.habitat[0], 0.8, FACILITY.habitat[1]],
+  [FACILITY.mainAir[0], 0.8, FACILITY.mainAir[1]],
+  [CREW_HOME[1][0], 0.8, CREW_HOME[1][1]],
+  [SHELTER[0], 0.8, SHELTER[1]],
 ];
 function SunBeams() {
   const beams = useMemo(
@@ -544,11 +604,7 @@ function StormSnow() {
 
 function Crew({ props }: { props: SceneProps }) {
   const { state, plan, mode } = props;
-  const home: Vec2[] = [
-    [-2.3, 0.9],
-    [-1.7, 1.1],
-    [-1.2, 0.7],
-  ];
+  const home: Vec2[] = CREW_HOME;
   const inShelter = (state.stage === 4 && plan.moveCrew) || (state.stage === 4 && props.phase !== "play" && state.crewMoved);
   const spots: Vec2[] =
     mode === "menu"
@@ -564,11 +620,7 @@ function Crew({ props }: { props: SceneProps }) {
           : state.stage === 2
             ? [home[0], [FACILITY.workshop[0] + 1.4, FACILITY.workshop[1] + 1.6], [FACILITY.workshop[0] - 1.3, FACILITY.workshop[1] + 1.6]]
             : state.stage >= 6
-              ? [
-                  [0.0, 2.6],
-                  [0.6, 2.8],
-                  [1.2, 2.6],
-                ]
+              ? PICKUP_SPOTS
               : home;
   const ids: ModelId[] = ["crew-a", "crew-b", "crew-c"];
   const carryingTank = props.carrying === "tank";
@@ -599,7 +651,7 @@ function Walker({ to, reducedMotion, scale, children }: { to: Vec2; reducedMotio
     const dz = to[1] - g.position.z;
     const d = Math.hypot(dx, dz);
     if (d > 0.02) {
-      const step = Math.min(d, delta * 2.2);
+      const step = Math.min(d, delta * 3.2);
       g.position.x += (dx / d) * step;
       g.position.z += (dz / d) * step;
       g.rotation.y = Math.atan2(dx, dz);
@@ -1043,11 +1095,12 @@ function CameraRig({ props, beep, labels }: { props: SceneProps; beep: React.Ref
       return;
     }
     if (props.mode === "menu") {
-      goalLook.set(-1, 0.4, 0.6);
-      goal.set(9, 10.5, 12);
+      // Low enough to see the black sky over the horizon.
+      goalLook.set(-1.2, 1.6, 0);
+      goal.set(7.5, 6.2, 15.5);
     } else if (props.intro && performance.now() - introAt.current < 1600) {
-      goalLook.set(0, 0.5, 0.4);
-      goal.set(0, 15, 13);
+      goalLook.set(1, 0.5, 1);
+      goal.set(1, 18, 16);
     } else if (props.gesture) {
       const g = gesturePoint[props.gesture];
       goalLook.set(g[0], 0.6, g[1]);
@@ -1057,8 +1110,8 @@ function CameraRig({ props, beep, labels }: { props: SceneProps; beep: React.Ref
       goalLook.set(SHELTER[0], 0.3, SHELTER[1]);
       goal.set(SHELTER[0], 9.5 / zoom, SHELTER[1] + 4.2 / zoom);
     } else if (props.state.stage >= 6) {
-      goalLook.set(0.5, 0.8, 1.2);
-      goal.set(4, 9, 11);
+      goalLook.set(1.5, 0.8, 1.5);
+      goal.set(5, 11, 13.5);
     } else {
       goalLook.set(b.x, 0.7, b.z);
       goal.set(b.x, b.y + (narrow ? 7.5 : 6.2) / zoom, b.z + (narrow ? 8.5 : 7.4) / zoom);
@@ -1132,9 +1185,9 @@ function storyTags(props: SceneProps): LabelSpec[] {
     ];
   if (cine?.id === "opening" && cine.shot === 2)
     return [
-      { key: "t:a", text: "Commander", at: [-2.3, 1.12, 0.9], tone: "tone-commander" },
-      { key: "t:b", text: "Technician", at: [-1.7, 1.12, 1.1], tone: "tone-technician" },
-      { key: "t:c", text: "Researcher", at: [-1.2, 1.12, 0.7], tone: "tone-researcher" },
+      { key: "t:a", text: "Commander", at: at3(CREW_HOME[0], 1.12), tone: "tone-commander" },
+      { key: "t:b", text: "Technician", at: at3(CREW_HOME[1], 1.12), tone: "tone-technician" },
+      { key: "t:c", text: "Researcher", at: at3(CREW_HOME[2], 1.12), tone: "tone-researcher" },
       { key: "t:you", text: "You: B.E.E.P.", at: at3(BEEP_START, 1.0), tone: "tone-you" },
     ];
   if (cine?.id === "opening" && cine.shot === 3)
@@ -1159,7 +1212,7 @@ function storyTags(props: SceneProps): LabelSpec[] {
     return [
       { key: "t:air", text: "fan", at: at3(FACILITY.mainAir, 1.15), tone: "tone-air" },
       { key: "t:joint", text: "bent joint", at: [PIPE[0], 0.75, PIPE[1] - 0.25], tone: "tone-cargo" },
-      { key: "t:habitat", text: "habitat", at: [-2.0, 1.0, -0.4], tone: "tone-ink" },
+      { key: "t:habitat", text: "habitat", at: [FACILITY.habitat[0] + 0.6, 1.9, FACILITY.habitat[1]], tone: "tone-ink" },
     ];
   return [];
 }
@@ -1212,9 +1265,9 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
           if (props.mode === "play" && !props.controlsLocked) props.onPick(`ground:${point.x.toFixed(2)},${point.z.toFixed(2)}`);
         }}
       />
-      <Model id="habitat" position={at3(FACILITY.habitat, 0.02)} rotation={0.15} />
-      <Model id="garden" position={at3(FACILITY.garden, 0.02)} rotation={0.15} />
-      <Model id={dismantled ? "workshop-dismantled" : "workshop"} position={at3(FACILITY.workshop, 0.02)} rotation={0.15} />
+      <Model id="habitat" position={at3(FACILITY.habitat, 0.02)} />
+      <Model id="garden" position={at3(FACILITY.garden, 0.02)} />
+      <Model id={dismantled ? "workshop-dismantled" : "workshop"} position={at3(FACILITY.workshop, 0.02)} />
       <Model id="radio" position={at3(FACILITY.radio, 0.02)} scale={0.9} rotation={RADIO_YAW} />
       <Model id="main-air" position={at3(FACILITY.mainAir, 0.02)} scale={0.85} />
       <Lander at={FACILITY.lander} rotation={-0.7} scale={0.75} tilt={0.07} cine={props.mode === "play" ? props.cine : null} scene="opening" height={14} />

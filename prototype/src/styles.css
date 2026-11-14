@@ -507,14 +507,20 @@ input {
   gap: 8px;
   align-items: flex-start;
   margin: -8px 0 18px;
-  padding: 8px 10px;
-  border-left: 3px solid #f4b23a;
-  background: #ffffff14;
   font-size: 0.92rem;
   line-height: 1.35;
+  opacity: 0.9;
 }
 .fiction-note.in-panel {
   margin: 0 0 12px;
-  background: #f4b23a22;
   color: var(--ink);
+  font-style: italic;
+}
+/* Dark shade on the left of the title screen, so light text reads over the lunar plain. */
+.title-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, #05070de6 0%, #05070dbf 30%, #05070d00 52%);
 }

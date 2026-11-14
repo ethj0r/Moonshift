@@ -23,46 +23,75 @@ import {
 } from "./rules";
 
 export type Vec2 = [number, number];
-export const SHELTER: Vec2 = [3.1, 0.6];
+// Layout follows NASA's Artemis Base Camp ideas, scaled down for play:
+// - modules sit close together around the habitat (shelter, greenhouse, workshop, air unit);
+// - the landing pad is far from the habitat behind a regolith berm, so rocket exhaust
+//   does not blast dust onto the outpost;
+// - vertical solar towers (VSAT) stand apart where the low Sun reaches them;
+// - the radio antenna stands in the open, facing Earth low on the horizon.
+export const SHELTER: Vec2 = [2.3, 2.1];
 export const CELL = 1.05;
 export const cellPos = (cell: number): Vec2 => [
   SHELTER[0] + ((cell % 3) - 1) * CELL,
   SHELTER[1] + (Math.floor(cell / 3) - 1) * CELL,
 ];
 export const FACILITY = {
-  habitat: [-2.7, -0.65] as Vec2,
-  garden: [-4.3, 2.05] as Vec2,
-  workshop: [-3.5, -3.5] as Vec2,
-  radio: [0.6, -3.7] as Vec2,
-  mainAir: [0.2, -1.2] as Vec2,
-  lander: [5.0, 3.9] as Vec2,
+  habitat: [-2.6, -0.8] as Vec2,
+  garden: [-2.6, -3.75] as Vec2,
+  workshop: [-6.3, -0.6] as Vec2,
+  radio: [1.6, -4.7] as Vec2,
+  mainAir: [0.86, -0.62] as Vec2,
+  lander: [9.0, 6.6] as Vec2,
 };
-export const PIPE: Vec2 = [-0.75, -1.2];
+/** The air pipe runs straight east from the habitat wall to the main air unit (same z). */
+export const PIPE: Vec2 = [-0.55, -0.55];
+/** Where the crew stands outside the habitat door. */
+export const CREW_HOME: Vec2[] = [
+  [-3.2, 1.9],
+  [-2.6, 2.15],
+  [-2.0, 1.85],
+];
+/** Rescue lander: on its own pad next to the cargo pad, behind the berm. */
+export const RESCUE_PAD: Vec2 = [11.2, 2.2];
+export const PICKUP_SPOTS: Vec2[] = [
+  [8.0, 1.9],
+  [8.6, 2.15],
+  [9.2, 1.9],
+];
+export const SOLAR_TOWERS: Vec2[] = [
+  [6.2, -4.6],
+  [8.4, -3.0],
+];
+export const BERM = { at: [6.8, 4.6] as Vec2, yaw: -Math.PI / 4, scale: 0.75 };
 /** Where loose items stand: the shelf in front of the cargo lander. */
 export const YARD: Record<WallId | "research", Vec2> = {
-  supply1: [-2.0, 4.1],
-  supply2: [-1.2, 4.1],
-  supply3: [-0.4, 4.1],
-  food: [0.4, 4.1],
-  battery: [1.2, 4.1],
-  kit: [2.0, 4.1],
-  spare: [2.8, 4.1],
-  research: [3.7, 4.6],
-  workshopBattery: [-2.3, -2.6],
-  tank: [-0.9, 1.4],
+  supply1: [-1.6, 5.3],
+  supply2: [-0.8, 5.3],
+  supply3: [0.0, 5.3],
+  food: [0.8, 5.3],
+  battery: [1.6, 5.3],
+  kit: [2.4, 5.3],
+  spare: [3.2, 5.3],
+  research: [3.9, 6.5],
+  workshopBattery: [-7.4, 1.0],
+  tank: [-0.5, 1.6],
 };
-export const BEEP_START: Vec2 = [0.8, 2.8];
+export const BEEP_START: Vec2 = [-0.4, 3.6];
 /** Solid circles B.E.E.P. walks around. */
 export const OBSTACLES: { at: Vec2; r: number }[] = [
-  { at: FACILITY.habitat, r: 1.35 },
-  { at: FACILITY.garden, r: 0.95 },
-  { at: FACILITY.workshop, r: 1.15 },
-  { at: FACILITY.radio, r: 0.9 },
-  { at: FACILITY.mainAir, r: 0.55 },
-  { at: FACILITY.lander, r: 1.3 },
+  { at: [FACILITY.habitat[0] - 0.2, FACILITY.habitat[1] + 0.2], r: 1.65 },
+  { at: [FACILITY.garden[0] + 0.17, FACILITY.garden[1]], r: 1.25 },
+  { at: FACILITY.workshop, r: 1.35 },
+  { at: FACILITY.radio, r: 0.95 },
+  { at: FACILITY.mainAir, r: 0.6 },
+  { at: FACILITY.lander, r: 1.8 },
   { at: SHELTER, r: 0.4 },
+  ...SOLAR_TOWERS.map((at) => ({ at, r: 0.6 })),
+  // The berm, as three round lumps along its arc.
+  ...[-1.4, 0, 1.4].map((d) => ({ at: [BERM.at[0] + d * Math.SQRT1_2, BERM.at[1] - d * Math.SQRT1_2] as Vec2, r: 0.75 })),
 ];
-export const ISLAND = { rx: 7.0, rz: 6.2, cz: 0.25 };
+/** Walkable area: a wide flat plain, bounded so B.E.E.P. stays near the outpost. */
+export const ISLAND = { rx: 12.5, rz: 9.5, cz: 1.5 };
 
 export type Gesture = "pipe" | "antenna" | "harvest" | "foodpack" | "workshop";
 export interface Interactable {
@@ -164,7 +193,7 @@ export function interactables(
         : state.gardenCare === 1
           ? "Harvest the garden · 1 power"
           : "Care for the garden · 1 power",
-      at: [FACILITY.garden[0] + 1.1, FACILITY.garden[1] + 0.3],
+      at: [FACILITY.garden[0] + 1.7, FACILITY.garden[1] + 0.6],
       gesture: !plan.power.includes("garden") && state.gardenCare === 1 ? "harvest" : undefined,
     });
   const purpose = radioPurpose(state);

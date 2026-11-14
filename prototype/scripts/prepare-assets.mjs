@@ -33,6 +33,11 @@ const models = [
   ["spare", "02_Items/MOONSHIFT_ITM_Air_Component.glb", "normalize-yaw"],
   ["workshop-dismantled", "04_Facilities/MOONSHIFT_FAC_Workshop_Dismantled.glb"],
   ["lander", "05_Opening_Environment/MOONSHIFT_ENV_Cargo_Lander_Damaged.glb"],
+  ["solar-tower", "04_Facilities/MOONSHIFT_FAC_Solar_Tower.glb"],
+  ["landing-pad", "05_Opening_Environment/MOONSHIFT_ENV_Landing_Pad.glb"],
+  ["berm", "05_Opening_Environment/MOONSHIFT_ENV_Regolith_Berm.glb"],
+  ["crater", "05_Opening_Environment/MOONSHIFT_ENV_Terrain_Crater.glb"],
+  ["path-light", "05_Opening_Environment/MOONSHIFT_ENV_Terrain_PathLight.glb"],
 ];
 const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 const multiply = (a, b) =>

@@ -545,14 +545,154 @@
       "changes": [
         "Bake mesh transforms and merge static geometry by material; retain status meshes"
       ]
+    },
+    {
+      "id": "solar-tower",
+      "source": "../exports/04_Facilities/MOONSHIFT_FAC_Solar_Tower.glb",
+      "url": "assets/models/solar-tower.glb",
+      "sourceBytes": 40248,
+      "preparedBytes": 30844,
+      "sourcePrimitives": 26,
+      "preparedPrimitives": 6,
+      "sourceTriangles": 488,
+      "preparedTriangles": 488,
+      "sourceSha256": "1caabef94c6a82fec7436fd7b340773d3154a725bbd2b444ca110ebd0104817f",
+      "preparedSha256": "8db6b4282bb5ee8935e9be53bb00e9603c5ac6b044318a9b0280e5c3fddabc5b",
+      "bounds": {
+        "min": [
+          -0.949999988079071,
+          -0.010510738325929497,
+          -0.6000000014901161
+        ],
+        "max": [
+          0.949999988079071,
+          4.000000048428774,
+          0.6000000014901161
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "landing-pad",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Landing_Pad.glb",
+      "url": "assets/models/landing-pad.glb",
+      "sourceBytes": 26100,
+      "preparedBytes": 22536,
+      "sourcePrimitives": 13,
+      "preparedPrimitives": 4,
+      "sourceTriangles": 396,
+      "preparedTriangles": 396,
+      "sourceSha256": "ef43987d6ea72a156f0cbcc01c29afc4dbb5cdb6a894c148a6382fdf6d0d9feb",
+      "preparedSha256": "ea3581b843d84139c60be5f876929d89d98d47f04ae413cdafc1f24a1964a8d2",
+      "bounds": {
+        "min": [
+          -2.299999952316284,
+          0,
+          -2.299999952316284
+        ],
+        "max": [
+          2.299999952316284,
+          0.1100000012665987,
+          2.299999952316284
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "berm",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Regolith_Berm.glb",
+      "url": "assets/models/berm.glb",
+      "sourceBytes": 4608,
+      "preparedBytes": 4672,
+      "sourcePrimitives": 1,
+      "preparedPrimitives": 1,
+      "sourceTriangles": 64,
+      "preparedTriangles": 64,
+      "sourceSha256": "447e7689fc6f7b3e8095d234c95f9e78ced1125dabd623aeb2674b2e28522033",
+      "preparedSha256": "fd4050391471eb81c749e79ade25e98e85c5535237aa1cf9df5484cb403ccd9e",
+      "bounds": {
+        "min": [
+          -1.1739253997802734,
+          0,
+          -2.6097729206085205
+        ],
+        "max": [
+          0.5500001907348633,
+          0.550000011920929,
+          2.6097729206085205
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "crater",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Terrain_Crater.glb",
+      "url": "assets/models/crater.glb",
+      "sourceBytes": 12800,
+      "preparedBytes": 12232,
+      "sourcePrimitives": 3,
+      "preparedPrimitives": 2,
+      "sourceTriangles": 184,
+      "preparedTriangles": 184,
+      "sourceSha256": "2a84ce3cacd9bc1dea5353d315c3ca8bafa9f3e0ca35f994937981695ed77b93",
+      "preparedSha256": "7f52ef1537480dda57dd32fe2413c213b0368c852c0c9e501bceab7ac0a2e906",
+      "bounds": {
+        "min": [
+          -0.9399999976158142,
+          -0.11314791068434715,
+          -0.9399999976158142
+        ],
+        "max": [
+          0.9399999976158142,
+          0.15314790979027748,
+          0.9399999976158142
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "path-light",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Terrain_PathLight.glb",
+      "url": "assets/models/path-light.glb",
+      "sourceBytes": 8428,
+      "preparedBytes": 9184,
+      "sourcePrimitives": 4,
+      "preparedPrimitives": 4,
+      "sourceTriangles": 104,
+      "preparedTriangles": 104,
+      "sourceSha256": "e3fd704f696738b24dda048f8847ce39ea761a5d99ddc4466f76520745b9cb84",
+      "preparedSha256": "e322da10d71ca54c7f17e2d1303e94a480fa4362e283a91617e047694a6405ba",
+      "bounds": {
+        "min": [
+          -0.14000000059604645,
+          0,
+          -0.14000000059604645
+        ],
+        "max": [
+          0.14000000059604645,
+          0.7999999709427357,
+          0.14000000059604645
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
     }
   ],
   "totals": {
-    "sourceBytes": 1166820,
-    "preparedBytes": 991796,
-    "sourcePrimitives": 440,
-    "preparedPrimitives": 153,
-    "sourceTriangles": 16368,
-    "preparedTriangles": 15336
+    "sourceBytes": 1259004,
+    "preparedBytes": 1071264,
+    "sourcePrimitives": 487,
+    "preparedPrimitives": 170,
+    "sourceTriangles": 17604,
+    "preparedTriangles": 16572
   }
 }
