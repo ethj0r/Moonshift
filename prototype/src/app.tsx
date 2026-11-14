@@ -665,6 +665,9 @@ export default function App() {
           <h1>MOONSHIFT</h1>
           <p className="title-subtitle">Help B.E.E.P. the robot keep three astronauts safe.</p>
           <p className="title-description">You are B.E.E.P. A real solar storm from NASA data is coming. You have five shifts.</p>
+          <p className="fiction-note">
+            <Icon name="research" size={15} /> Made-up story, real science: the outpost and crew are invented; the storm and its numbers are real NASA data.
+          </p>
           <div className="mode-cards" role="radiogroup" aria-label="Pilot card">
             {(["cadet", "specialist"] as const).map((mode) => (
               <button
@@ -1540,6 +1543,7 @@ export default function App() {
           )}
           {modal === "databook" && (
             <>
+              <p className="fiction-note in-panel">The outpost, the crew and B.E.E.P. are made up. The storm, its numbers and the science come from real NASA data.</p>
               <ul className="data-book">
                 {DATA_BOOK.map((entry) => (
                   <li key={entry.name}>
@@ -1686,6 +1690,7 @@ function Debrief(props: {
         <>
           <DoseBars state={state} cadet={props.cadet} animate={false} full />
           <StormTimeline state={state} cadet={props.cadet} />
+          <p className="fiction-note in-panel">This mission was a story. The storm really happened on {state.mission.storm.label === "September 2017" ? "10 September 2017" : `${state.mission.storm.label}`}.</p>
         </>
       )}
       {props.page === 1 && (

@@ -22,6 +22,8 @@ export interface Cine {
 
 /** The Sun sits low over the horizon, behind the radio mast. */
 export const SUN: P3 = [-24, 13, -32];
+/** Earth sits low on the horizon at the lunar south pole, near the Sun in this view. */
+export const EARTH: P3 = [-14, 6, -38];
 export const RESCUE_AT: [number, number] = [1.0, 1.2];
 const L = FACILITY.lander;
 

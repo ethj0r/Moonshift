@@ -25,7 +25,7 @@
   --terra: #e2683a;
   --focus: #215d9c;
   --teal: #23766b;
-  background: #7fc1f2;
+  background: #05070d;
 }
 * {
   box-sizing: border-box;
@@ -85,7 +85,7 @@ input {
   overflow: hidden;
   position: relative;
   isolation: isolate;
-  background: #7fc1f2;
+  background: #05070d;
 }
 .scene-region {
   position: absolute;
@@ -485,4 +485,36 @@ input {
 .reduced-motion * {
   transition: none !important;
   animation: none !important;
+}
+/* Black lunar sky: light text on the title screen. */
+.title-menu {
+  color: #fff6e8;
+}
+.title-menu .mission-patch {
+  color: #f4b23a;
+}
+.title-menu .mode-card,
+.title-menu .button,
+.title-menu .badge {
+  color: var(--ink);
+}
+.title-menu > p:last-of-type,
+.title-menu small {
+  color: #d9d2c4;
+}
+.fiction-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: -8px 0 18px;
+  padding: 8px 10px;
+  border-left: 3px solid #f4b23a;
+  background: #ffffff14;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+.fiction-note.in-panel {
+  margin: 0 0 12px;
+  background: #f4b23a22;
+  color: var(--ink);
 }

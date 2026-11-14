@@ -1,6 +1,9 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
+  AdditiveBlending,
+  BackSide,
+  BufferAttribute,
   BufferGeometry,
   Color,
   Group,
@@ -15,10 +18,11 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import manifest from "../../asset-manifest.json";
-import { ease, RESCUE_AT, shotProgress, SUN, type Cine } from "../game/cutscenes";
+import { EARTH, ease, RESCUE_AT, shotProgress, SUN, type Cine } from "../game/cutscenes";
 import {
   CARGO,
   ending,
+  researchReady,
   SHELTER_CELL,
   VENTS,
   wallName,
@@ -876,6 +880,60 @@ function Lander({ at, rotation, scale, tilt, cine, scene, height }: { at: Vec2; 
 }
 
 /** The Sun, low on the horizon. Breathes in the opening, bursts in the flare cutscene. */
+export const SPACE = "#05070d";
+/** The radio dish (front = +Z) turns to face Earth, low on the horizon at the lunar south pole. */
+const RADIO_YAW = Math.atan2(EARTH[0] - FACILITY.radio[0], EARTH[2] - FACILITY.radio[1]);
+
+/** A fixed starfield on a far sphere (seeded, so it is the same every visit). */
+function Stars() {
+  const geometry = useMemo(() => {
+    let seed = 7;
+    const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const n = 900;
+    const pos = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) {
+      const u = rand() * 2 - 1;
+      const a = rand() * Math.PI * 2;
+      const r = Math.sqrt(1 - u * u);
+      // Keep stars above the horizon (the island hides the rest anyway).
+      const y = Math.abs(u) * 0.95 + 0.02;
+      pos.set([r * Math.cos(a) * 90, y * 90 - 8, r * Math.sin(a) * 90], i * 3);
+    }
+    const g = new BufferGeometry();
+    g.setAttribute("position", new BufferAttribute(pos, 3));
+    return g;
+  }, []);
+  return (
+    <points geometry={geometry} frustumCulled={false}>
+      <pointsMaterial color="#e8eefc" size={1.6} sizeAttenuation={false} depthWrite={false} />
+    </points>
+  );
+}
+
+/** Earth hangs low over the horizon, as seen from the lunar south pole. */
+function Earth() {
+  return (
+    <group position={EARTH}>
+      <mesh>
+        <sphereGeometry args={[2.1, 24, 16]} />
+        <meshBasicMaterial color="#3f7fd0" />
+      </mesh>
+      <mesh position={[0.6, 0.7, 1.2]} scale={[1, 0.45, 0.7]}>
+        <sphereGeometry args={[1.25, 12, 8]} />
+        <meshBasicMaterial color="#5ea05a" />
+      </mesh>
+      <mesh position={[-0.7, -0.4, 1.4]} scale={[1.1, 0.3, 0.6]}>
+        <sphereGeometry args={[1.1, 12, 8]} />
+        <meshBasicMaterial color="#f2f5fa" />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[2.3, 24, 16]} />
+        <meshBasicMaterial color="#6fa8e8" side={BackSide} transparent opacity={0.55} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
 function Sun({ cine }: { cine: Cine | null }) {
   const ref = useRef<Group>(null);
   useFrame(() => {
@@ -892,7 +950,7 @@ function Sun({ cine }: { cine: Cine | null }) {
       </mesh>
       <mesh>
         <sphereGeometry args={[4.2, 20, 12]} />
-        <meshBasicMaterial color="#fff8dc" transparent opacity={0.55} depthWrite={false} />
+        <meshBasicMaterial color="#ffd77a" transparent opacity={0.85} blending={AdditiveBlending} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -1082,8 +1140,21 @@ function storyTags(props: SceneProps): LabelSpec[] {
   if (cine?.id === "opening" && cine.shot === 3)
     return [
       { key: "t:sun", text: "Sun", at: [SUN[0], SUN[1] + 3.2, SUN[2]], tone: "tone-danger" },
+      { key: "t:earth", text: "Earth", at: [EARTH[0], EARTH[1] + 3.0, EARTH[2]], tone: "tone-air" },
       { key: "t:particles", text: "particles", at: new Vector3(...SUN_TARGETS[1]).lerp(new Vector3(...SUN), 0.3).toArray(), tone: "tone-danger" },
     ];
+  if (!cine && props.phase === "play" && !props.gesture) {
+    const s = props.state;
+    const nasa = s.mission.storm.key === "sep2017";
+    const tags: LabelSpec[] = [];
+    if (s.stage >= 3 && s.stage <= 4)
+      tags.push({ key: "d:storm", text: nasa ? "Real NASA data" : "Real NOAA data", sub: `${s.mission.storm.label} storm`, at: [SHELTER[0], 2.1, SHELTER[1]], tone: "tone-nasa" });
+    if (s.stage === 3 && s.forecast === "arrived" && nasa)
+      tags.push({ key: "d:radio", text: "NASA forecast", sub: "DONKI", at: at3(FACILITY.radio, 2.7), tone: "tone-nasa" });
+    if (s.stage === 5 && researchReady(s))
+      tags.push({ key: "d:osdr", text: "Real NASA plant study", sub: "OSDR OSD-267", at: at3(FACILITY.radio, 2.7), tone: "tone-nasa" });
+    if (tags.length) return tags;
+  }
   if (!cine && props.gesture === "pipe" && props.state.stage === 1)
     return [
       { key: "t:air", text: "fan", at: at3(FACILITY.mainAir, 1.15), tone: "tone-air" },
@@ -1127,10 +1198,13 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
   const dismantled = (plan.workshop ?? state.workshop) === "dismantle";
   const wall = state.stage === 3 ? plan.wall : state.wall;
   const storm = state.stage === 4;
-  const sky = props.goggles ? "#22304a" : props.cine?.id === "flare" ? "#f2b98a" : storm ? "#5f8fbf" : "#7fc1f2";
+  // The Moon has no air to scatter sunlight, so its sky is black with stars even by day.
+  const sky = props.goggles ? "#101a2e" : props.cine?.id === "flare" ? "#2a1408" : storm ? "#0b1124" : SPACE;
   return (
     <>
       <color attach="background" args={[sky]} />
+      <Stars />
+      <Earth />
       <hemisphereLight args={["#c0d8ec", "#e6cfb2", props.goggles ? 0.7 : 2.2]} />
       <directionalLight position={[2, 9, 6]} color="#ffe2b8" intensity={props.goggles ? 0.6 : 2.7} />
       <Island
@@ -1141,7 +1215,7 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
       <Model id="habitat" position={at3(FACILITY.habitat, 0.02)} rotation={0.15} />
       <Model id="garden" position={at3(FACILITY.garden, 0.02)} rotation={0.15} />
       <Model id={dismantled ? "workshop-dismantled" : "workshop"} position={at3(FACILITY.workshop, 0.02)} rotation={0.15} />
-      <Model id="radio" position={at3(FACILITY.radio, 0.02)} scale={0.9} />
+      <Model id="radio" position={at3(FACILITY.radio, 0.02)} scale={0.9} rotation={RADIO_YAW} />
       <Model id="main-air" position={at3(FACILITY.mainAir, 0.02)} scale={0.85} />
       <Lander at={FACILITY.lander} rotation={-0.7} scale={0.75} tilt={0.07} cine={props.mode === "play" ? props.cine : null} scene="opening" height={14} />
       {state.stage >= 6 && <Lander at={RESCUE_AT} rotation={0.4} scale={0.5} tilt={0} cine={props.cine} scene="rescue" height={9} />}
@@ -1216,7 +1290,7 @@ export default function Scene(props: SceneProps) {
         dpr={1}
         gl={{ antialias: !props.lowGraphics, alpha: false, powerPreference: "default" }}
         onCreated={({ gl }) => {
-          gl.setClearColor(new Color("#7fc1f2"));
+          gl.setClearColor(new Color(SPACE));
           gl.domElement.addEventListener("webglcontextlost", (event) => {
             event.preventDefault();
             // R3F force-loses the old canvas ~500 ms after unmount (Retry 3D, hot reload): not a real failure.

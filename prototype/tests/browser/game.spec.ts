@@ -44,7 +44,7 @@ async function turn(page: Page, times: number) {
 }
 
 test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ page }) => {
-  test.setTimeout(300000);
+  test.setTimeout(480000); // headless software GL is slow; real browsers finish far sooner
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   // Headless GL is slow; keep frames cheap so walking stays quick.
@@ -53,6 +53,8 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   );
   await page.goto("/?diagnostics");
   await expect(page.getByRole("button", { name: /Mission 1/ })).toBeEnabled({ timeout: 25000 });
+  // Judges and kids see that the story is made up but the data is real.
+  await expect(page.getByText(/Made-up story, real science/)).toBeVisible();
   await page.getByRole("button", { name: /Mission 1/ }).click();
 
   // Opening: pack Kit + Research + Battery (GDD v2 §10).
@@ -92,6 +94,9 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await expect(page.getByText("Reply from Earth arrived")).toBeVisible();
   // DONKI timing: the flare at 15:35 UTC, particles at 16:45 UTC.
   await expect(page.getByText("A giant flare. Particles came 70 minutes later.")).toBeVisible();
+  // In-world markers on the things driven by real data.
+  await expect(page.locator(".world-label", { hasText: "NASA forecast" })).toHaveCount(1); // on the radio, may be off-camera
+  await expect(page.locator(".world-label", { hasText: "Real NASA data" })).toBeVisible();
   const map = page.getByLabel("Shelter map");
   await map.getByRole("button", { name: "Supply crate", exact: true }).first().click();
   await map.getByRole("button", { name: /^A1:/ }).click();

@@ -1256,3 +1256,4 @@ b.num { color: var(--terra); }
 .help-items b {
   font-weight: 400;
 }
+.tone-nasa { --tone: #215d9c; }
