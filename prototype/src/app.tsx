@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, useEffect, useMemo, useReducer, useRef, useState, type PointerEvent, type ReactNode } from "react";
+import { Component, lazy, Suspense, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type PointerEvent, type ReactNode } from "react";
 import {
   BADGES,
   batteryAvailable,
@@ -44,6 +44,7 @@ import { Icon, type IconName } from "./ui/Icons";
 import { plain, Rich } from "./ui/Rich";
 import { KnowArt } from "./ui/KnowArt";
 import { StormChainArt, WhyArt } from "./ui/WhyArt";
+import { CineArtPanel, RescueTrack } from "./ui/CineArt";
 import { initAudio, setAudio, setMusic, sfx, type Mood } from "./audio";
 import { cutscene, type Cine, type CutsceneId } from "./game/cutscenes";
 import type { Speaker } from "./game/content";
@@ -173,6 +174,9 @@ export default function App() {
   const [placesOpen, setPlacesOpen] = useState(false);
   const [missionInfo, setMissionInfo] = useState<string | null>(null);
   const [cine, setCine] = useState<Cine | null>(null);
+  // First-play tour of the HUD: spotlight each meter once, with one short line.
+  const [tour, setTour] = useState<number | null>(null);
+  const tourDone = useRef(false);
   const seenOpening = useRef(false);
   const [lastChoice, setLastChoice] = useState<string | null>(null);
   const [yaw, setYaw] = useState(0);
@@ -263,6 +267,10 @@ export default function App() {
     const shot = cine.shots[cine.shot];
     if (cadet && settings.voice) speak(shot.caption);
     if (shot.shake) sfx("thud");
+    if (shot.key === "beep" && cine.id === "opening") sfx("beep");
+    if (shot.key === "jump") sfx("whoosh");
+    if (shot.key === "meal") sfx("unpack");
+    if (shot.key === "pad") sfx("chime");
     if (shot.flash) sfx("flare");
     if (cine.id === "rescue" && cine.shot === 0) sfx(ending(state) === "safe" ? "fanfare" : "chime");
     const t = setTimeout(
@@ -271,6 +279,11 @@ export default function App() {
     );
     return () => clearTimeout(t);
   }, [cine?.id, cine?.shot, ready, modal]);
+  useEffect(() => {
+    if (tourDone.current || stage !== 1 || phase !== "play" || cine || modal || !ready || intro) return;
+    tourDone.current = true;
+    setTour(0);
+  }, [stage, phase, cine, modal, ready, intro]);
   function skipCine() {
     setCine(null);
     try {
@@ -721,6 +734,12 @@ export default function App() {
                 <span>{STAGE_TITLE[stage]}</span>
                 {date && stage <= 5 && <small>{date} · time sped up</small>}
               </div>
+              {stage <= 5 && (
+                <div className="goal-track" data-tour="rescue">
+                  <span className="meter-name">Rescue lander</span>
+                  <RescueTrack stage={stage} />
+                </div>
+              )}
               {stage >= 1 && stage <= 5 && meter}
             </div>
             <div className="hud-right">
@@ -1208,14 +1227,28 @@ export default function App() {
         </section>
       )}
 
+      {tour !== null && screen === "game" && !cine && !modal && (
+        <HudTour
+          step={tour}
+          shift={stage}
+          onNext={() => setTour((t) => (t !== null && t + 1 < TOUR.length ? t + 1 : null))}
+          onSkip={() => setTour(null)}
+        />
+      )}
+
       {cine && screen === "game" && ready && !modal && (
         <section className="cine" aria-label="Cutscene" aria-live="polite">
           <div className="bar top" />
           {cine.shots[cine.shot].flash && !settings.reducedMotion && <div key={cine.shot} className="cine-flash" />}
-          {cine.id === "opening" && cine.shot === 0 && (
+          {cine.id === "opening" && cine.shots[cine.shot].key === "base" && (
             <h2 className="cine-title">
               MOONSHIFT <small>{state.mission.storm.label} storm · real NASA data</small>
             </h2>
+          )}
+          {cine.shots[cine.shot].art && (
+            <div key={`art${cine.shot}`} className="cine-art-wrap">
+              <CineArtPanel kind={cine.shots[cine.shot].art!} cadet={cadet} />
+            </div>
           )}
           <div className="bar bottom">
             <div key={`${cine.id}${cine.shot}`} className="cine-text">
@@ -1400,6 +1433,15 @@ export default function App() {
                 }}
               >
                 Settings
+              </button>
+              <button
+                className="button"
+                onClick={() => {
+                  setModal(null);
+                  setCine({ id: "opening", shots: cutscene("opening", state), shot: 0, start: performance.now() });
+                }}
+              >
+                Watch the intro again
               </button>
               <button className="text-button" onClick={() => setModal("restart")}>
                 Restart mission
@@ -1637,6 +1679,44 @@ function DoseBars({ state, cadet, animate, full = false }: { state: Parameters<t
           ? "Shorter bar = fewer particles = safer. In NASA's Artemis I test, the best-protected spot got about 4 times less."
           : "Scaled to NASA Artemis I (MARE): Orion's best-shielded spot got about 4× less than its least shielded spot, so the thickest wall here lets in 1/4. A comparison, not a measured dose."}
       </small>
+    </div>
+  );
+}
+
+/** The HUD tour: what each panel is for, pointed at, one short line each. */
+const TOUR: { sel: string; text: (shift: number) => string }[] = [
+  { sel: '[data-tour="rescue"]', text: (s) => `**Rescue lander**: it comes after shift 5. Now it's shift ${s}.` },
+  { sel: ".meter.power", text: () => "**Power**: 3 new every shift. The air uses 2, so **1** is yours to share." },
+  { sel: ".meter.food", text: () => "**Food**: each circle is **1 meal**. The crew eats 1 every shift." },
+  { sel: ".meter.shield", text: () => "**Shield**: how thick the storm wall is. You'll build it in **shift 3**." },
+];
+function HudTour({ step, shift, onNext, onSkip }: { step: number; shift: number; onNext: () => void; onSkip: () => void }) {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  useLayoutEffect(() => {
+    const measure = () => setRect(document.querySelector(TOUR[step].sel)?.getBoundingClientRect() ?? null);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [step]);
+  const last = step === TOUR.length - 1;
+  const pad = 6;
+  return (
+    <div className="tour" role="dialog" aria-modal="true" aria-label="What the panels show">
+      {rect && <div className="tour-hole" style={{ left: rect.left - pad, top: rect.top - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 }} />}
+      <div className="tour-tip panel" style={rect ? { left: rect.right + 18, top: Math.max(12, rect.top - 4) } : { left: 24, top: 120 }}>
+        <span className="tour-arrow" aria-hidden="true" />
+        <p>
+          <Rich text={TOUR[step].text(shift)} />
+        </p>
+        <div className="tour-actions">
+          <button className="text-button" onClick={onSkip}>
+            Skip tour
+          </button>
+          <button className="button primary" autoFocus onClick={onNext}>
+            {last ? "Got it" : `Next ${step + 1}/${TOUR.length}`}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

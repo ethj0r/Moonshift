@@ -1273,3 +1273,73 @@ b.num { color: var(--terra); }
 .ba { padding: 0; background: none !important; color: var(--ink) !important; border-radius: 0; font-size: 1rem; }
 .ba b { font-size: 1.15rem; }
 .crew-quote { border-left: none; padding: 4px 0; }
+.tone-food { --tone: #2f6b34; }
+
+/* ---------- Prologue drawings and the rescue track ---------- */
+.cine-art-wrap {
+  position: absolute;
+  right: clamp(12px, 4vw, 48px);
+  bottom: 132px;
+  z-index: 3;
+  animation: cine-art-in 0.5s ease both;
+}
+.cine-art {
+  margin: 0;
+  width: min(300px, 42vw);
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: #0b1020e6;
+  box-shadow: 0 8px 30px #0008;
+  color: #fff6e8;
+}
+.cine-art svg { display: block; width: 100%; height: auto; font-family: inherit; }
+.cine-art figcaption { margin-top: 6px; font-size: 0.85rem; font-weight: 700; color: #c7d2e4; text-align: center; }
+@keyframes cine-art-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.rescue-track { display: block; width: 100%; height: auto; font-family: inherit; }
+.rescue-track.animate .pip { animation: pip-on 0.35s ease both; }
+@keyframes pip-on { from { opacity: 0.25; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+.rescue-track .pip { transform-box: fill-box; transform-origin: center; }
+.goal-track {
+  margin-top: 8px;
+  padding: 8px 12px 6px;
+  border-radius: 14px;
+  background: #fff6e8f2;
+  box-shadow: 0 2px 0 #2c3a4e22;
+  width: 220px;
+}
+.goal-track .rescue-track { margin-top: 4px; }
+.reduced-motion .rescue-track .pip,
+.reduced-motion .cine-art-wrap { animation: none; }
+
+/* ---------- First-play HUD tour ---------- */
+.tour { position: fixed; inset: 0; z-index: 80; }
+.tour-hole {
+  position: fixed;
+  border-radius: 14px;
+  box-shadow: 0 0 0 9999px #05070da8;
+  outline: 3px solid #ffc23d;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+.tour-tip {
+  position: fixed;
+  max-width: min(320px, 70vw);
+  padding: 14px 16px 12px;
+  transition: all 0.3s ease;
+}
+.tour-tip p { margin: 0 0 12px; font-size: 1.05rem; line-height: 1.4; }
+.tour-actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+.tour-arrow {
+  position: absolute;
+  left: -9px;
+  top: 18px;
+  width: 16px;
+  height: 16px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+@media (max-width: 640px) {
+  .tour-tip { left: 12px !important; right: 12px; top: auto !important; bottom: 16px; max-width: none; }
+  .tour-arrow { display: none; }
+  .cine-art-wrap { left: 50%; right: auto; transform: translateX(-50%); bottom: 150px; }
+}

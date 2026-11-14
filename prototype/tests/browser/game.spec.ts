@@ -57,6 +57,11 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await expect(page.getByText(/Made-up story, real science/)).toBeVisible();
   await page.getByRole("button", { name: /Mission 1/ }).click();
 
+  // Prologue: a new player first learns where they are and who they are, before any choice.
+  await expect(page.getByText(/The Moon's south pole/)).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText(/This little robot is you/)).toBeVisible({ timeout: 10000 });
+  await expect(page.locator(".world-label", { hasText: "You: B.E.E.P." })).toBeVisible();
+
   // Opening: pack Kit + Research + Battery (GDD v2 §10).
   await brief(page, "Food pack");
   for (const item of [/Pack Garden kit/, /Pack Research crate/, /Pack Spare battery/]) {
@@ -68,6 +73,11 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
 
   // S1: turn the pipe joint by hand.
   await brief(page, "Into the habitat");
+  // First shift: a short spotlight tour of the HUD (rescue track, power, food, shield).
+  await expect(page.getByText(/it comes after shift 5/)).toBeVisible({ timeout: 10000 });
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: /^Next/ }).click();
+  await page.getByRole("button", { name: "Got it" }).click();
+  await expect(page.getByRole("dialog", { name: "What the panels show" })).toHaveCount(0);
   await walkTo(page, "Turn the pipe");
   await expect(page.getByRole("button", { name: "Do it for me" })).toHaveCount(0);
   await turn(page, 9);

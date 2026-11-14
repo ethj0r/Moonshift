@@ -10,6 +10,7 @@ import {
   InstancedMesh,
   Material,
   Mesh,
+  MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
   PerspectiveCamera,
@@ -18,7 +19,7 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import manifest from "../../asset-manifest.json";
-import { EARTH, ease, RESCUE_AT, shotProgress, SUN, type Cine } from "../game/cutscenes";
+import { beforeLanding, EARTH, ease, PROLOGUE, RESCUE_AT, RESCUE_SHIFT, shotKey, shotProgress, SUN, type Cine } from "../game/cutscenes";
 import {
   CARGO,
   ending,
@@ -349,7 +350,7 @@ function itemPlacements(props: SceneProps) {
   const wall = state.stage === 3 ? plan.wall : state.wall;
   const out: { id: WallId | "research"; at: P3; vertical?: boolean }[] = [];
   // Opening: the cargo only lies in the yard once the lander has touched down (shot 2 onward).
-  if (props.cine?.id === "opening" && props.cine.shot === 0) return out;
+  if (beforeLanding(props.cine)) return out;
   const packed = (id: string) => (state.stage === 0 ? !plan.cargo.includes(id as never) : state.cargo.includes(id as never));
   const visible: Record<WallId | "research", boolean> = {
     supply1: state.stage > 0 && state.mission.supplies >= 1,
@@ -644,7 +645,13 @@ function Crew({ props }: { props: SceneProps }) {
     <>
       {ids.map((id, i) =>
         carryingTank && id === "crew-b" ? null : (
-          <Walker key={id} to={spots[i]} reducedMotion={props.reducedMotion} scale={inShelter ? 0.4 : 0.5}>
+          <Walker
+            key={id}
+            to={spots[i]}
+            reducedMotion={props.reducedMotion}
+            scale={inShelter ? 0.4 : 0.5}
+            hop={props.cine?.id === "opening" && shotKey(props.cine) === "crew" ? i : null}
+          >
             <Model id={id} rotation={0.2 - i * 0.2} />
           </Walker>
         ),
@@ -653,7 +660,7 @@ function Crew({ props }: { props: SceneProps }) {
   );
 }
 
-function Walker({ to, reducedMotion, scale, children }: { to: Vec2; reducedMotion: boolean; scale: number; children: React.ReactNode }) {
+function Walker({ to, reducedMotion, scale, hop = null, children }: { to: Vec2; reducedMotion: boolean; scale: number; hop?: number | null; children: React.ReactNode }) {
   const ref = useRef<Group>(null);
   const first = useRef(true);
   useLayoutEffect(() => {
@@ -672,6 +679,9 @@ function Walker({ to, reducedMotion, scale, children }: { to: Vec2; reducedMotio
       g.position.z += (dz / d) * step;
       g.rotation.y = Math.atan2(dx, dz);
       g.position.y = 0.03 + Math.abs(Math.sin(performance.now() / 90)) * 0.05;
+    } else if (hop !== null && !reducedMotion) {
+      // Saying hello, one after another.
+      g.position.y = 0.03 + Math.max(0, Math.sin(performance.now() / 160 - hop * 1.1)) * 0.3;
     } else g.position.y = 0.03;
     g.scale.setScalar(scale);
   });
@@ -787,6 +797,9 @@ function Beep({ props, beep }: { props: SceneProps; beep: React.RefObject<Group 
       turn = Math.atan2(Math.sin(turn), Math.cos(turn));
       g.rotation.y += turn * Math.min(1, delta * 12);
       g.position.y = 0.02 + Math.abs(Math.sin(performance.now() / 80)) * 0.04;
+    } else if (p.cine?.id === "opening" && shotKey(p.cine) === "beep" && !p.reducedMotion) {
+      // Waking up: a few happy hops.
+      g.position.y = 0.02 + Math.abs(Math.sin(performance.now() / 170)) * 0.28;
     } else if (p.state.stage >= 6 && ending(p.state) === "safe" && !p.reducedMotion) {
       // Happy dance at the rescue.
       const t = performance.now();
@@ -812,6 +825,7 @@ function Beep({ props, beep }: { props: SceneProps; beep: React.RefObject<Group 
   return (
     <group ref={beep} position={at3(BEEP_START, 0.02)}>
       <Model id="beep" scale={0.47} />
+      {props.cine?.id === "opening" && (shotKey(props.cine) === "beep" || shotKey(props.cine) === "go") && <BootRing />}
       {props.carrying && (
         <group position={[0, 0.95, 0]} scale={props.carrying === "tank" ? 0.6 : 0.8}>
           <ItemModel id={props.carrying} position={[0, 0, 0]} />
@@ -909,14 +923,17 @@ function Lander({ at, rotation, scale, tilt, cine, scene, height }: { at: Vec2; 
     if (!g) return;
     const active = cine?.id === scene ? cine : null;
     const t = active ? shotProgress(active) : 1;
-    const falling = active?.shot === 0;
+    const key = shotKey(active);
+    // The cargo lander only arrives after the prologue has introduced the outpost.
+    g.visible = !(active && PROLOGUE.includes(key!));
+    const falling = key === "land";
     g.position.y = falling ? 0.05 + height * (1 - t) ** 2 : 0.05;
     if (flame.current) {
       flame.current.visible = falling && t < 0.98;
       flame.current.scale.y = 0.8 + Math.random() * 0.4;
     }
     if (dust.current) {
-      const puff = active?.shot === 1 ? t : falling && t > 0.85 ? 0 : 1;
+      const puff = key === "thud" ? t : falling && t > 0.85 ? 0 : 1;
       dust.current.visible = puff < 1;
       dust.current.children.forEach((m, i) => {
         const a = (i / 8) * Math.PI * 2;
@@ -953,7 +970,11 @@ export const SPACE = "#05070d";
 const RADIO_YAW = Math.atan2(EARTH[0] - FACILITY.radio[0], EARTH[2] - FACILITY.radio[1]);
 
 /** A fixed starfield on a far sphere (seeded, so it is the same every visit). */
-function Stars() {
+function Stars({ spin }: { spin: boolean }) {
+  const group = useRef<Group>(null);
+  useFrame((_, delta) => {
+    if (group.current && spin) group.current.rotation.y += delta * 1.6;
+  });
   const geometry = useMemo(() => {
     let seed = 7;
     const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
@@ -972,9 +993,11 @@ function Stars() {
     return g;
   }, []);
   return (
-    <points geometry={geometry} frustumCulled={false}>
-      <pointsMaterial color="#e8eefc" size={1.6} sizeAttenuation={false} depthWrite={false} />
-    </points>
+    <group ref={group}>
+      <points geometry={geometry} frustumCulled={false}>
+        <pointsMaterial color="#e8eefc" size={1.6} sizeAttenuation={false} depthWrite={false} />
+      </points>
+    </group>
   );
 }
 
@@ -1002,12 +1025,160 @@ function Earth() {
   );
 }
 
+/** A glowing ring that pulses out from B.E.E.P. as it switches on. */
+function BootRing() {
+  const ring = useRef<Mesh>(null);
+  useFrame(() => {
+    const m = ring.current;
+    if (!m) return;
+    const f = (performance.now() / 900) % 1;
+    m.scale.setScalar(0.6 + f * 1.6);
+    (m.material as MeshBasicMaterial).opacity = 0.9 * (1 - f);
+  });
+  return (
+    <mesh ref={ring} rotation-x={-Math.PI / 2} position={[0, 0.05, 0]}>
+      <ringGeometry args={[0.42, 0.52, 40]} />
+      <meshBasicMaterial color="#ffc23d" transparent depthWrite={false} />
+    </mesh>
+  );
+}
+
+/** A see-through copy of a model: something that will happen later (the rescue lander on its pad). */
+function Ghost({ id, position, scale = 1, rotation = 0, opacity = 0.4 }: { id: ModelId; position: P3; scale?: number; rotation?: number; opacity?: number }) {
+  const object = useMemo(() => {
+    const o = models.get(id)!.clone(true);
+    o.traverse((child) => {
+      const mesh = child as Mesh;
+      if (!mesh.isMesh) return;
+      const mats = (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).map((m) => {
+        const c = m.clone();
+        c.transparent = true;
+        c.depthWrite = false;
+        return c;
+      });
+      mesh.material = Array.isArray(mesh.material) ? mats : mats[0];
+    });
+    return o;
+  }, [id]);
+  useEffect(() => {
+    object.traverse((child) => {
+      const mesh = child as Mesh;
+      if (mesh.isMesh) (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((m) => (m.opacity = opacity));
+    });
+  }, [object, opacity]);
+  return <primitive object={object} position={position} scale={scale} rotation-y={rotation} dispose={null} />;
+}
+
+/**
+ * The prologue's teaching props, each only during its own shot:
+ * orbit – the rescue lander crossing the sky on its slow orbit;
+ * pad   – five shift lamps light up one by one, then a ghost of the rescue lander touches down;
+ * meal  – five plates over the crew, and one disappears.
+ */
+function Prologue({ cine, reducedMotion }: { cine: Cine; reducedMotion: boolean }) {
+  const key = shotKey(cine);
+  const craft = useRef<Group>(null);
+  const ghost = useRef<Group>(null);
+  const lamps = useRef<(Mesh | null)[]>([]);
+  const plate = useRef<Group>(null);
+  useFrame(() => {
+    const t = reducedMotion ? 1 : shotProgress(cine);
+    if (craft.current) {
+      // A slow arc across the sky, far above the horizon.
+      const a = -0.6 + t * 1.2;
+      craft.current.position.set(8 + Math.sin(a) * 16, 14 + Math.cos(a) * 3, -30);
+    }
+    const lit = Math.min(RESCUE_SHIFT, 1 + Math.floor(t * (RESCUE_SHIFT + 1.5)));
+    lamps.current.forEach((m, i) => {
+      if (!m) return;
+      const on = i < lit;
+      (m.material as MeshBasicMaterial).color.set(on ? (i === RESCUE_SHIFT - 1 ? "#ffd166" : "#ffc23d") : "#4a4f5c");
+      m.scale.setScalar(on && i === lit - 1 && !reducedMotion ? 1.25 : 1);
+    });
+    if (ghost.current) {
+      const d = Math.min(1, Math.max(0, (t - 0.72) / 0.25));
+      ghost.current.position.y = 6 * (1 - ease(d));
+      ghost.current.visible = t > 0.7;
+    }
+    if (plate.current) {
+      const d = Math.min(1, Math.max(0, (t - 0.35) / 0.3));
+      plate.current.scale.setScalar(Math.max(0.001, 1 - d));
+    }
+  });
+  if (key === "orbit")
+    return (
+      <group key="orbit" ref={craft}>
+        <Model id="lander" scale={1.1} rotation={0.4} />
+        <mesh position={[0, 0.6, 0]}>
+          <sphereGeometry args={[2.4, 16, 10]} />
+          <meshBasicMaterial color="#9fd0ff" transparent opacity={0.22} depthWrite={false} />
+        </mesh>
+      </group>
+    );
+  if (key === "pad")
+    return (
+      <group key="pad">
+        {Array.from({ length: RESCUE_SHIFT }, (_, i) => {
+          const x = RESCUE_PAD[0] - 2.4 + i * 1.2;
+          const z = RESCUE_PAD[1] - 2.2;
+          return (
+            <group key={i} position={[x, 0, z]}>
+              <mesh position={[0, 0.55, 0]}>
+                <cylinderGeometry args={[0.05, 0.05, 1.1, 6]} />
+                <meshStandardMaterial color="#8a8f9c" flatShading />
+              </mesh>
+              <mesh ref={(m) => void (lamps.current[i] = m)} position={[0, 1.25, 0]}>
+                <sphereGeometry args={[0.2, 12, 8]} />
+                <meshBasicMaterial color="#4a4f5c" />
+              </mesh>
+            </group>
+          );
+        })}
+        <group ref={ghost} position={[RESCUE_PAD[0], 6, RESCUE_PAD[1]]} visible={false}>
+          <Ghost id="lander" position={[0, 0.05, 0]} scale={0.5} rotation={0.4} />
+        </group>
+      </group>
+    );
+  if (key === "meal") {
+    const [cx, cz] = CREW_HOME[1];
+    return (
+      <group key="meal" position={[cx, 1.75, cz + 0.6]}>
+        {Array.from({ length: 5 }, (_, i) => {
+          const inner = (
+            <>
+              <mesh>
+                <cylinderGeometry args={[0.2, 0.17, 0.05, 16]} />
+                <meshStandardMaterial color="#fff6e8" flatShading />
+              </mesh>
+              <mesh position={[0, 0.04, 0]}>
+                <sphereGeometry args={[0.11, 10, 6]} />
+                <meshStandardMaterial color="#4f9a55" flatShading />
+              </mesh>
+            </>
+          );
+          const x = (i - 2) * 0.5;
+          return i === 4 ? (
+            <group key={i} ref={plate} position={[x, 0, 0]}>
+              {inner}
+            </group>
+          ) : (
+            <group key={i} position={[x, 0, 0]} rotation-x={0.6}>
+              {inner}
+            </group>
+          );
+        })}
+      </group>
+    );
+  }
+  return null;
+}
+
 function Sun({ cine }: { cine: Cine | null }) {
   const ref = useRef<Group>(null);
   useFrame(() => {
     if (!ref.current) return;
     const flare = cine?.id === "flare" && cine.shot === 0 ? Math.sin(shotProgress(cine) * Math.PI) * 0.9 : 0;
-    const wake = cine?.id === "opening" && cine.shot === 3 ? Math.abs(Math.sin(performance.now() / 400)) * 0.15 : 0;
+    const wake = cine?.id === "opening" && shotKey(cine) === "sun" ? Math.abs(Math.sin(performance.now() / 400)) * 0.15 : 0;
     ref.current.scale.setScalar(1 + flare + wake);
   });
   return (
@@ -1194,19 +1365,23 @@ interface LabelSpec {
 function storyTags(props: SceneProps): LabelSpec[] {
   if (props.mode !== "play") return [];
   const cine = props.cine;
-  if (cine?.id === "opening" && cine.shot === 1)
+  const key = cine?.id === "opening" ? shotKey(cine) : null;
+  if (key === "beep") return [{ key: "t:you", text: "You: B.E.E.P.", at: at3(BEEP_START, 1.1), tone: "tone-you" }];
+  if (key === "pad") return [{ key: "t:pad", text: "rescue landing pad", at: at3(RESCUE_PAD, 0.6), tone: "tone-ink" }];
+  if (key === "meal") return [{ key: "t:meal", text: "1 meal each shift", at: [CREW_HOME[1][0], 2.2, CREW_HOME[1][1] + 0.6], tone: "tone-food" }];
+  if (key === "orbit") return [{ key: "t:ride", text: "their ride home", at: [8, 17.5, -30], tone: "tone-ink" }];
+  if (key === "thud")
     return [
       { key: "t:lander", text: "cargo lander", at: at3(FACILITY.lander, 2.0), tone: "tone-ink" },
       { key: "t:cargo", text: "cargo", at: [YARD.research[0], 1.0, YARD.research[1]], tone: "tone-cargo" },
     ];
-  if (cine?.id === "opening" && cine.shot === 2)
+  if (key === "crew")
     return [
       { key: "t:a", text: "Commander", at: at3(CREW_HOME[0], 1.12), tone: "tone-commander" },
       { key: "t:b", text: "Technician", at: at3(CREW_HOME[1], 1.12), tone: "tone-technician" },
       { key: "t:c", text: "Researcher", at: at3(CREW_HOME[2], 1.12), tone: "tone-researcher" },
-      { key: "t:you", text: "You: B.E.E.P.", at: at3(BEEP_START, 1.0), tone: "tone-you" },
     ];
-  if (cine?.id === "opening" && cine.shot === 3)
+  if (key === "sun")
     return [
       { key: "t:sun", text: "Sun", at: [SUN[0], SUN[1] + 3.2, SUN[2]], tone: "tone-danger" },
       { key: "t:earth", text: "Earth", at: [EARTH[0], EARTH[1] + 3.0, EARTH[2]], tone: "tone-air" },
@@ -1272,7 +1447,7 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
   return (
     <>
       <color attach="background" args={[sky]} />
-      <Stars />
+      <Stars spin={props.cine?.id === "opening" && shotKey(props.cine) === "jump" && !props.reducedMotion} />
       <Earth />
       <hemisphereLight args={["#c0d8ec", "#e6cfb2", props.goggles ? 0.7 : 2.2]} />
       <directionalLight position={[2, 9, 6]} color="#ffe2b8" intensity={props.goggles ? 0.6 : 2.7} />
@@ -1289,7 +1464,8 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
       <Lander at={FACILITY.lander} rotation={-0.7} scale={0.75} tilt={0.07} cine={props.mode === "play" ? props.cine : null} scene="opening" height={14} />
       {state.stage >= 6 && <Lander at={RESCUE_AT} rotation={0.4} scale={0.5} tilt={0} cine={props.cine} scene="rescue" height={9} />}
       <Sun cine={props.cine} />
-      {props.mode === "play" && props.cine?.id === "opening" && props.cine.shot === 3 && <SunBeams />}
+      {props.mode === "play" && props.cine?.id === "opening" && shotKey(props.cine) === "sun" && <SunBeams />}
+      {props.mode === "play" && props.cine?.id === "opening" && <Prologue cine={props.cine} reducedMotion={props.reducedMotion} />}
       <ShelterGrid highlight={state.stage === 3 && !!props.carrying} />
       <Fan running={state.stage === 4 && (plan.moveCrew || state.crewMoved)} animate={animate} />
       <Pipe angle={state.stage === 1 ? props.pipeAngle : 0} flowing={state.pipeFixed || plan.pipeFixed} animate={animate} />
