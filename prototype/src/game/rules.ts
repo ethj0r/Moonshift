@@ -513,13 +513,23 @@ export const isProtected = (state: State) =>
 export const ending = (state: State) =>
   isProtected(state) && state.missed === 0 ? "safe" : "rescue";
 
-/** Relative dose bars only; real CRaTER/OSDR numbers are still pending (GDD v2, "Belum selesai"). */
+/**
+ * Fewest particles the shelter can let in, as a share of the habitat.
+ * NASA Artemis I (MARE): dose rates differed about 4x between Orion's most and least
+ * shielded spots, so the best wall in the game lets in 1/4 of the habitat's particles.
+ */
+export const BEST_SHELTER_SHARE = 0.25;
+/** Thickest wall the crew can build: one vent stays open for air unless the spare joint is in. */
+export const maxShield = (state: State) => (state.spareInstalled ? 8 : 7);
+/** Dose bars in percent of the habitat. A comparison scaled to Artemis I, not a measured dose. */
 export function doseBars(state: State) {
-  const shelter = (shield: number) => 100 - shield * 10;
+  const max = maxShield(state);
+  const shelter = (shield: number) =>
+    Math.round(100 * (1 - (1 - BEST_SHELTER_SHARE) * Math.min(shield, max) / max));
   return {
     habitat: 100,
     yours: state.crewMoved ? shelter(state.shield) : 100,
-    full: shelter(8),
+    full: shelter(max),
   };
 }
 

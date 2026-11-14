@@ -1197,3 +1197,27 @@ b.num { color: var(--terra); }
 }
 @keyframes guide-bob-x { to { transform: translateX(-8px); } }
 .reduced-motion .tray.nudge { animation: none; box-shadow: 0 0 0 4px #ffc23d; }
+.data-book a {
+  font-size: 0.85em;
+  color: #2c5f8a;
+}
+.storm-timeline {
+  margin-top: 12px;
+}
+.storm-timeline ol {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+.storm-timeline li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-left: 3px solid #e2683a;
+  background: rgba(247, 230, 200, 0.6);
+  border-radius: 4px;
+}

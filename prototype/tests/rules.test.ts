@@ -174,3 +174,20 @@ describe("rules", () => {
     }
   });
 });
+
+describe("dose bars (scaled to NASA Artemis I MARE, ~4x)", () => {
+  const base = initialSession().state;
+  it("the thickest buildable wall lets in 1/4 of the habitat's particles", () => {
+    const s = { ...base, crewMoved: true, shield: 7 };
+    expect(doseBars(s).full).toBe(25);
+    expect(doseBars(s).yours).toBe(doseBars(s).full);
+  });
+  it("with the spare joint both vents can close, so 8 is the best wall", () => {
+    const s = { ...base, crewMoved: true, spareInstalled: true, shield: 7 };
+    expect(doseBars(s).full).toBe(25);
+    expect(doseBars(s).yours).toBeGreaterThan(25);
+  });
+  it("crew left in the habitat get the full dose", () => {
+    expect(doseBars({ ...base, crewMoved: false, shield: 8 }).yours).toBe(100);
+  });
+});

@@ -10,12 +10,18 @@ async function skipScene(page: Page) {
   const skip = page.getByRole("button", { name: /Skip scene/ });
   if (await skip.isVisible().catch(() => false)) await skip.click().catch(() => {});
 }
-async function brief(page: Page, answer: string) {
+async function brief(page: Page, answer: string, seen: string[] = []) {
   const next = page.getByRole("button", { name: /^Next/ });
   await expect(next.or(page.getByRole("button", { name: /Skip scene/ }))).toBeVisible({ timeout: 10000 });
   await skipScene(page);
   await next.waitFor({ timeout: 10000 });
-  while (await next.isVisible().catch(() => false)) await next.click();
+  let text = "";
+  while (await next.isVisible().catch(() => false)) {
+    text += await page.locator("body").innerText();
+    await next.click();
+  }
+  // Lines that must appear somewhere in this brief (e.g. NASA data in Earth's reply).
+  for (const s of seen) expect(text).toContain(s);
   // Scaffolded guess: facts shown first; choosing explains the option before it is confirmed.
   await expect(page.getByText("What you know")).toBeVisible();
   await expect(page.locator(".know-art")).toBeVisible();
@@ -76,8 +82,11 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await runShift(page, "Start shift 3");
 
   // S3: Earth's reply makes the water tank movable; build the wall.
-  await brief(page, "A1");
+  // Earth's reply quotes the real NASA DONKI measurement and forecast of the 10 Sep 2017 cloud.
+  await brief(page, "A1", ["2,650 km every second", "predicts"]);
   await expect(page.getByText("Reply from Earth arrived")).toBeVisible();
+  // DONKI timing: the flare at 15:35 UTC, particles at 16:45 UTC.
+  await expect(page.getByText("A giant flare. Particles came 70 minutes later.")).toBeVisible();
   const map = page.getByLabel("Shelter map");
   await map.getByRole("button", { name: "Supply crate", exact: true }).first().click();
   await map.getByRole("button", { name: /^A1:/ }).click();
@@ -111,6 +120,9 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await expect(page.getByRole("heading", { name: "Safe and Sound!" })).toBeVisible();
   await expect(page.getByText("Earth: data received!")).toBeVisible();
   await page.getByRole("button", { name: "Debrief" }).click();
+  // Debrief page 1: dose bars scaled to Artemis I, and the real DONKI event chain.
+  await expect(page.getByLabel("What really happened")).toContainText("16:45");
+  await expect(page.getByText(/Artemis I/)).toBeVisible();
   await page.getByRole("button", { name: /^Next/ }).click();
   await expect(page.getByText(/water tank/)).toBeVisible();
   await page.getByRole("button", { name: /^Next/ }).click();

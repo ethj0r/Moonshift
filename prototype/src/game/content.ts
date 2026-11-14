@@ -51,7 +51,11 @@ export function briefLine(state: State): Line {
 export function extraLines(state: State): Line[] {
   const lines: Line[] = [];
   if (state.stage === 3 && state.forecast === "arrived")
-    lines.push({ speaker: "earth", text: "Earth says: a big sunspot is very active. Get ready." });
+    lines.push(
+      state.mission.storm.key === "sep2017"
+        ? { speaker: "earth", text: "Earth says: NASA saw a cloud leave the Sun at **2,650 km every second**. Their model **predicts** it will brush past us. Get ready!" }
+        : { speaker: "earth", text: "Earth says: a big sunspot is very active. Get ready." },
+    );
   if (state.stage === 3)
     lines.push(
       state.forecast === "arrived"
@@ -214,7 +218,7 @@ export function dataPanel(state: State): DataPanel | null {
       return { kid: `The ${state.mission.storm.label} storm`, what: `${state.mission.storm.label} solar storm`, when: "Mission card", source: sep ? "NASA DONKI" : "NOAA SWPC" };
     case 3:
       return sep
-        ? { kid: "A giant flare on the Sun", what: "Solar flare X8.2", when: "10 Sep 2017, 15:35 UTC", source: "NASA DONKI" }
+        ? { kid: "A giant flare. Particles came 70 minutes later.", what: "Solar flare X8.2 · protons 70 min later", when: "10 Sep 2017, 15:35 → 16:45 UTC", source: "NASA DONKI" }
         : { kid: "A giant flare on the Sun", what: "Big solar flare", when: "28 Oct 2003", source: "NOAA SWPC" };
     case 4:
       return sep
@@ -229,13 +233,31 @@ export function dataPanel(state: State): DataPanel | null {
   }
 }
 
-export const DATA_BOOK = [
-  { name: "NASA DONKI", text: "NASA's diary of space weather. Flares and particle storms are logged here.", used: "Shift 3–5 storm data" },
-  { name: "NOAA SWPC storm scale", text: "S1–S5 sizes for radiation storms. Bigger storms need thicker walls.", used: "Shield needed" },
-  { name: "GOES satellites", text: "Measure protons near Earth. The Moon is about as far from the Sun, so the numbers are a fair guide.", used: "pfu values" },
-  { name: "NASA LRO CRaTER", text: "Measures radiation near the Moon. Dose numbers will come from here.", used: "Debrief (comparison only for now)" },
-  { name: "NASA Orion radiation plan", text: "Astronauts pile supplies around themselves during a solar storm.", used: "The shelter wall idea" },
+export interface DataSource {
+  name: string;
+  text: string;
+  used: string;
+  url: string;
+}
+const DONKI_URL = "https://kauai.ccmc.gsfc.nasa.gov/DONKI/";
+export const DATA_BOOK: DataSource[] = [
+  { name: "NASA DONKI · space weather log", text: "NASA's diary of space weather. It logged the 10 Sep 2017 flare at 15:35 UTC and the particles at 16:45 UTC.", used: "Shift 3 warning time and Shift 3–5 storm panels", url: DONKI_URL },
+  { name: "NASA DONKI · CME analysis and WSA-ENLIL forecast", text: "NASA measured the cloud from the Sun at 2,650 km/s. Its WSA-ENLIL model predicted the cloud would brush past Earth and Mars.", used: "Earth's reply to your radio message, debrief timeline", url: DONKI_URL },
+  { name: "GOES satellites (via DONKI)", text: "Measure protons near Earth. The Moon is about as far from the Sun, so the numbers are a fair guide.", used: "Particle counts (pfu) in Shift 4", url: DONKI_URL },
+  { name: "NOAA SWPC storm scale", text: "S1–S5 sizes for radiation storms. Bigger storms need thicker walls.", used: "How thick the wall must be", url: "https://www.swpc.noaa.gov/noaa-scales-explanation" },
+  { name: "NASA Artemis I · MARE test", text: "Two test dummies rode in Orion and measured radiation. The best-protected spot got about 4 times less than the least protected.", used: "Dose bars: the best wall lets in 1/4", url: "https://www.dlr.de/en/latest/news/2024/orion-spacecraft-radiation-protection-tested-initial-findings-from-artemis-i-moon-mission" },
+  { name: "NASA OSDR · OSD-267", text: "Red lettuce grown on the Space Station in 2014, compared with lettuce grown on Earth.", used: "The research crate's plant samples", url: "https://osdr.nasa.gov/bio/repo/data/studies/OSD-267" },
 ];
+
+/** Real event chain for the debrief timeline (NASA DONKI, linked events of 10 Sep 2017). */
+export const STORM_TIMELINE: Partial<Record<State["mission"]["storm"]["key"], { time: string; kid: string; what: string }[]>> = {
+  sep2017: [
+    { time: "15:35", kid: "Flare", what: "X8.2 flare" },
+    { time: "16:09", kid: "Cloud leaves the Sun", what: "CME, 2,650 km/s" },
+    { time: "16:45", kid: "Particles arrive", what: "Protons >10 MeV" },
+    { time: "13 Sep", kid: "Model: cloud brushes Earth", what: "WSA-ENLIL: glancing blow at Earth" },
+  ],
+};
 
 export const GLOSSARY: Record<string, string> = {
   "Solar flare": "A bright flash on the Sun. It can send fast particles our way.",
@@ -315,7 +337,7 @@ export function clue(state: State, plan: Plan, id: string): Clue | null {
         ? {
             title: "Radio",
             a: { icon: "mail", label: "Send", text: "Plant data goes to Earth · **1** power" },
-            think: "Earth can hear us now. Is there research to send?",
+            think: "Earth can hear us now. Is there research to send? (Real NASA plant data: OSDR study OSD-267.)",
           }
         : {
             title: "Radio",

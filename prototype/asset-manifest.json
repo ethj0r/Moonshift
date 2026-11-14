@@ -35,17 +35,17 @@
       "id": "crew-a",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_A.glb",
       "url": "assets/models/crew-a.glb",
-      "sourceBytes": 83912,
-      "preparedBytes": 82156,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88752,
+      "preparedBytes": 84748,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "cc95bbd31ccd3f09bfdbe337b94d86a3931ab88a43880b62e7d63f4d341cccce",
-      "preparedSha256": "cc0f94d7c24a420c443e025146611381558e15ed4d25532c4286e7ec81101b48",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "d3db226c5c7db6a968556df668bd609768326a3fa179393a7f59cbc96e12438b",
+      "preparedSha256": "9d9000d32d09b2d56f60373fc3243e1dca3f991866de4df24e8d39091e178826",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -63,17 +63,17 @@
       "id": "crew-b",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_B.glb",
       "url": "assets/models/crew-b.glb",
-      "sourceBytes": 83880,
-      "preparedBytes": 82124,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88720,
+      "preparedBytes": 84716,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "238b9f31f724f1d09ce1088c5a8af43622f399aec01ba0f0360e36b5b4be4c72",
-      "preparedSha256": "a41c20f4f6c45a422cba743d836fe0ad9f2f844fd105e7ab521bc381f3abdecd",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "9be72c2a3e1f987077e8bd47217128f71d804b97ca5717869e43a4b64fb41d38",
+      "preparedSha256": "d422d0579e363ccb51e6db0a1d119a64ced082de0143fedf6c4a47c9d9c85385",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -91,17 +91,17 @@
       "id": "crew-c",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_C.glb",
       "url": "assets/models/crew-c.glb",
-      "sourceBytes": 83876,
-      "preparedBytes": 82120,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88716,
+      "preparedBytes": 84712,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "56625cb63a39cd465a4ea6b8f2198b72956d0c96961e24dc4b342641e8888ad7",
-      "preparedSha256": "fd4f7b33c24fc90cf6af9f8ca96ed1d2d8be7dc751fa1be3a6403bff12f8baaa",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "0ede9405ba70b1079d38bf8515018508fd30071ed74554e411fac6b68a29dd79",
+      "preparedSha256": "f83054928e252edada6d3889fef51890ea4e472086ab06c1a9ed189237fb7c6e",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -266,14 +266,14 @@
       "id": "garden",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Garden_Facility.glb",
       "url": "assets/models/garden.glb",
-      "sourceBytes": 71332,
-      "preparedBytes": 64696,
-      "sourcePrimitives": 28,
-      "preparedPrimitives": 11,
-      "sourceTriangles": 874,
-      "preparedTriangles": 874,
-      "sourceSha256": "dd0972780442144073c8ef62d9e94bac8ec976ee57f1e5923ba6986904c34099",
-      "preparedSha256": "31344841a2f6985fadc9bf136994000bace12ec3f538966b7adc42fd03c9b613",
+      "sourceBytes": 79092,
+      "preparedBytes": 71068,
+      "sourcePrimitives": 32,
+      "preparedPrimitives": 12,
+      "sourceTriangles": 994,
+      "preparedTriangles": 994,
+      "sourceSha256": "58d1a5299cb03b457603fa097213a62be9aa2329f00bd76dc825722130b64f26",
+      "preparedSha256": "f82a8443f35d3627289f98fcee937a5b6f2c39ed1cad415b0dff16c9ec40b66d",
       "bounds": {
         "min": [
           -1.2000000476837158,
@@ -294,14 +294,14 @@
       "id": "workshop",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Workshop_Intact.glb",
       "url": "assets/models/workshop.glb",
-      "sourceBytes": 62184,
-      "preparedBytes": 50960,
+      "sourceBytes": 66660,
+      "preparedBytes": 54392,
       "sourcePrimitives": 33,
-      "preparedPrimitives": 11,
-      "sourceTriangles": 744,
-      "preparedTriangles": 744,
-      "sourceSha256": "ce20b663cdc75cd6f1f02c0d6b437c9d02e3ff80f7d399e944a58c24f30742d7",
-      "preparedSha256": "4aaf92130a2e69f1f9022da66528e4a2b23bba47f0111c8dd697395f1346c704",
+      "preparedPrimitives": 9,
+      "sourceTriangles": 878,
+      "preparedTriangles": 878,
+      "sourceSha256": "e312f83094059b0568ddf3b47bd7efd7ebf9b2efc56d72c13efe41836bf50b7d",
+      "preparedSha256": "7f0d5580cbb9871b0416413191e4f567d7236e6a3f8aebae8bf2c5e88652964b",
       "bounds": {
         "min": [
           -1.2000000476837158,
@@ -310,7 +310,7 @@
         ],
         "max": [
           1.3999999463558197,
-          1.9499999564141035,
+          1.7800000309944153,
           0.949999988079071
         ]
       },
@@ -322,14 +322,14 @@
       "id": "radio",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Radio_Station.glb",
       "url": "assets/models/radio.glb",
-      "sourceBytes": 61224,
-      "preparedBytes": 46760,
-      "sourcePrimitives": 37,
+      "sourceBytes": 50016,
+      "preparedBytes": 40060,
+      "sourcePrimitives": 27,
       "preparedPrimitives": 9,
-      "sourceTriangles": 678,
-      "preparedTriangles": 678,
-      "sourceSha256": "96c15203db2b992eb63f98290bd4bb5a12f3cc314f72cedc0b918db4dfca61c4",
-      "preparedSha256": "a783b6edaca867e6c95c6828e9d09400fc6ccfb44cbef867818cb550c3bfaa43",
+      "sourceTriangles": 550,
+      "preparedTriangles": 550,
+      "sourceSha256": "392de0df9b6dc556cc42ce8fb1a53ab56d0934b36cfbbcad9d274a113c382a5b",
+      "preparedSha256": "8fdf8696e659890dd3c8f4672dcbe15199b71dae448950b6effca2d0e7715daa",
       "bounds": {
         "min": [
           -0.949999988079071,
@@ -337,8 +337,8 @@
           -0.949999988079071
         ],
         "max": [
-          0.9806458086135208,
-          3.6499999538064003,
+          0.9500000178813934,
+          2.503173556156896,
           0.949999988079071
         ]
       },
@@ -500,8 +500,8 @@
       "preparedPrimitives": 10,
       "sourceTriangles": 944,
       "preparedTriangles": 944,
-      "sourceSha256": "e490ef3bb82c2af31f2fccd53308ef7c500ea623cacc59b5a2927cbcb4fa744b",
-      "preparedSha256": "e3329600231f74fd323793858817d44732ef3b26f922108ce2f2baac8abd396a",
+      "sourceSha256": "433146b64ddcd5f4e269e08afe25148994afde3a1a8d14c12a80c222f1b17440",
+      "preparedSha256": "a9fcd74adc8dc252172ab40dce72ab69364f2440c135b3e86b46f147e841d258",
       "bounds": {
         "min": [
           -1.612377233457182,
@@ -548,11 +548,11 @@
     }
   ],
   "totals": {
-    "sourceBytes": 1151272,
-    "preparedBytes": 980916,
-    "sourcePrimitives": 434,
-    "preparedPrimitives": 154,
-    "sourceTriangles": 16098,
-    "preparedTriangles": 15066
+    "sourceBytes": 1166820,
+    "preparedBytes": 991796,
+    "sourcePrimitives": 440,
+    "preparedPrimitives": 153,
+    "sourceTriangles": 16368,
+    "preparedTriangles": 15336
   }
 }

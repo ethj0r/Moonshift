@@ -1153,7 +1153,7 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
       {(plan.power.includes("lamp") || (state.lampLit && state.stage === 4)) && (
         <Glow position={[FACILITY.workshop[0] + 0.6, 1.3, FACILITY.workshop[1] + 0.9]} color="#c77dff" />
       )}
-      {plan.power.includes("radio") && <Glow position={[FACILITY.radio[0], 3.6, FACILITY.radio[1]]} color="#33a9a0" />}
+      {plan.power.includes("radio") && <Glow position={[FACILITY.radio[0], 2.6, FACILITY.radio[1]]} color="#33a9a0" />}
       {(props.goggles || (storm && props.phase !== "play")) && <ParticleLines wall={wall} />}
       {storm && animate && <StormSnow />}
       <Crew props={props} />

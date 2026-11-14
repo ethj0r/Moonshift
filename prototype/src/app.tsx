@@ -35,7 +35,7 @@ import {
   type Plan,
   type WallId,
 } from "./game/rules";
-import { AHA, briefLine, CELL_HINT, clue, DATA_BOOK, dataPanel, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
+import { AHA, briefLine, CELL_HINT, clue, DATA_BOOK, dataPanel, STORM_TIMELINE, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
 import { interactables, nextGoal, type Gesture, type Vec2 } from "./game/world";
 import { Dialog } from "./ui/Dialog";
 import { angleGap, Dial, Hold, Pots } from "./ui/Gestures";
@@ -1482,6 +1482,9 @@ export default function App() {
                     <strong>{entry.name}</strong>
                     <span>{entry.text}</span>
                     <small>Used for: {entry.used}</small>
+                    <a href={entry.url} target="_blank" rel="noreferrer">
+                      Source
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -1559,7 +1562,33 @@ function DoseBars({ state, cadet, animate, full = false }: { state: Parameters<t
           {!cadet && <small>{row.value}%</small>}
         </div>
       ))}
-      <small className="hint">{cadet ? "Shorter bar = fewer particles = safer." : "A comparison for now. Real dose numbers from NASA CRaTER come later."}</small>
+      <small className="hint">
+        {cadet
+          ? "Shorter bar = fewer particles = safer. In NASA's Artemis I test, the best-protected spot got about 4 times less."
+          : "Scaled to NASA Artemis I (MARE): Orion's best-shielded spot got about 4× less than its least shielded spot, so the thickest wall here lets in 1/4. A comparison, not a measured dose."}
+      </small>
+    </div>
+  );
+}
+
+/** The real event chain behind the storm (NASA DONKI), shown in the debrief. */
+function StormTimeline({ state, cadet }: { state: Snapshot; cadet: boolean }) {
+  const steps = STORM_TIMELINE[state.mission.storm.key];
+  if (!steps) return null;
+  return (
+    <div className="storm-timeline panel" aria-label="What really happened">
+      <span className="meter-name">
+        {cadet ? "What really happened" : "Real event chain"} · {state.mission.storm.label}
+      </span>
+      <ol>
+        {steps.map((s) => (
+          <li key={s.time}>
+            <b>{s.time}</b>
+            <span>{cadet ? s.kid : s.what}</span>
+          </li>
+        ))}
+      </ol>
+      <small className="hint">{cadet ? "From NASA's space weather log." : "Times in UTC, 10 Sep 2017 unless dated. Source: NASA DONKI."}</small>
     </div>
   );
 }
@@ -1587,7 +1616,12 @@ function Debrief(props: {
       <span className="result-tag">
         DEBRIEF {props.page + 1}/3 · {ending(state) === "safe" ? "SAFE AND SOUND" : "RESCUE AT LAST"}
       </span>
-      {props.page === 0 && <DoseBars state={state} cadet={props.cadet} animate={false} full />}
+      {props.page === 0 && (
+        <>
+          <DoseBars state={state} cadet={props.cadet} animate={false} full />
+          <StormTimeline state={state} cadet={props.cadet} />
+        </>
+      )}
       {props.page === 1 && (
         <>
           <p className="lesson">
