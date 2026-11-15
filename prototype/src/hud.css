@@ -1343,3 +1343,44 @@ b.num { color: var(--terra); }
   .tour-arrow { display: none; }
   .cine-art-wrap { left: 50%; right: auto; transform: translateX(-50%); bottom: 150px; }
 }
+
+/* Title screen, top right: made-up story vs real science. */
+.truth-card {
+  position: absolute;
+  z-index: 3;
+  top: 22px;
+  right: 22px;
+  width: 320px;
+  padding: 14px 16px 12px;
+  border: 1.5px solid #f4b23a66;
+  border-radius: 18px;
+  background: #0d1422d9;
+  backdrop-filter: blur(6px);
+  color: #fff6e8;
+  box-shadow: 0 12px 32px #0007;
+}
+.truth-head {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f4b23a;
+}
+.truth-row { display: flex; gap: 12px; align-items: center; padding: 8px 0; }
+.truth-row + .truth-row { border-top: 1px solid #ffffff1c; }
+.truth-row b { display: inline-block; padding: 1px 9px; margin-bottom: 3px; border-radius: 99px; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; }
+.truth-row.made b { background: #6e5bb0; color: #fff; }
+.truth-row.real b { background: #f4b23a; color: #2c3a4e; }
+.truth-row small { display: block; font-size: 0.9rem; font-weight: 700; line-height: 1.3; color: #dfe6f1; }
+.truth-art { display: grid; place-items: center; flex: 0 0 auto; width: 60px; height: 60px; border-radius: 14px; background: #ffffff10; }
+.truth-art img { width: 52px; height: 52px; object-fit: contain; }
+.truth-art svg { width: 56px; height: 56px; overflow: visible; }
+.truth-art .corona { animation: truth-pulse 3s ease-in-out infinite; transform-origin: 32px 32px; }
+.truth-art .spark { animation: truth-spark 1.8s ease-out infinite; }
+@keyframes truth-pulse { 50% { transform: scale(1.08); opacity: 0.6; } }
+@keyframes truth-spark { from { opacity: 1; transform: translate(0, 0); } to { opacity: 0; transform: translate(6px, -6px); } }
+@media (max-width: 760px) {
+  .truth-card { position: static; width: auto; margin: 12px; }
+}

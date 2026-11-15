@@ -54,7 +54,8 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await page.goto("/?diagnostics");
   await expect(page.getByRole("button", { name: /Mission 1/ })).toBeEnabled({ timeout: 25000 });
   // Judges and kids see that the story is made up but the data is real.
-  await expect(page.getByText(/Made-up story, real science/)).toBeVisible();
+  await expect(page.getByLabel("Made-up story, real science")).toContainText("September 2017");
+  await expect(page.getByRole("button", { name: /Specialist/ })).toHaveCount(0);
   await page.getByRole("button", { name: /Mission 1/ }).click();
 
   // Prologue: a new player first learns where they are and who they are, before any choice.

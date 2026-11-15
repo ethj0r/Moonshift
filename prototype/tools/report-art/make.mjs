@@ -6,7 +6,7 @@ const crew = { a: -0.2, b: -0.5, c: -0.8 }; // left one turns right, right one t
 for (const [k, ry] of Object.entries(crew))
   for (const face of ["happy", "calm", "worried", "tired"])
     jobs.push([`${out}/crew-${k}-${face}.webp`, `id=crew-${k}&ry=${ry}&face=${face}&w=420&h=560&el=0.1&pad=1.0`]);
-for (const id of ["radio", "food", "kit", "supply", "garden"])
+for (const id of ["radio", "food", "kit", "supply", "garden", "beep"])
   jobs.push([`${out}/${id}.webp`, `id=${id}&ry=-0.6&w=320&h=320&pad=0.95`]);
 execFileSync("node", ["tools/report-art/snap.mjs", JSON.stringify(jobs)], { stdio: "inherit" });
 // Trim the transparent margin so each picture fills its box (Pillow keeps webp alpha).

@@ -176,8 +176,9 @@ export default function App() {
   const [screen, setScreen] = useState<"title" | "game">("title");
   const [modal, setModal] = useState<Modal>(null);
   const [returnToPause, setReturnToPause] = useState(false);
-  const [settings, setSettings] = useState<Settings>(() =>
-    load("moonshift-preferences", {
+  // One mode for everyone: Cadet (pictures, short words, lines read aloud). An old saved "specialist" is ignored.
+  const [settings, setSettings] = useState<Settings>(() => ({
+    ...load("moonshift-preferences", {
       reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
       lowGraphics: false,
       voice: true,
@@ -186,7 +187,8 @@ export default function App() {
       timer: false,
       mode: "cadet" as Mode,
     }),
-  );
+    mode: "cadet" as Mode,
+  }));
   const [progress, setProgress] = useState<Progress>(() => load("moonshift-progress", { badges: [], newMission: false }));
   const [ready, setReady] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
@@ -767,6 +769,7 @@ export default function App() {
       </div>
 
       {titleMenu && <div className="title-shade" aria-hidden="true" />}
+      {titleMenu && <TruthCard />}
       {titleMenu ? (
         <section className="title-menu" aria-label="Main menu">
           <div className="mission-patch">
@@ -776,24 +779,6 @@ export default function App() {
           <h1>MOONSHIFT</h1>
           <p className="title-subtitle">Help B.E.E.P. the robot keep three astronauts safe.</p>
           <p className="title-description">You are B.E.E.P. A real solar storm from NASA data is coming. You have five shifts.</p>
-          <p className="fiction-note">
-            <Icon name="research" size={15} /> Made-up story, real science: the outpost and crew are invented; the storm and its numbers are real NASA data.
-          </p>
-          <div className="mode-cards" role="radiogroup" aria-label="Pilot card">
-            {(["cadet", "specialist"] as const).map((mode) => (
-              <button
-                key={mode}
-                role="radio"
-                aria-checked={settings.mode === mode}
-                className={`mode-card ${settings.mode === mode ? "selected" : ""}`}
-                onClick={() => setSettings({ ...settings, mode })}
-              >
-                <Icon name={mode === "cadet" ? "crew" : "research"} size={26} />
-                <strong>{mode === "cadet" ? "Cadet" : "Specialist"}</strong>
-                <span>{mode === "cadet" ? "Ages 7–9 · pictures, short words, read aloud" : "Ages 10–12 · real NASA numbers and units"}</span>
-              </button>
-            ))}
-          </div>
           <nav className="main-menu-buttons" aria-label="Start menu">
             <button className="button primary menu-button" disabled={!ready || sceneError} onClick={() => startGame()}>
               Mission 1 <Icon name="arrow" size={21} />
@@ -1636,15 +1621,8 @@ export default function App() {
             <>
               <label className="setting-row">
                 <span>
-                  <strong>Specialist mode</strong>
-                  <small>Show numbers and longer “Why?” answers.</small>
-                </span>
-                <input type="checkbox" checked={settings.mode === "specialist"} onChange={(e) => setSettings({ ...settings, mode: e.target.checked ? "specialist" : "cadet" })} />
-              </label>
-              <label className="setting-row">
-                <span>
                   <strong>Read lines aloud</strong>
-                  <small>Cadet mode speaks crew lines automatically.</small>
+                  <small>Crew lines are spoken automatically.</small>
                 </span>
                 <input type="checkbox" checked={settings.voice} onChange={(e) => setSettings({ ...settings, voice: e.target.checked })} />
               </label>
@@ -1841,3 +1819,44 @@ function HudTour({ step, shift, onNext, onSkip }: { step: number; shift: number;
   );
 }
 
+
+/** Title screen, top right: what is made up and what is real, side by side. */
+function TruthCard() {
+  return (
+    <aside className="truth-card" aria-label="Made-up story, real science">
+      <span className="truth-head">Made-up story · real science</span>
+      <div className="truth-row made">
+        <span className="truth-art">
+          <img src={`${import.meta.env.BASE_URL}assets/report/beep.webp`} alt="" width={64} height={64} />
+        </span>
+        <span>
+          <b>Made up</b>
+          <small>The outpost, the three astronauts and B.E.E.P.</small>
+        </span>
+      </div>
+      <div className="truth-row real">
+        <span className="truth-art sun" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <defs>
+              <radialGradient id="sun-g" cx="45%" cy="40%" r="60%">
+                <stop offset="0" stopColor="#fff3b0" />
+                <stop offset="0.55" stopColor="#f4b23a" />
+                <stop offset="1" stopColor="#e2683a" />
+              </radialGradient>
+            </defs>
+            <circle className="corona" cx="32" cy="32" r="27" fill="#f4b23a33" />
+            <circle cx="32" cy="32" r="19" fill="url(#sun-g)" />
+            <path className="flare" d="M47 22 C56 14 60 20 54 26 C50 30 48 27 50 24" fill="none" stroke="#ffd36b" strokeWidth="3" strokeLinecap="round" />
+            {[0, 1, 2, 3, 4].map((i) => (
+              <circle key={i} className="spark" cx={52 + i * 2.2} cy={14 - i * 1.6} r={1.6} fill="#ff8a3d" style={{ animationDelay: `${i * 0.25}s` }} />
+            ))}
+          </svg>
+        </span>
+        <span>
+          <b>Real</b>
+          <small>The September 2017 solar storm and its numbers, from NASA data.</small>
+        </span>
+      </div>
+    </aside>
+  );
+}
