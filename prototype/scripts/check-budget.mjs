@@ -16,6 +16,7 @@ async function list(directory) {
 const files = await list(resolve("dist"));
 let js = 0,
   fonts = 0,
+  voice = 0,
   transfer = 0;
 for (const file of files) {
   const size = /\.(js|css|html)$/.test(file)
@@ -23,13 +24,16 @@ for (const file of files) {
     : (await stat(file)).size;
   if (file.endsWith(".js")) js += size;
   if (file.endsWith(".woff2")) fonts += size;
-  transfer += size;
+  // Voice clips stream one at a time when a line is read aloud, so they are not part of the page load.
+  if (/[\\/]voice[\\/]/.test(file)) voice += size;
+  else transfer += size;
 }
 const report = {
   jsGzipBytes: js,
   fontBytes: fonts,
   totalEstimatedTransferBytes: transfer,
+  voiceBytes: voice,
 };
 console.log("Production asset budget:", report);
-if (js > 450 * 1024 || fonts > 80 * 1024 || transfer > 2 * 1024 * 1024)
+if (js > 450 * 1024 || fonts > 80 * 1024 || transfer > 2 * 1024 * 1024 || voice > 2 * 1024 * 1024)
   throw new Error("Production payload exceeds the agreed budget");

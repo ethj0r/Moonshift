@@ -1,0 +1,1283 @@
+{
+  "tab": "06 Technical Design",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 06 · TECHNICAL"
+    },
+    {
+      "t": "h1",
+      "x": "Technical Design"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what the game must do on the target hardware, how the systems fit together, and how the team proves it every day."
+    },
+    {
+      "t": "ins",
+      "x": "Write 6.1 and 6.7 first; they define what every other section is allowed to cost. Fill 6.2 and 6.4 with named owners before the first sprint, and revisit 6.9 every time the build breaks."
+    },
+    {
+      "t": "h2",
+      "x": "6.1 Technical vision and constraints"
+    },
+    {
+      "t": "ins",
+      "x": "State the technical promise in one paragraph, then list the constraints that cannot be traded. A vision that ignores the team size, engine, or timeline is a pitch, not a plan."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift runs at 60 fps on a GTX 1060 laptop, loads Hadley Depot in 8 seconds, holds 200 interactive props, and saves in under 2 seconds; a clean checkout builds in 25 minutes. The team is 9 people with 3 engineers on Unreal Engine 5.4.2 for 9 months, so the renderer stays stock and networking is out of scope."
+    },
+    {
+      "t": "p",
+      "x": "The technical vision describes what the game must do reliably, not what the engine can theoretically do. It should name the frame rate, the load time, the number of simultaneous actors, and the platforms that must run it on day one. Keep it to four sentences; if it needs a diagram, the architecture is not ready."
+    },
+    {
+      "t": "fill",
+      "x": "Technical vision: {{A 60 fps single-player game on a 2019 laptop, with 200 interactive props per level, saves under two seconds, and a build that any team member can run from a clean checkout in under 30 minutes.}}"
+    },
+    {
+      "t": "h3",
+      "x": "Hard constraints"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Constraint",
+        "Value",
+        "Consequence"
+      ],
+      "rows": [
+        [
+          "Platform",
+          "{{PC, Steam Deck, one console}}",
+          "{{Input, cert, and memory floor set by the weakest}}"
+        ],
+        [
+          "Engine",
+          "{{Unreal Engine 5.4}}",
+          "{{Team must hire for it or train in it}}"
+        ],
+        [
+          "Team",
+          "{{9 people, 3 engineers}}",
+          "{{No custom renderer, no bespoke networking}}"
+        ],
+        [
+          "Timeline",
+          "{{9 months to launch}}",
+          "{{Vertical slice in month 4, content lock in month 7}}"
+        ],
+        [
+          "Budget",
+          "{{$1.4M}}",
+          "{{Middleware and outsourcing capped}}"
+        ]
+      ],
+      "w": [
+        100,
+        180,
+        224
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Build versus buy"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Need",
+        "Decision",
+        "Rationale",
+        "Exit cost"
+      ],
+      "rows": [
+        [
+          "Save system",
+          "{{Buy a proven plugin}}",
+          "{{Undifferentiated, high edge-case cost}}",
+          "{{2 weeks to replace}}"
+        ],
+        [
+          "Dialogue",
+          "{{Buy}}",
+          "{{Localization and voice pipeline included}}",
+          "{{1 week of data export}}"
+        ],
+        [
+          "Input",
+          "{{Buy engine default}}",
+          "{{Cert requirements already handled}}",
+          "{{Low}}"
+        ],
+        [
+          "Analytics",
+          "{{Buy hosted}}",
+          "{{Privacy and dashboard work is not core}}",
+          "{{1 sprint}}"
+        ]
+      ],
+      "w": [
+        110,
+        140,
+        160,
+        94
+      ]
+    },
+    {
+      "t": "p",
+      "x": "The default is buy for commodity systems and build only where the game's identity lives. Write the exit cost before signing a licence; a middleware that cannot be removed is a platform decision disguised as a tool."
+    },
+    {
+      "t": "h3",
+      "x": "Technical risks"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Risk",
+        "Likelihood",
+        "Impact",
+        "Mitigation",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Save corruption on console suspend}}",
+          "{{Medium}}",
+          "{{High}}",
+          "{{Atomic writes plus backup slot}}",
+          "{{Lead engineer}}"
+        ],
+        [
+          "{{Frame drops in the market level}}",
+          "{{High}}",
+          "{{Medium}}",
+          "{{Budget gate at art pass}}",
+          "{{Technical artist}}"
+        ],
+        [
+          "{{Engine upgrade mid-production}}",
+          "{{Low}}",
+          "{{High}}",
+          "{{Freeze at month 6}}",
+          "{{Tech director}}"
+        ],
+        [
+          "{{Third-party plugin abandoned}}",
+          "{{Medium}}",
+          "{{Medium}}",
+          "{{Source escrow and exit plan}}",
+          "{{Producer}}"
+        ]
+      ],
+      "w": [
+        150,
+        80,
+        70,
+        140,
+        64
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "RULE",
+      "x": "A technical design document is not a wish list; every line has an owner and a test."
+    },
+    {
+      "t": "h2",
+      "x": "6.2 Engine, middleware, and tools"
+    },
+    {
+      "t": "ins",
+      "x": "Pin the engine version and every plugin in a lockfile. An unpinned toolchain turns a routine upgrade into a three-week bug hunt."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift pins Unreal Engine 5.4.2 and ships FMOD for adaptive dust-storm audio, Crowdin for six-language string handoff, Steamworks for achievements and cloud saves, and Houdini Engine for the 240-piece habitat kit. Art source lives in Perforce with exclusive checkout; code and tuning tables live in Git, and every plugin has an owner and a removal date."
+    },
+    {
+      "t": "fill",
+      "x": "Engine and version: {{Unreal Engine 5.4.2, fixed at branch cut; upgrades require a written impact review.}}"
+    },
+    {
+      "t": "p",
+      "x": "List every plugin with a version, an owner, and the problem it solves. A plugin without an owner is removed at the next branch cut; a plugin without an exit plan is a platform dependency."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Middleware",
+        "Purpose",
+        "Licence",
+        "Owner",
+        "Exit plan"
+      ],
+      "rows": [
+        [
+          "{{FMOD}}",
+          "{{Audio mixing and adaptive music}}",
+          "{{Indie, revenue cap}}",
+          "{{Audio lead}}",
+          "{{Rebuild events in engine audio}}"
+        ],
+        [
+          "{{Crowdin}}",
+          "{{String management and translator handoff}}",
+          "{{Per-word}}",
+          "{{Localization lead}}",
+          "{{Export CSV and rebuild in-house}}"
+        ],
+        [
+          "{{Steamworks}}",
+          "{{Achievements, cloud saves}}",
+          "{{Free}}",
+          "{{Producer}}",
+          "{{Platform abstraction layer}}"
+        ],
+        [
+          "{{Houdini Engine}}",
+          "{{Procedural set dressing}}",
+          "{{Subscription}}",
+          "{{Technical art}}",
+          "{{Bake to static meshes}}"
+        ]
+      ],
+      "w": [
+        80,
+        130,
+        100,
+        70,
+        124
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "In-house tools"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One command to build, one command to run, one command to test; if a tool needs a wiki page to start, it will be used once.",
+        "Asset validator runs on import and fails the build on naming, scale, material count, or missing LODs.",
+        "Level health check reports draw calls, lightmap density, collision complexity, and navmesh coverage per room.",
+        "Telemetry viewer and save inspector run in the editor, not in a separate app.",
+        "Every tool has an owner and a deletion date; tools without owners become traps."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Version control and asset storage"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Asset type",
+        "Store",
+        "Locking",
+        "Size limit"
+      ],
+      "rows": [
+        [
+          "Code and config",
+          "{{Git}}",
+          "{{Branch and pull request}}",
+          "{{100 MB per file}}"
+        ],
+        [
+          "Binaries and builds",
+          "{{Perforce or Git LFS}}",
+          "{{Exclusive checkout}}",
+          "{{2 GB per file}}"
+        ],
+        [
+          "Art source",
+          "{{Perforce}}",
+          "{{Exclusive checkout}}",
+          "{{5 GB per file}}"
+        ],
+        [
+          "Design data",
+          "{{Git, plain text}}",
+          "{{Pull request review}}",
+          "{{10 MB per file}}"
+        ]
+      ],
+      "w": [
+        120,
+        150,
+        130,
+        104
+      ]
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Never store generated files, caches, or derived data in version control; store the recipe and rebuild.",
+        "Lock binary assets exclusively; merge conflicts on a .blend or .uasset are lost work.",
+        "Tag every build that goes to QA or a platform holder; a build without a tag cannot be reproduced."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6.3 Platforms and system requirements"
+    },
+    {
+      "t": "ins",
+      "x": "Fill the matrix with the weakest device you must support, not the machine on your desk. Cert notes belong here because they change the input and storage design, not just the build settings."
+    },
+    {
+      "t": "example",
+      "x": "The PC floor is a GTX 1060 with 8 GB RAM at 1080p 60 fps on High; Steam Deck targets 800p 40 fps on Medium, and the console build targets 4K 60 fps on Performance. The build installs at 18 GB, first load is 45 seconds cold, and every subsequent level load stays under 8 seconds."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Platform",
+        "Min spec",
+        "Target perf",
+        "Input",
+        "Cert notes"
+      ],
+      "rows": [
+        [
+          "{{PC}}",
+          "{{GTX 1060, 8 GB RAM}}",
+          "{{1080p 60 fps, high}}",
+          "{{KBM, gamepad}}",
+          "{{Steam Deck verified profile}}"
+        ],
+        [
+          "{{Steam Deck}}",
+          "{{Native, 16 GB shared}}",
+          "{{800p 40 fps, medium}}",
+          "{{Built-in controls}}",
+          "{{Battery and suspend tests}}"
+        ],
+        [
+          "{{Console A}}",
+          "{{Vendor minimum}}",
+          "{{4K 60 fps, performance}}",
+          "{{Gamepad}}",
+          "{{Quick resume, no network required}}"
+        ]
+      ],
+      "w": [
+        80,
+        120,
+        120,
+        90,
+        94
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Scalability tiers"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Tier",
+        "Resolution",
+        "Quality",
+        "Target device"
+      ],
+      "rows": [
+        [
+          "Low",
+          "{{720p}}",
+          "{{Shadows off, particles 50 percent}}",
+          "{{Integrated GPU laptop}}"
+        ],
+        [
+          "Medium",
+          "{{1080p}}",
+          "{{Baked lighting, 1K textures}}",
+          "{{Steam Deck}}"
+        ],
+        [
+          "High",
+          "{{1440p}}",
+          "{{Dynamic shadows, 2K textures}}",
+          "{{Mid-range desktop}}"
+        ],
+        [
+          "Ultra",
+          "{{4K}}",
+          "{{Full post, 4K textures}}",
+          "{{High-end desktop}}"
+        ]
+      ],
+      "w": [
+        90,
+        110,
+        190,
+        114
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Load times and storage"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "First load under {{45 s}} on the minimum spec; subsequent loads under {{8 s}}; fast travel under {{3 s}}.",
+        "Install size under {{18 GB}} at launch; patch delta under {{2 GB}}; no patch may require a full redownload.",
+        "Budget {{30 percent}} of storage headroom for saves, shader cache, and crash dumps.",
+        "Measure on the minimum spec with a cold cache, not on the dev machine with a warm one."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Validate the minimum spec with a real machine before the first milestone. A spec sheet is a hypothesis; a build that holds target frame rate on the weakest device is the only proof."
+    },
+    {
+      "t": "h2",
+      "x": "6.4 Architecture and modules"
+    },
+    {
+      "t": "ins",
+      "x": "Name modules by responsibility, not by engine folder. A module that needs three others to explain itself is a design smell."
+    },
+    {
+      "t": "example",
+      "x": "Core owns boot, time, and logging; Data owns schemas and validation; Gameplay owns repair rules and progression; World owns streaming and navigation; UI and Audio consume events and never write state. The frame runs input, gameplay in fixed 30 Hz steps, physics, animation, then UI and audio, and the build graph reports zero cycles."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Module",
+        "Responsibility",
+        "Owner",
+        "Dependencies"
+      ],
+      "rows": [
+        [
+          "{{Core}}",
+          "{{Boot, time, logging, math}}",
+          "{{Tech director}}",
+          "{{None}}"
+        ],
+        [
+          "{{Data}}",
+          "{{Schemas, tables, validation}}",
+          "{{Tools engineer}}",
+          "{{Core}}"
+        ],
+        [
+          "{{Gameplay}}",
+          "{{Rules, progression, economy}}",
+          "{{Lead designer}}",
+          "{{Core, Data}}"
+        ],
+        [
+          "{{World}}",
+          "{{Streaming, actors, navigation}}",
+          "{{Engineer B}}",
+          "{{Core, Data}}"
+        ],
+        [
+          "{{UI}}",
+          "{{Screens, input routing, localization}}",
+          "{{UI engineer}}",
+          "{{Core, Gameplay}}"
+        ],
+        [
+          "{{Audio}}",
+          "{{Buses, states, occlusion}}",
+          "{{Audio lead}}",
+          "{{Core, World}}"
+        ],
+        [
+          "{{Platform}}",
+          "{{Saves, achievements, entitlements}}",
+          "{{Engineer C}}",
+          "{{Core}}"
+        ],
+        [
+          "{{Tools}}",
+          "{{Editor extensions, validators}}",
+          "{{Technical art}}",
+          "{{Core, Data}}"
+        ]
+      ],
+      "w": [
+        80,
+        200,
+        110,
+        114
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Update order"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Platform and input poll, once per frame, before any simulation.",
+        "Gameplay tick in fixed steps; never tie rules to render frame rate.",
+        "Physics and world streaming after gameplay intent, before presentation.",
+        "Animation and VFX after physics; they read the resolved state, they do not write it.",
+        "UI and audio last; they consume events and never mutate gameplay state.",
+        "Telemetry flushed at the end of the frame or on a timer, never inside the tick."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Event bus rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Events are past tense and immutable: {{ItemCollected}}, not {{CollectItem}}.",
+        "One publisher per event; many subscribers; no subscriber may publish the same event in response.",
+        "Payloads carry IDs, not object references; a reference outlives its owner and becomes a crash.",
+        "Queue events across frame boundaries when order does not matter; deliver synchronously only for input and UI.",
+        "Log every event in development builds with a frame number; a missing event is the fastest bug to find."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Dependency hygiene"
+    },
+    {
+      "t": "p",
+      "x": "Draw the module map as a directed graph with one arrow per dependency. A cycle means two modules share a responsibility; split one or move the shared code down into Core. Keep the graph in the repository and regenerate it from the build files, not by hand. If the diagram and the code disagree, the code is the truth and the diagram is a bug."
+    },
+    {
+      "t": "h2",
+      "x": "6.5 Data model and save format"
+    },
+    {
+      "t": "ins",
+      "x": "Design saves for the player who quits mid-tutorial and returns after a patch. Version every save, migrate every schema, and test corruption before launch."
+    },
+    {
+      "t": "example",
+      "x": "The save stores Player with inventory and position, World with seed and actor states, Quest with stage and counters, Settings, and Profile in a versioned binary with a build ID. Version 7 migrates one step at a time, writes to a temp file then renames, keeps one backup slot, and resolves cloud conflicts by playtime with a player choice under 10 minutes."
+    },
+    {
+      "t": "h3",
+      "x": "Core entities"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Entity",
+        "Key fields",
+        "Owned by"
+      ],
+      "rows": [
+        [
+          "{{Player}}",
+          "{{ID, progression, inventory, position}}",
+          "{{Gameplay}}"
+        ],
+        [
+          "{{World}}",
+          "{{Seed, unlocked regions, actor states}}",
+          "{{World}}"
+        ],
+        [
+          "{{Quest}}",
+          "{{ID, stage, counters, timestamps}}",
+          "{{Gameplay}}"
+        ],
+        [
+          "{{Settings}}",
+          "{{Audio, video, input, accessibility}}",
+          "{{Platform}}"
+        ],
+        [
+          "{{Profile}}",
+          "{{Achievements, playtime, stats}}",
+          "{{Platform}}"
+        ]
+      ],
+      "w": [
+        100,
+        240,
+        164
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Draw the ERD with one box per entity and label every relationship with its cardinality. A relationship without an owner is a duplicate field, and a field in two entities is a future desync."
+    },
+    {
+      "t": "h3",
+      "x": "Save data rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every save starts with a schema version and a game build ID; refuse to load a newer version than the binary understands.",
+        "Migrate forward one version at a time; never branch migrations, and keep a fixture save for every shipped version.",
+        "Write to a temp file, flush, then rename; keep one previous slot as a backup.",
+        "Validate on load: checksum, required fields, and value ranges. On failure, offer the backup, never a silent reset.",
+        "Cloud conflicts resolve by playtime and timestamp, with a player-facing choice when the difference is under {{10 minutes}}.",
+        "Autosave at safe points only; a save mid-transaction can duplicate or delete items."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Config versus code"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Data",
+        "Lives in",
+        "Hot reload",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Tuning values}}",
+          "{{Data tables}}",
+          "{{Yes, in dev builds}}",
+          "{{Design}}"
+        ],
+        [
+          "{{Localization}}",
+          "{{String tables}}",
+          "{{Yes}}",
+          "{{Localization lead}}"
+        ],
+        [
+          "{{Input bindings}}",
+          "{{Platform config}}",
+          "{{No}}",
+          "{{UI engineer}}"
+        ],
+        [
+          "{{Build flags}}",
+          "{{CI config}}",
+          "{{No}}",
+          "{{Build engineer}}"
+        ]
+      ],
+      "w": [
+        110,
+        150,
+        150,
+        94
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Localization data"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Store keys, not source strings; {{UI.Menu.Play}} is stable, \"Play\" is not.",
+        "Never concatenate translated fragments; use full sentences with named placeholders.",
+        "Support plural rules and gender where the target language needs them; English-only grammar will break in {{Polish or Arabic}}.",
+        "Budget {{30 percent}} text expansion for German and {{50 percent}} for button labels in some scripts.",
+        "Ship a pseudo-localization build every sprint; it finds truncation before the translator does."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6.6 Networking and multiplayer"
+    },
+    {
+      "t": "ins",
+      "x": "Answer this section even if the game is single-player. Write \"not applicable\" and the reason, then list what would change if co-op were added; that list is your scope firewall."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift ships single-player only: the client owns the simulation, saves are local, and no gameplay code assumes a network. If co-op were added, the host would be server-authoritative at 30 Hz with client prediction and rollback, friends-only lobbies, a 150 ms playable latency budget, and full offline campaign play."
+    },
+    {
+      "t": "p",
+      "x": "If the game ships multiplayer, choose authority before writing gameplay code. Server-authoritative simulation with client prediction is the default for competitive play; lockstep is only for deterministic genres with small player counts. If the game is single-player, state it here and keep gameplay code free of network assumptions so a future mode is a module, not a rewrite."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Topic",
+        "Required decision",
+        "Default if none"
+      ],
+      "rows": [
+        [
+          "Authority",
+          "{{Server-authoritative for combat, client for cosmetics}}",
+          "{{Single-player, local authority}}"
+        ],
+        [
+          "Tick rate",
+          "{{30 Hz simulation, 60 Hz input}}",
+          "{{Not applicable}}"
+        ],
+        [
+          "Prediction",
+          "{{Client prediction with server reconciliation and rollback}}",
+          "{{None}}"
+        ],
+        [
+          "Matchmaking",
+          "{{Skill and latency buckets}}",
+          "{{Friends-only lobbies}}"
+        ],
+        [
+          "Latency budget",
+          "{{150 ms playable, 250 ms tolerable}}",
+          "{{Offline only}}"
+        ],
+        [
+          "Offline mode",
+          "{{Full campaign playable without network}}",
+          "{{Required}}"
+        ],
+        [
+          "Cheat surface",
+          "{{Server validates movement, economy, and loot}}",
+          "{{Local saves, no economy}}"
+        ]
+      ],
+      "w": [
+        100,
+        250,
+        154
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6.7 Performance budgets"
+    },
+    {
+      "t": "ins",
+      "x": "Put a number, a measurement method, and an owner on every budget. A budget without a capture is an opinion; a budget without an owner is nobody's problem."
+    },
+    {
+      "t": "example",
+      "x": "Hadley Depot must hold 8 ms CPU and 11 ms GPU at 1080p High, 6 GB memory, 1,800 draw calls, an 8-second level load, and 3 hours on Steam Deck. The team captures every Friday on the minimum spec, blocks merges on regressions over 5 percent, and drops resolution scale before shadows, particles, LOD bias, and post-processing."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Budget",
+        "Target",
+        "Measurement",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "CPU frame",
+          "{{8 ms}}",
+          "{{Insights capture, worst level}}",
+          "{{Lead engineer}}"
+        ],
+        [
+          "GPU frame",
+          "{{11 ms}}",
+          "{{GPU profiler, 1080p high}}",
+          "{{Technical artist}}"
+        ],
+        [
+          "Memory",
+          "{{6 GB}}",
+          "{{Platform memory report}}",
+          "{{Engineer B}}"
+        ],
+        [
+          "Draw calls",
+          "{{1,800}}",
+          "{{Frame capture, market scene}}",
+          "{{Technical artist}}"
+        ],
+        [
+          "Level load",
+          "{{8 s}}",
+          "{{Cold cache, minimum spec}}",
+          "{{Engineer C}}"
+        ],
+        [
+          "Network",
+          "{{< 150 ms RTT}}",
+          "{{Synthetic latency test}}",
+          "{{Network engineer}}"
+        ],
+        [
+          "Battery",
+          "{{3 h on Deck}}",
+          "{{30-minute play session}}",
+          "{{Producer}}"
+        ]
+      ],
+      "w": [
+        96,
+        130,
+        160,
+        118
+      ]
+    },
+    {
+      "t": "quote",
+      "x": "A performance budget is not an optimisation task. It is the shape of the game you are allowed to make."
+    },
+    {
+      "t": "h3",
+      "x": "Profiling cadence"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Capture a performance run every {{Friday}} on the minimum spec and attach it to the build; a build without a capture is not shippable.",
+        "Profile the worst level, not the test map; the test map is a lie told by an empty scene.",
+        "Compare against the previous milestone, not against a feeling; regressions over {{5 percent}} block the merge.",
+        "Run a long session of {{90 minutes}} once per milestone to catch leaks and thermal throttling."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Degradation strategy"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Drop resolution scale before dropping frame rate; a soft image at 60 fps beats a sharp one at 40.",
+        "Reduce shadow distance and cascade count next; shadows are the cheapest visual cut the player will forgive.",
+        "Cap particles and disable secondary VFX; keep the telegraph and the hit confirmation.",
+        "Reduce LOD bias and cull distance for set dressing; never cull gameplay-critical props.",
+        "Disable post-processing in order: bloom, depth of field, motion blur, then colour grading.",
+        "Log every automatic degradation with the reason; silent quality drops look like bugs."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6.8 Analytics and telemetry"
+    },
+    {
+      "t": "ins",
+      "x": "Define the five questions you need answered before adding an event. Telemetry is a product with a maintenance cost, not a free by-product of the build."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift logs session_start, level_start, level_end, purchase, and error with build, platform, level, duration, and result, and keeps raw events for 90 days and aggregates for 24 months. The first-run funnel targets 80 percent tutorial completion; consent is asked before the first event, device IDs are salted, and the build never tracks keystrokes, clipboard, or voice audio."
+    },
+    {
+      "t": "h3",
+      "x": "Event taxonomy"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Event",
+        "Trigger",
+        "Properties",
+        "Question answered"
+      ],
+      "rows": [
+        [
+          "{{session_start}}",
+          "{{Boot or resume}}",
+          "{{build, platform, tier}}",
+          "{{Cohort and crash correlation}}"
+        ],
+        [
+          "{{level_start}}",
+          "{{Level load complete}}",
+          "{{level, difficulty, load_ms}}",
+          "{{Funnel and load budget}}"
+        ],
+        [
+          "{{level_end}}",
+          "{{Success or quit}}",
+          "{{result, duration, deaths}}",
+          "{{Difficulty tuning}}"
+        ],
+        [
+          "{{purchase}}",
+          "{{Transaction confirmed}}",
+          "{{item, price, currency}}",
+          "{{Economy health}}"
+        ],
+        [
+          "{{error}}",
+          "{{Recoverable failure}}",
+          "{{code, module, build}}",
+          "{{Stability triage}}"
+        ]
+      ],
+      "w": [
+        96,
+        140,
+        150,
+        118
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Key funnels"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "First run: boot, tutorial start, first action, tutorial complete, first save. Target {{80 percent}} completion.",
+        "Session: start, first meaningful choice, session end. Target median {{25 minutes}}.",
+        "Difficulty: death, retry, quit. A retry rate above {{40 percent}} on one checkpoint is a tuning bug.",
+        "Store: view, inspect, purchase. A view-to-purchase gap above {{70 percent}} is a pricing or clarity problem."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Privacy and consent"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Collect the minimum: no names, no emails, no precise location, no free-text fields.",
+        "Ask for consent before the first event, explain what is collected in one screen, and honour withdrawal.",
+        "Hash or salt device IDs; never ship a raw hardware identifier.",
+        "Document the lawful basis and the retention period for every event; link the privacy policy in the build."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Retention and what not to track"
+    },
+    {
+      "t": "p",
+      "x": "Keep raw events for {{90 days}} and aggregates for {{24 months}}; delete on a schedule, not on a whim. Do not track: keystrokes outside the game, clipboard contents, other applications, voice chat audio, or anything that identifies a child. Do not add an event that no dashboard reads; every unused event is privacy risk with no product value."
+    },
+    {
+      "t": "p",
+      "x": "Build one dashboard per audience: design reads funnels, engineering reads errors, production reads cost. Review it weekly; a dashboard nobody opens is a data landfill."
+    },
+    {
+      "t": "h2",
+      "x": "6.9 Build, CI/CD, and QA tooling"
+    },
+    {
+      "t": "ins",
+      "x": "Make the build boring. A build that any team member can produce from a clean checkout, with one command, is worth more than a clever pipeline that only one engineer understands."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift uses trunk-based development, a commit build that compiles and runs unit tests in under 10 minutes, and a nightly full suite plus performance capture. Release builds are tagged v1.4.2-318, frozen for cert with store metadata and a rollback build, and QA gets dev, staging, and production environments with symbols and a debug teleport menu."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Stage",
+        "Trigger",
+        "Gate",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Commit}}",
+          "{{Pull request}}",
+          "{{Compile plus unit tests under 10 min}}",
+          "{{Build engineer}}"
+        ],
+        [
+          "{{Nightly}}",
+          "{{Scheduled}}",
+          "{{Full test suite plus perf capture}}",
+          "{{QA lead}}"
+        ],
+        [
+          "{{Playtest}}",
+          "{{Weekly}}",
+          "{{Content complete for the slice}}",
+          "{{Producer}}"
+        ],
+        [
+          "{{Release}}",
+          "{{Tag}}",
+          "{{Cert checklist plus smoke test}}",
+          "{{Release manager}}"
+        ]
+      ],
+      "w": [
+        96,
+        140,
+        180,
+        88
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Branch strategy"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Trunk-based development with short-lived feature branches; a branch older than {{3 days}} is a merge risk.",
+        "Release branches are cut at content lock and receive fixes only; no features land on a release branch.",
+        "Every change to shared code needs one reviewer; every change to a build file needs two.",
+        "Platform submission uses a frozen build: cert checklist, store metadata, and a rollback build signed off before upload.",
+        "Tag releases and hotfixes with the same scheme: {{v<major>.<minor>.<patch>-<build>}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Automated tests"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Test type",
+        "Cadence",
+        "Gate",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Unit}}",
+          "{{Every commit}}",
+          "{{Merge}}",
+          "{{Module owner}}"
+        ],
+        [
+          "{{Integration}}",
+          "{{Every commit}}",
+          "{{Merge}}",
+          "{{QA engineer}}"
+        ],
+        [
+          "{{Performance}}",
+          "{{Nightly}}",
+          "{{Milestone}}",
+          "{{Technical artist}}"
+        ],
+        [
+          "{{Save migration}}",
+          "{{Every commit}}",
+          "{{Release}}",
+          "{{Lead engineer}}"
+        ]
+      ],
+      "w": [
+        110,
+        120,
+        170,
+        104
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Write one test plan per milestone: what to test, on which device, and what counts as a failure. A test plan without a device matrix is a wish list."
+    },
+    {
+      "t": "h3",
+      "x": "Crash reporting and environments"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One crash reporter with symbols for every platform; a crash without a callstack is a support ticket, not a bug.",
+        "Environments: dev, QA, staging, production. Each has its own saves, telemetry key, and entitlements.",
+        "QA builds include a debug menu, teleport, and state inspector; a tester who cannot reproduce a state cannot verify a fix.",
+        "Every bug report includes build tag, platform, save file, and a capture; close reports that omit them."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "6.10 Security, cheating, and live operations"
+    },
+    {
+      "t": "ins",
+      "x": "Write the threat model for the player who wants to skip the grind, not for a nation-state. Most losses come from unlocked saves, leaked keys, and a patch that cannot be rolled back."
+    },
+    {
+      "t": "example",
+      "x": "The threat model covers save editing, memory editing, leaked CI keys, and replay tampering; saves carry checksums, competitive values would be server-authoritative, and build keys rotate every 30 days. Hotfixes ship within 24 hours of a blocker, content patches every 6 weeks, and a rollback drill runs each milestone against a 2 percent crash-rate trigger."
+    },
+    {
+      "t": "h3",
+      "x": "Threat model"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Threat",
+        "Surface",
+        "Impact",
+        "Control"
+      ],
+      "rows": [
+        [
+          "{{Save editing}}",
+          "{{Local save files}}",
+          "{{Economy and achievements}}",
+          "{{Checksums plus server validation}}"
+        ],
+        [
+          "{{Memory editing}}",
+          "{{Client process}}",
+          "{{Stats and currency}}",
+          "{{Server-authoritative values}}"
+        ],
+        [
+          "{{Leaked build key}}",
+          "{{CI secrets}}",
+          "{{Unauthorized builds}}",
+          "{{Short-lived tokens, rotation}}"
+        ],
+        [
+          "{{Replay tampering}}",
+          "{{Match uploads}}",
+          "{{Leaderboard fraud}}",
+          "{{Server replay validation}}"
+        ]
+      ],
+      "w": [
+        110,
+        130,
+        130,
+        134
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Anti-cheat stance"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Single-player: protect saves and achievements, do not spy on the player; a local cheat is not a security incident.",
+        "Multiplayer: server authority for anything competitive; client anti-cheat is a detection layer, never the only control.",
+        "Never ban on a single heuristic; require a reproducible signal and a human review.",
+        "Publish the appeal path and the enforcement policy before launch, not after the first ban wave."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Secrets and live operations"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "No keys in the repository, the build, or the client; use a secret manager and rotate on a schedule.",
+        "Separate build, test, and production credentials; a QA key must never ship to players.",
+        "Sign every patch and verify the signature before install; an unsigned build is a distribution risk."
+      ]
+    },
+    {
+      "t": "table",
+      "head": [
+        "Operation",
+        "Cadence",
+        "Rollback trigger",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Hotfix}}",
+          "{{Within 24 h of a blocker}}",
+          "{{Crash rate above 2 percent}}",
+          "{{Release manager}}"
+        ],
+        [
+          "{{Content patch}}",
+          "{{Every 6 weeks}}",
+          "{{Save migration failure}}",
+          "{{Producer}}"
+        ],
+        [
+          "{{Server config}}",
+          "{{On demand}}",
+          "{{Error rate above 1 percent}}",
+          "{{Live ops}}"
+        ],
+        [
+          "{{Price change}}",
+          "{{Quarterly}}",
+          "{{Refund spike}}",
+          "{{Commerce lead}}"
+        ]
+      ],
+      "w": [
+        104,
+        140,
+        150,
+        110
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Monitor crash-free sessions, server error rate, and store conversion on one dashboard with a named on-call owner. A rollback plan that has never been rehearsed is a hope; run one rollback drill per milestone."
+    },
+    {
+      "t": "p",
+      "x": "Name an on-call owner for launch week and a backup. An alert without an owner is a notification; an owner without an alert is a surprise."
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Mark this tab done when an engineer who joins on Monday can build, run, profile, and ship a test build by Friday without asking the author."
+    },
+    {
+      "t": "check",
+      "x": [
+        "Every hard constraint has a number, and the build fails when it is exceeded.",
+        "The engine, every plugin, and every middleware licence are pinned with an owner and an exit plan.",
+        "The module map has no cycles and matches the build files.",
+        "Save versioning, migration, corruption, and cloud conflict paths each have a test.",
+        "Every performance budget has a capture, a target, and an owner; regressions over 5 percent block merges.",
+        "The event taxonomy is documented, consented, and read by at least one dashboard.",
+        "CI produces a tagged build from a clean checkout, and a rollback drill has been run.",
+        "The threat model lists controls for saves, memory, secrets, and replays, with a named owner for each."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep only decisions that block a sprint. Everything else belongs in the backlog, not in a document nobody re-reads."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "rows": [
+        [
+          "{{Do we support last-gen consoles at launch?}}",
+          "{{Tech director}}",
+          "{{Milestone 2}}"
+        ],
+        [
+          "{{Which save system do we licence?}}",
+          "{{Lead engineer}}",
+          "{{Sprint 3}}"
+        ],
+        [
+          "{{Is co-op in scope for year one?}}",
+          "{{Creative director}}",
+          "{{Milestone 1}}"
+        ],
+        [
+          "{{Who owns live operations after launch?}}",
+          "{{Producer}}",
+          "{{Month 12}}"
+        ]
+      ],
+      "w": [
+        280,
+        120,
+        104
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

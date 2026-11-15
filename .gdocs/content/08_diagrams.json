@@ -1,0 +1,1324 @@
+{
+  "tab": "08 Diagram Playbook",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 08 · DIAGRAMS"
+    },
+    {
+      "t": "h1",
+      "x": "Diagram Playbook"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: which diagram should explain this part of the game, and how do I draw it so the team can act on it?"
+    },
+    {
+      "t": "ins",
+      "x": "Fill the translation table in 8.2 first, then draw only the diagrams your current milestone needs. Copy a recipe's spec table into the owning GDD tab and replace the example sketch with your own; do not maintain two versions."
+    },
+    {
+      "t": "h2",
+      "x": "8.1 Why game design needs diagrams"
+    },
+    {
+      "t": "ins",
+      "x": "Draw only when a list of words has failed to settle a question. Start with the question, then choose the diagram; never start with the tool."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift carried two game-flow diagrams for three weeks; the newer one still sent Pause to the title screen, so QA tested the wrong exit. We deleted the stale export, dated the source, and made Pause return to the live shift, which turned the diagram into one answer: where does Pause return?"
+    },
+    {
+      "t": "p",
+      "x": "A diagram has two jobs. **Communication** aligns a room: it is drawn fast, argued over, and thrown away when the decision is made. **Documentation** preserves a decision: it is versioned, owned, and cited by engineering, art, and QA. Label every diagram as one or the other. A whiteboard sketch that people treat as a spec is a trap; a polished diagram with no owner is decoration."
+    },
+    {
+      "t": "p",
+      "x": "One diagram answers one question. How does a player get from boot to gameplay? is a game flow. What can interrupt an attack? is a state machine. What happens in the 120 ms after a hit lands? is a sequence. If you cannot write the question in one sentence, split the diagram. If two questions share a canvas, the reader will answer the easier one and ignore the other."
+    },
+    {
+      "t": "p",
+      "x": "A table beats a diagram when the content is exact values, a matrix of states and inputs, a schedule, or a checklist. Use a diagram for topology, sequence, flow, dependency, and containment. Use a table for parameters, cooldowns, damage types, spawn counts, and ownership. A state table with 14 states and 6 shared events is easier to verify than a state diagram with 84 arrows."
+    },
+    {
+      "t": "p",
+      "x": "**Diagram debt** is the gap between the diagram the team trusts and the system that ships. Symptoms: three versions in chat, arrows nobody can explain, a diagram older than the feature it describes, and a newcomer asking which box is real. Pay it down at every milestone: update the source, re-export, or delete the diagram. A stale diagram is worse than no diagram because it teaches the wrong system with confidence."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Does the question involve order, topology, or dependency? Draw a diagram.",
+        "Is the answer a list of values, owners, or dates? Use a table.",
+        "Will the reader act differently after seeing it? If not, cut it.",
+        "Can you name the owner and the next update trigger? If not, it is a sketch, not documentation."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "8.2 The translation table"
+    },
+    {
+      "t": "ins",
+      "x": "Find the software artifact you already know, then read across to the game design question it can answer. Ignore any row whose question your current milestone does not need; an unused diagram is diagram debt."
+    },
+    {
+      "t": "example",
+      "x": "For Moonshift the translation table maps use case to the mode map, activity to Nia's garden quest, state machine to B.E.E.P.'s repair states, sequence to the 100 ms repair confirmation, class to the save entities, component to the air/power systems map, ERD to inventory, and BPMN to the air economy. The table settled that the slice needs eight diagrams, not a full UML set."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Software artifact",
+        "Game design equivalent",
+        "Question it answers",
+        "Typical GDD tab",
+        "When to use"
+      ],
+      "rows": [
+        [
+          "Use case",
+          "Game flow / mode map",
+          "Which modes exist, and how does the player enter and leave them?",
+          "{{02 Gameplay & Systems}}",
+          "When mode entry or exit is ambiguous"
+        ],
+        [
+          "Activity diagram",
+          "Quest / objective flowchart",
+          "What must the player do, in what order, and where can it fail?",
+          "{{03 Narrative & World}}",
+          "When a quest has branches, gates, or fail states"
+        ],
+        [
+          "State machine",
+          "Entity, AI, or session state machine",
+          "What states can this entity be in, and what moves it between them?",
+          "{{02 Gameplay & Systems}}",
+          "When behaviour changes by mode or condition"
+        ],
+        [
+          "Sequence diagram",
+          "Interaction / timing diagram",
+          "Who sends what to whom, in what order, and how long does it take?",
+          "{{02 Gameplay & Systems}}",
+          "When timing, authority, or feedback order is disputed"
+        ],
+        [
+          "Class diagram",
+          "Entity / data model",
+          "What data does each entity own, and how do the pieces relate?",
+          "{{06 Technical Design}}",
+          "Before schema, save, or content tooling work"
+        ],
+        [
+          "Component diagram",
+          "Systems map / dependency graph",
+          "Which systems depend on which, and where are the coupling risks?",
+          "{{02 Gameplay & Systems}}",
+          "At feature lock and after each milestone"
+        ],
+        [
+          "ERD",
+          "Save / inventory schema",
+          "What is stored, how is it keyed, and what happens on migration?",
+          "{{06 Technical Design}}",
+          "Before save format v1 and every schema change"
+        ],
+        [
+          "Deployment diagram",
+          "Network topology",
+          "Which process runs where, and what crosses the network?",
+          "{{06 Technical Design}}",
+          "Before multiplayer or backend work"
+        ],
+        [
+          "BPMN",
+          "Economy flow (Machinations)",
+          "Where do resources enter, pool, convert, and leave?",
+          "{{02 Gameplay & Systems}}",
+          "When a source, sink, or price changes"
+        ],
+        [
+          "User journey",
+          "Player journey",
+          "What does the player feel and do across a session or campaign?",
+          "{{01 Vision & Strategy}}",
+          "When onboarding or retention is off"
+        ],
+        [
+          "Wireframe",
+          "UI screen / HUD layout",
+          "What is on this screen, where, and in what hierarchy?",
+          "{{04 Experience: UX, UI, Audio}}",
+          "Before art production of a screen"
+        ],
+        [
+          "Gantt",
+          "Production roadmap",
+          "Who builds what, by when, and what blocks it?",
+          "{{07 Production & Launch}}",
+          "At planning and every re-plan"
+        ]
+      ],
+      "w": [
+        88,
+        118,
+        118,
+        82,
+        98
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Two rows are traps. A class diagram is not a game design document; it is a data contract. A Gantt chart is not a design diagram; it is a promise about capacity. Keep both, but label them as contracts and plans, not as explanations of play."
+    },
+    {
+      "t": "h2",
+      "x": "8.3 Diagram standards"
+    },
+    {
+      "t": "ins",
+      "x": "Adopt one legend across the whole GDD before the second diagram exists. A reader who has to relearn your shapes on every page will stop reading the diagrams."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift uses one legend: rounded rectangles for modes, rectangles for systems, diamonds for decisions, blue for player actions, orange for base systems, and red for air loss; every diagram carries an owner, date, and version. The standard settled that the old red/green air gauge failed colour-blind testers, so we added a shape-coded warning icon."
+    },
+    {
+      "t": "p",
+      "x": "The standards below apply to every diagram in the GDD, including the sketches in this tab. The sketches in 8.4–8.15 are schematics; use the shapes named in each recipe's Elements row, not the ASCII approximations. A diagram that ignores these standards is a conversation, not documentation; label it as such."
+    },
+    {
+      "t": "h3",
+      "x": "Legend and naming"
+    },
+    {
+      "t": "p",
+      "x": "Keep the legend to seven semantic marks: mode or screen, system, state, decision, data entity, pool, and external actor. Shape carries type within one diagram family; the same rectangle can mean system on a systems map and room on a level map, but never both on one canvas. Line style carries timing (solid for immediate or synchronous, dashed for delayed or async). Colour carries one dimension only, player versus system, team, or status, and never the only carrier of meaning. Put the legend on the canvas, bottom-left, at 9 pt or larger."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Title as a question: How does a run end? not Run flow v3.",
+        "Nodes are nouns from the glossary; arrows are verbs or events.",
+        "IDs stay stable across versions; do not rename a node because the layout moved.",
+        "File name: dia_[system]_[question]_v[major].[ext]. No final, no copy, no date-only names.",
+        "Set ASCII sketches in Roboto Mono 8.5; proportional fonts break alignment.",
+        "Footer on every diagram: owner, date, status (draft, review, approved), and source link."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "One question, one direction"
+    },
+    {
+      "t": "p",
+      "x": "Write the question above the title. If the diagram needs two sentences to explain its scope, it is two diagrams. Put the scope boundary on the canvas: a dashed box labelled out of scope prevents the reader from inventing connections."
+    },
+    {
+      "t": "p",
+      "x": "Flow reads left-to-right; hierarchy reads top-to-bottom; time reads left-to-right; cycles read clockwise. Pick one direction per diagram and keep it. If an arrow must cross the flow, use a bridge or a labelled jump, not a diagonal through three boxes. A reader should be able to trace the main path with a finger in under ten seconds."
+    },
+    {
+      "t": "h3",
+      "x": "Colour, version, and source"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Blue = player action or player-owned data.",
+        "Orange = system, server, or simulation.",
+        "Red = failure, block, or loss.",
+        "Green = reward, unlock, or recovery.",
+        "Grey = out of scope, disabled, or deprecated.",
+        "Never use colour alone; pair it with a label, shape, or icon."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Version with v1.2, not dates alone. Bump the minor for layout or wording, the major for a change in meaning. Keep the editable source in the project drive or repo next to the GDD; export a PNG for the doc and link the source in the caption. A screenshot pasted from chat is not a source file. When a diagram changes meaning, archive the old export instead of overwriting it."
+    },
+    {
+      "t": "h3",
+      "x": "Alt text and quick review"
+    },
+    {
+      "t": "p",
+      "x": "Write alt text as the takeaway plus the structure: The run ends in one of three ways: extraction, death, or timeout; death is the only path that loses meta-currency. Two sentences maximum. Do not describe every box; describe what the reader must know if the image fails to load."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The title is the question, and the question is answered on the canvas.",
+        "Every shape appears in the legend and means one thing.",
+        "Every arrow has a verb, event, or condition label.",
+        "Failure, cancel, timeout, and empty states are visible.",
+        "The source file, owner, date, and version are in the footer.",
+        "Alt text states the takeaway, not diagram of flow."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Do and don't"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Do",
+        "Don't"
+      ],
+      "rows": [
+        [
+          "Title the diagram as a question.",
+          "Title it with the tool or version."
+        ],
+        [
+          "Put one question on one canvas.",
+          "Combine flow, data, and schedule."
+        ],
+        [
+          "Label arrows with events or verbs.",
+          "Leave arrows to speak for themselves."
+        ],
+        [
+          "Use one shape per concept.",
+          "Use boxes for screens, states, and systems."
+        ],
+        [
+          "Show failure and cancel paths.",
+          "Draw only the happy path."
+        ],
+        [
+          "Link the editable source file.",
+          "Paste a screenshot and move on."
+        ],
+        [
+          "Put owner, date, and status in the footer.",
+          "Rely on the file name for context."
+        ],
+        [
+          "Archive the old version when meaning changes.",
+          "Overwrite and call it final."
+        ]
+      ],
+      "w": [
+        252,
+        252
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "RULE",
+      "x": "If the caption has to explain the diagram, the diagram has failed. Put the explanation in the title and the scope note."
+    },
+    {
+      "t": "h2",
+      "x": "8.4 Game flow / mode map"
+    },
+    {
+      "t": "ins",
+      "x": "Use a game flow when a player, a producer, or QA cannot agree on how a mode is entered, exited, or recovered. Draw modes, not menu widgets."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's mode map has Title, Save Select, Gameplay HUD, Pause, Map, Quest Log, Results, and Settings, each with one back edge and a dashed autosave transition at shift end. It settled that Pause must freeze the air timer and return to the live shift, not the title, which removed a QA blocker."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "Which modes exist, and what event moves the player between them?"
+        ],
+        [
+          "Elements",
+          "Rounded rectangle = mode; diamond = branch; solid arrow = player action; dashed arrow = automatic transition; label = event plus condition; double outline = terminal."
+        ],
+        [
+          "How to draw",
+          "1 List modes from boot to quit, including pause, death, disconnect, and error. 2 Put the happy path on one horizontal spine. 3 Add branches above or below, never on top. 4 Label every arrow with its event. 5 Mark transitions that save, load, or reset state."
+        ],
+        [
+          "Common mistakes",
+          "Mixing screens with modes; omitting pause, death, and network-loss exits; labelling arrows next; hiding three modes in one box."
+        ],
+        [
+          "Tool",
+          "FigJam or Miro for the workshop; draw.io for the approved export."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → Game flow."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "[Boot] → [Title] → [Main Menu]\n                      ├─ Continue → [Save Select] → [Gameplay]\n                      ├─ New Game → [Difficulty] → [Gameplay]\n                      └─ Settings → [Settings] ──back──→ [Main Menu]\n\n[Gameplay] ──pause──→ [Pause] ──resume──→ [Gameplay]\n     │                    └──quit──→ [Main Menu]\n     └──death──→ [Results] ──retry──→ [Gameplay]\n                    └──exit──→ [Main Menu]"
+    },
+    {
+      "t": "image",
+      "key": "01_game_flow",
+      "caption": "Rendered example — Moonshift game flow and mode map."
+    },
+    {
+      "t": "quote",
+      "x": "{{Boot → Title → Main Menu → Continue → Save Select → Gameplay → Pause → Quit}}; every arrow names the event, not the destination."
+    },
+    {
+      "t": "h2",
+      "x": "8.5 Core loop (nested loops)"
+    },
+    {
+      "t": "ins",
+      "x": "Use a core loop when the pitch says the loop is fun but nobody can name the three verbs the player repeats. Draw the loop at three time scales before writing a feature list."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's core loop has three nested frames: the 30-second scan → choose → place → watch exchange, the 8-minute shift of route → repair → ration, and the 12-shift campaign of upgrade → specialise → replay. The diagram settled that the gauge must move within 200 ms of placement, so we cut the 1.2-second repair animation."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What does the player repeat at each time scale, and how does the short loop feed the long one?"
+        ],
+        [
+          "Elements",
+          "Outer frame = session; middle frame = route or encounter; inner frame = action; verb nodes; reward nodes; arrow = causal link; annotation = duration and repeat count."
+        ],
+        [
+          "How to draw",
+          "1 Write the 30-second loop as 3–5 verbs with input and feedback. 2 Wrap it in the 5-minute loop that gives the reward a use. 3 Wrap that in the session loop that changes the plan. 4 Draw one arrow from each reward to the next decision it enables. 5 Put a duration on every frame."
+        ],
+        [
+          "Common mistakes",
+          "A linear tutorial drawn as a loop; a reward with no sink; only one time scale; a last step that does not change the first."
+        ],
+        [
+          "Tool",
+          "Paper first; FigJam for the shared version; Miro for a group teardown."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → Core loop."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "SESSION (20–40 min)\n├─ ROUTE (5–8 min)\n│   [Choose gate] → [Clear room] → [Spend loot] → [Unlock]\n│         ↑                                        │\n│         └────────────────────────────────────────┘\n└─ ENCOUNTER (2–4 min; 30 s per exchange)\n    [Spot] → [Close] → [Fight] → [Loot] → [Reposition]\n       ↑                                      │\n       └──────────────────────────────────────┘"
+    },
+    {
+      "t": "image",
+      "key": "02_core_loop",
+      "caption": "Rendered example — Moonshift core loop at three time scales."
+    },
+    {
+      "t": "quote",
+      "x": "{{Spot → Close → Fight → Loot → Reposition}} repeats every 30 seconds; the loot changes the next route."
+    },
+    {
+      "t": "h2",
+      "x": "8.6 State machine (player, AI, session)"
+    },
+    {
+      "t": "ins",
+      "x": "Use a state machine when behaviour depends on what happened before, or when a bug report says the enemy got stuck. Draw one entity per diagram."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's repair-bot state machine has Idle, Scan, Place, Repair, Reroute, Overclock, and Depleted, with transitions such as scan → target found, repair → parts missing, and overclock → power below 2. It settled that Overclock interrupts Repair and falls to Depleted on timeout, which fixed the shift-5 soft lock."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What states can this entity be in, what event moves it, and what does it do on entry?"
+        ],
+        [
+          "Elements",
+          "Rounded rectangle = state (noun); arrow = transition labelled event [guard] / action; black dot = start; double circle = end; self-loop = repeat; composite box = nested state; dashed arrow = interrupt."
+        ],
+        [
+          "How to draw",
+          "1 List states as nouns or adjectives, never verbs. 2 Name the event that exits each state, including timeout and cancel. 3 Add guards where one event has different outcomes. 4 Put entry and exit actions inside the box. 5 Check every state has an exit and every event has a home."
+        ],
+        [
+          "Common mistakes",
+          "Attacking as a state when it is an action; no interrupt priority; booleans that duplicate states; transitions with no event."
+        ],
+        [
+          "Tool",
+          "draw.io or Mermaid stateDiagram for the source; Miro for review."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → AI and player states; {{06 Technical Design}} → session states."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "        (start) → [Idle]\n[Idle] ──sees player──→ [Alert]\n[Alert] ──in range──→ [Attack]\n[Alert] ──lost LOS 1.5 s──→ [Search]\n[Attack] ──out of range──→ [Chase]\n[Chase] ──in range──→ [Attack]\n[Chase] ──lost LOS 3 s──→ [Search]\n[Search] ──hears noise──→ [Alert]\n[Search] ──8 s timeout──→ [Idle]\n[Attack] ──HP ≤ 0──→ ((Dead))"
+    },
+    {
+      "t": "image",
+      "key": "03_state_machine",
+      "caption": "Rendered example — Moonshift sentry AI state machine."
+    },
+    {
+      "t": "quote",
+      "x": "{{Idle --sees player--> Alert; Attack --HP ≤ 0--> Dead}}; states are nouns, arrows are events."
+    },
+    {
+      "t": "h2",
+      "x": "8.7 Activity / quest flowchart"
+    },
+    {
+      "t": "ins",
+      "x": "Use a quest flowchart when a quest has branches, parallel objectives, fail states, or more than one way to complete it. If it is a straight line, write a numbered list instead."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's garden quest for Nia is a flowchart: Talk to Nia → Trace the frozen pipe → Thaw the line → Repair the cut → Restart the pump, with a diamond for the hidden cut and a recoverable fail if the garden dries. It settled that the quest can finish without the optional seed cache, so that branch stays side content."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What must the player do, in what order, and where can the quest fail or branch?"
+        ],
+        [
+          "Elements",
+          "Rounded rectangle = player objective; diamond = condition; bar = fork/join; swimlane = owner; note = fail or retry; solid arrow = required step; dashed arrow = optional."
+        ],
+        [
+          "How to draw",
+          "1 Start from the completion condition and work backwards. 2 Write objectives in player language, not UI language. 3 Add a diamond for every condition that can send the player back. 4 Show fail, abandon, and retry. 5 Join parallel objectives with a bar."
+        ],
+        [
+          "Common mistakes",
+          "Flowcharts of menu clicks; diamonds with one exit; no failure path; parallel objectives that never join; no already-completed state."
+        ],
+        [
+          "Tool",
+          "draw.io or FigJam; Twine when the quest is dialogue-heavy."
+        ],
+        [
+          "Where it lives",
+          "{{03 Narrative & World}} → quest name."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "[Start: talk to {{Quartermaster}}]\n        ↓\n[Reach {{Relay 3}}] ──{Alarm raised?}──yes──→ [Fail: alarm]\n        ↓ no\n[Plant charge A] → [Plant charge B] → {Both planted?}\n                                          ├─ no ─→ [Return to missing charge]\n                                          └─ yes ─→ [Complete] → [Reward]"
+    },
+    {
+      "t": "image",
+      "key": "04_quest_flow",
+      "caption": "Rendered example — Moonshift quest “Dry Garden”."
+    },
+    {
+      "t": "quote",
+      "x": "{{Talk to the Quartermaster → Reach Relay 3 → Plant two charges → Complete}}; the alarm is a fail state, not a detour."
+    },
+    {
+      "t": "h2",
+      "x": "8.8 Sequence / interaction timing"
+    },
+    {
+      "t": "ins",
+      "x": "Use a sequence diagram when the argument is about order or timing: input latency, server authority, hit feedback, or who owns a state change. Do not use it to show content flow."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's repair sequence diagram runs Player → Input → Gameplay → UI → Audio: tap, validate placement, update air, play the hiss, show the gauge, inside a 16 ms input poll and an 80 ms tap-to-feedback budget. It settled that the air gauge updates before the repair animation, so the result is visible even when the animation is skipped."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "In what order do input, authority, feedback, and audio fire, and how far apart?"
+        ],
+        [
+          "Elements",
+          "Lifeline per participant; solid arrow = request; dashed arrow = return; filled head = synchronous; open head = async; activation bar = processing; time note = budget in ms."
+        ],
+        [
+          "How to draw",
+          "1 Name the trigger and the observable result. 2 List only participants that touch that result. 3 Put time left-to-right and number each message. 4 Mark who has authority and the feedback deadline. 5 Annotate the budget per step."
+        ],
+        [
+          "Common mistakes",
+          "Mixing client and server on one lifeline; no returns; internal calls the player never sees; feedback before confirmation; no timeout path."
+        ],
+        [
+          "Tool",
+          "FigJam or Miro sequence plugin; PlantUML or Mermaid for a versioned source."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → interaction spec; {{06 Technical Design}} → timing budget."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Player     Input      Gameplay     Server      UI        Audio\n  │          │            │           │         │          │\n  │─press───→│            │           │         │          │\n  │          │─intent────→│           │         │          │\n  │          │            │─validate─→│         │          │\n  │          │            │←─ok───────│         │          │\n  │          │            │─damage──────────────→│         │\n  │          │            │─play sfx──────────────────────→│\n  │←─shake────────────────│           │         │          │\n  │          │            │─update hp────────────→│         │\n  │          │←─80 ms─────│           │         │          │"
+    },
+    {
+      "t": "image",
+      "key": "05_sequence",
+      "caption": "Rendered example — Moonshift hit-confirm sequence and 80 ms budget."
+    },
+    {
+      "t": "quote",
+      "x": "{{Input → validate on server → confirm → UI → audio}} inside 120 ms; feedback before confirmation is a bug."
+    },
+    {
+      "t": "h2",
+      "x": "8.9 Systems map / dependency graph"
+    },
+    {
+      "t": "ins",
+      "x": "Use a systems map when a change in one system keeps breaking another, or when the team cannot agree on what is core. Map dependencies, not classes."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's systems map has Air, Power, Cargo, Crew, Rooms, Save, and HUD, with Power → Air for fans, Cargo → Air for filters, Crew → Air for upkeep, and Save reading all persistent state. It settled that Crew owns trust and Gameplay owns air, ending the duplicate write that desynced shift summaries."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "Which systems depend on which, and where will a change cascade?"
+        ],
+        [
+          "Elements",
+          "Rectangle = system (one noun); arrow = dependency labelled reads, writes, owns, or triggers; solid = synchronous; dashed = event or async; colour = layer; dashed boundary = scope."
+        ],
+        [
+          "How to draw",
+          "1 List 8–15 systems at one abstraction level. 2 Draw arrows from the owner of data to the reader. 3 Label the payload or event, not uses. 4 Circle the top three fan-in nodes and name an owner. 5 Box the slice you will build first."
+        ],
+        [
+          "Common mistakes",
+          "One node per class; arrows with no direction; mixing runtime and build dependencies; no async legend; an org chart in disguise."
+        ],
+        [
+          "Tool",
+          "Miro or Obsidian Canvas for discovery; draw.io for the approved map."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → Systems map."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "[Input] → [Movement] → [Animation]\n   │          │\n   ↓          ↓\n[Combat] → [Damage] → [Health] → [HUD]\n   │          ↑          │\n   ↓          │          ↓\n[Loot] ──→ [Inventory] → [Save]\n   │\n   └──→ [Economy] → [Progression] → [Matchmaking]\n\n[Economy] ┄┄→ [Loot]   (drop rates)"
+    },
+    {
+      "t": "image",
+      "key": "06_systems_map",
+      "caption": "Rendered example — Moonshift systems map."
+    },
+    {
+      "t": "quote",
+      "x": "{{Combat writes Health; HUD reads Health; Save reads Health}}; if two systems write the same field, draw the conflict."
+    },
+    {
+      "t": "h2",
+      "x": "8.10 Class / entity data model"
+    },
+    {
+      "t": "ins",
+      "x": "Use a class or entity model before schema, save format, or content tooling work. Draw the data the game must persist, not every object in code."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's entity model has Outpost, Room, AirNetwork, Inventory, CrewMember, and ShiftState; Room owns 1..n Vents, Inventory holds 0..n PartStacks, and ShiftState references the active Room and crew. It settled that PartDef holds item stats while PartStack stores only defId and quantity, so save migration never duplicates stats."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What data does each entity own, how is it identified, and how do the pieces relate?"
+        ],
+        [
+          "Elements",
+          "UML box = entity with name and fields; add methods only if behaviour is part of the contract; cardinality 1 or 0..n; filled diamond = composition; open diamond = aggregation; solid line = association; arrow = reference; colour = runtime vs definition."
+        ],
+        [
+          "How to draw",
+          "1 List entities from the save file, not from code. 2 Give each a stable ID and one owner. 3 Draw composition first, then references. 4 Put cardinality on both ends. 5 Keep definition data separate from instance data."
+        ],
+        [
+          "Common mistakes",
+          "Every field on the canvas; inheritance for item types; missing cardinality; one giant Player object; UI state in the save model."
+        ],
+        [
+          "Tool",
+          "draw.io, PlantUML, or Mermaid classDiagram; Figma for review."
+        ],
+        [
+          "Where it lives",
+          "{{06 Technical Design}} → Data model; {{06 Technical Design}} → schema."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "┌──────────────────┐        ┌──────────────────┐\n│ Character        │ 1    n │ ItemInstance     │\n├──────────────────┤────────├──────────────────┤\n│ id: UUID         │ owns   │ instanceId: UUID │\n│ level: int       │        │ defId: ItemDef   │\n│ stats: StatBlock │        │ qty: int         │\n└────────┬─────────┘        └────────┬─────────┘\n         │ 1                         │ n\n         ↓ n                         ↓ 1\n┌──────────────────┐        ┌──────────────────┐\n│ AbilitySlot      │        │ ItemDef          │\n│ slot: 0–3        │        │ id, rarity, tags │\n└──────────────────┘        └──────────────────┘"
+    },
+    {
+      "t": "image",
+      "key": "07_class_model",
+      "caption": "Rendered example — Moonshift inventory and character data model."
+    },
+    {
+      "t": "quote",
+      "x": "{{Character 1 owns 0..n ItemInstance; ItemInstance references 1 ItemDef}}; definition data never lives in the save."
+    },
+    {
+      "t": "h2",
+      "x": "8.11 Economy flow (faucets, sinks, pools, converters)"
+    },
+    {
+      "t": "ins",
+      "x": "Use an economy flow when players have too much or too little of something, or when a new source or sink is proposed. One resource per diagram; convert later."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's air economy flow runs from Processing and Tanks (+18 air per shift) into the Air pool (cap 100), then out to crew upkeep (−8) and leaks (−4 to −12), with a converter turning 2 Parts into 1 Filter. It settled that shift 4 ran a 33% surplus at the low leak rate, so we lowered tank output instead of adding a sink."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "Where does each resource enter, where does it pool, what converts it, and where does it leave?"
+        ],
+        [
+          "Elements",
+          "Circle = pool; inbound arrow = faucet; downward triangle = sink; triangle with line = converter; diamond = gate or chance; solid arrow = flow with rate; dashed arrow = state connection; colour per resource."
+        ],
+        [
+          "How to draw",
+          "1 Pick one resource and one time unit. 2 Put faucets left, pools centre, sinks right. 3 Label every arrow with amount and cadence. 4 Add converters where one resource becomes another. 5 Compare inflow and outflow at target playtime."
+        ],
+        [
+          "Common mistakes",
+          "No time unit; faucets without sinks; uncapped pools; converters that create net value; tuning by feel."
+        ],
+        [
+          "Tool",
+          "Machinations for simulation; a spreadsheet for the numbers; Miro for the first sketch."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → Economy flow."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "FAUCETS              POOLS                 SINKS\n[Quest]  ──+120/h──→ ( Gold ) ──−80/h──→ [Vendor]\n[Daily]  ──+40/h───→    │      ──−25/h──→ [Repair]\n[Dismantle] ─+15/h─→    │      ──−10/h──→ [Respec]\n                        │\n                        └─ 3 Gold + 1 Ore ─→ [Forge] ─→ ( Shard )"
+    },
+    {
+      "t": "image",
+      "key": "08_economy",
+      "caption": "Rendered example — Moonshift gold and ore economy."
+    },
+    {
+      "t": "quote",
+      "x": "{{Quest +120 gold/hour → pool → Vendor −80/hour}}; if the sink is smaller than the faucet, the pool never empties."
+    },
+    {
+      "t": "h2",
+      "x": "8.12 Level flow / beat chart (map + pacing curve)"
+    },
+    {
+      "t": "ins",
+      "x": "Use a level flow and beat chart when a level feels flat, exhausting, or confusing, or when a reviewer asks what the player learns and when. Draw the map and the intensity curve on the same page."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's level flow and beat chart run Arrival → First Breath → First Shortage → First Setback → Final Shift, with the 3×3 board, two-room split, leak-and-timer, and whole-base reroute as beats; the intensity curve peaks at the whole-base reroute. It settled that the first real failure belongs after two successes, so the leak moved to shift 3."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What is the critical path through the level, and how does intensity rise and fall along it?"
+        ],
+        [
+          "Elements",
+          "Rectangle = room or beat; thick arrow = critical path; thin dashed = optional; diamond = gate; chart x = time or order, y = intensity 0–10; label = duration, teaching goal, encounter type."
+        ],
+        [
+          "How to draw",
+          "1 Draw the critical path left to right. 2 Add optional rooms below the spine. 3 Number beats in play order. 4 Plot the same beats on a 0–10 intensity curve. 5 Mark the teaching beat and the peak; justify a peak that is not the finale."
+        ],
+        [
+          "Common mistakes",
+          "A map with no durations; a curve with no beat labels; every beat at 8/10; no rest after a peak; secrets that break pacing."
+        ],
+        [
+          "Tool",
+          "Paper for the map; Figma or Miro for the beat chart; a spreadsheet for durations."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → level name."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "MAP\n[Entry] → [Teach: crouch] → [Combat 1] → [Hub] ─→ [Secret]\n                                      ├→ [Traverse] → [Arena] → [Exit]\n\nINTENSITY (0–10)\n10 │                   ██\n 7 │          ██      ████       ██\n 4 │  ██     ████    ██████  ██ ████\n 1 │███     ██████  ████████ ███ ██████\n   └──────────────────────────────────→\n    entry  teach  combat   hub  arena"
+    },
+    {
+      "t": "image",
+      "key": "09_level_flow",
+      "caption": "Rendered example — Moonshift Relay 3 level flow and intensity beats."
+    },
+    {
+      "t": "quote",
+      "x": "{{Entry → Teach → Combat → Hub → Arena → Exit}} peaks at the Arena, not at the corridor before it."
+    },
+    {
+      "t": "h2",
+      "x": "8.13 Narrative branch graph"
+    },
+    {
+      "t": "ins",
+      "x": "Use a narrative branch graph when choices change scenes, flags, or endings, and the writer needs to see the cost of each branch. If the story is linear, use a beat sheet."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's narrative branch graph runs Arrival → Radio Call or Workshop Salvage, then three endings: Rescue (radio repaired, crew trust 50+), Holdout (air stable, garden alive), and Departure (lander repaired, trust under 25). It settled that the garden choice must set world_garden_alive at the climax, so the epilogue varies without a fourth ending."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "Where does the story branch, what choice causes it, and where do branches reconverge?"
+        ],
+        [
+          "Elements",
+          "Rectangle = scene or passage; diamond = choice point; arrow = choice labelled with a verb; colour = act; flag note = variable set; double outline = ending; dashed = conditional shortcut."
+        ],
+        [
+          "How to draw",
+          "1 List the endings and work backwards to the last common scene. 2 Put the choice on the edge, not in the node. 3 Mark flags set and tested. 4 Fold reconverging branches into a hub. 5 Count scenes per ending and mark the cheapest and most expensive path."
+        ],
+        [
+          "Common mistakes",
+          "Every choice creates an ending; no reconvergence; flags with no visible test; a hairball; no word budget per branch."
+        ],
+        [
+          "Tool",
+          "Twine for structure and playtest; Ink for shipped text; Obsidian Canvas for lore links."
+        ],
+        [
+          "Where it lives",
+          "{{03 Narrative & World}} → act or chapter."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "[Arrival]\n├─ \"Trust {{Mira}}\" ─→ [The Deal] ─┬─ \"Accept\" ─→ [Ending A]\n│                                   └─ \"Refuse\" ─→ [Fallout] ─→ [Ending B]\n└─ \"Search the {{wreck}}\" ─→ [Black Box] ─┬─ \"Share\" ─→ [Ending A]\n                                          └─ \"Hide\"  ─→ [Ending C]\n\nflag: trust_mira = true  →  unlocks [The Deal] in Act 2"
+    },
+    {
+      "t": "image",
+      "key": "10_narrative_branch",
+      "caption": "Rendered example — Moonshift act-three branch graph."
+    },
+    {
+      "t": "quote",
+      "x": "{{Trust Mira → The Deal → Refuse → Fallout → Ending B}}; the flag trust_mira is set at Arrival, tested at The Deal."
+    },
+    {
+      "t": "h2",
+      "x": "8.14 Progression / unlock graph"
+    },
+    {
+      "t": "ins",
+      "x": "Use a progression graph when unlocks gate content, and the team needs to see the critical path and the optional power. Draw what opens what, not the UI tree."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's unlock graph runs Place → Dismantle → Reroute → Overclock → Room Chain, with each node opening a room or verb and no node having more than two parents; the optional challenge room sits off Reroute. It settled that Overclock arrives at shift 5, after the player has felt a power shortage."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What can the player unlock, what does it open, and what is the critical path?"
+        ],
+        [
+          "Elements",
+          "Rectangle = unlock; hexagon or diamond = gate; arrow = requires; thick arrow = critical path; thin = optional; label = cost and prerequisite; colour = tier."
+        ],
+        [
+          "How to draw",
+          "1 List unlocks in intended order. 2 Put each gate after the unlock that opens it. 3 Draw the critical path as a straight spine. 4 Add optional branches with costs. 5 Check every gate has a visible key before it is needed."
+        ],
+        [
+          "Common mistakes",
+          "A linear chain labelled as a graph; gates with no in-world tell; optional rewards that trivialize the spine; no cost; duplicate keys with no reason."
+        ],
+        [
+          "Tool",
+          "draw.io or Figma; a spreadsheet for costs and power delta."
+        ],
+        [
+          "Where it lives",
+          "{{02 Gameplay & Systems}} → Progression."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "[Start] → [Double Jump] → [Wall Climb] → [Glide] → [Final Gate]\n              │                │             │\n              ├→ [Secret A]    ├→ [Shortcut] └→ [Secret C]\n              ↓\n          [Grapple] ──opens──→ [Secret B]   (optional)\n\nGATE: {{Gap 1}} needs Double Jump; {{Ledge 3}} needs Wall Climb"
+    },
+    {
+      "t": "image",
+      "key": "11_progression",
+      "caption": "Rendered example — Moonshift traversal unlock graph."
+    },
+    {
+      "t": "quote",
+      "x": "{{Double Jump opens Gap 1; Wall Climb opens Ledge 3; Glide opens the Final Gate}}; every gate shows its key before it is needed."
+    },
+    {
+      "t": "h2",
+      "x": "8.15 UX screen flow and wireframe"
+    },
+    {
+      "t": "ins",
+      "x": "Use a screen flow and wireframe when a screen has more than one state, a controller focus order, or a debate about hierarchy. Draw the flow first, then one wireframe per screen."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's screen flow has Title → Save Select → HUD ⇄ Pause, with Map, Quest Log, Settings, and Results as one-input branches; the HUD wireframe puts air and power top-left, the shift timer top-centre, objectives right, and the interact prompt near the reticle. It settled that Pause must freeze the timer and keep the live frame visible."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Spec"
+      ],
+      "rows": [
+        [
+          "Question it answers",
+          "What screens exist, how does the player move between them, and what is on each screen?"
+        ],
+        [
+          "Elements",
+          "Rectangle = full screen; rounded rectangle = modal; solid arrow = action; dashed = back or cancel; box = region; X-box = image; line = text; label = control; margin = safe zone."
+        ],
+        [
+          "How to draw",
+          "1 List screens and overlays, including loading, error, and empty states. 2 Draw one entry and one back edge per screen. 3 Wireframe at target resolution with a 5% safe zone. 4 Mark the primary action and focus order. 5 Annotate what must be read in under one second."
+        ],
+        [
+          "Common mistakes",
+          "Final art in a wireframe; missing back or cancel; HUD covering the action; no controller focus state; desktop layout reused on mobile."
+        ],
+        [
+          "Tool",
+          "Figma for wireframes; FigJam for the flow; paper for the first three layouts."
+        ],
+        [
+          "Where it lives",
+          "{{04 Experience: UX, UI, Audio}} → Screen flow."
+        ]
+      ],
+      "w": [
+        86,
+        418
+      ]
+    },
+    {
+      "t": "p",
+      "x": "FLOW\n[Title] → [Main Menu]\n            ├→ [Settings] ⇄ [Main Menu]\n            ├→ [Save Select] ⇄ [Main Menu]\n            │       └→ [HUD] ⇄ [Pause]\n            └→ [New Game] → [HUD]\n(⇄ = back or cancel)\n\nHUD (1920×1080, 5% safe zone)\n┌──────────────────────────────────────┐\n│ [objective]                [minimap] │\n│                                      │\n│              (reticle)               │\n│                                      │\n│ [health] [stamina]        [ammo 24]  │\n└──────────────────────────────────────┘"
+    },
+    {
+      "t": "image",
+      "key": "12_ux_flow",
+      "caption": "Rendered example — Moonshift screen flow and HUD regions."
+    },
+    {
+      "t": "quote",
+      "x": "{{Title → Main Menu → Save Select → HUD → Pause → Main Menu}}; every screen has one back edge and one primary action."
+    },
+    {
+      "t": "h2",
+      "x": "8.16 Which diagram goes in which GDD tab"
+    },
+    {
+      "t": "ins",
+      "x": "Assign one owner and one update trigger per row. If a diagram has no trigger, it will be stale by the next milestone."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift assigns the mode map and core loop to 02 Gameplay & Systems, the garden quest and branch graph to 03 Narrative & World, the entity model and save ERD to 06 Technical Design, and the HUD flow to 04 Experience. The matrix settled that the air economy belongs in 02, not 07 Production, and that the producer owns the roadmap update."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Diagram",
+        "GDD tab",
+        "Owner",
+        "Update trigger"
+      ],
+      "rows": [
+        [
+          "Game flow, UX screen flow",
+          "{{02 Gameplay & Systems}}, {{04 Experience: UX, UI, Audio}}",
+          "{{Design lead}}",
+          "Mode or screen added"
+        ],
+        [
+          "Core loop, systems map",
+          "{{02 Gameplay & Systems}}",
+          "{{Design lead}}",
+          "Loop verb or dependency changes"
+        ],
+        [
+          "Player, AI, and session state machines",
+          "{{02 Gameplay & Systems}}, {{06 Technical Design}}",
+          "{{Systems designer}}",
+          "New state, interrupt, or session rule"
+        ],
+        [
+          "Quest flow, narrative branch",
+          "{{03 Narrative & World}}",
+          "{{Narrative designer}}",
+          "Branch, flag, or ending changes"
+        ],
+        [
+          "Entity model, save ERD",
+          "{{06 Technical Design}}",
+          "{{Tech lead}}",
+          "Schema or save version changes"
+        ],
+        [
+          "Economy flow",
+          "{{02 Gameplay & Systems}}",
+          "{{Economy designer}}",
+          "Source, sink, or price changes"
+        ],
+        [
+          "Level flow, beat chart",
+          "{{02 Gameplay & Systems}}",
+          "{{Level designer}}",
+          "Layout or pacing pass"
+        ],
+        [
+          "Progression, production roadmap",
+          "{{02 Gameplay & Systems}}, {{07 Production & Launch}}",
+          "{{Design lead}} / {{Producer}}",
+          "Unlock, cost, or milestone changes"
+        ]
+      ],
+      "w": [
+        126,
+        126,
+        110,
+        142
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Deployment diagrams live in the technical design document, not the GDD. Link them from the technical architecture tab; do not duplicate them here."
+    },
+    {
+      "t": "h2",
+      "x": "8.17 Tooling"
+    },
+    {
+      "t": "ins",
+      "x": "Choose the tool that matches the diagram's job and the team's review habit. A shared canvas is not a source of truth; the exported file and the linked source are."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift uses FigJam for the mode map and HUD flow, draw.io for the entity model and save ERD, Machinations for the air economy, Twine for the garden and ending branches, and a spreadsheet for every air and power number. The stack settled that the team reviews one FigJam board on Fridays and exports PNGs into the GDD."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Tool",
+        "Best for",
+        "Cost and collaboration",
+        "Export",
+        "Watch-outs"
+      ],
+      "rows": [
+        [
+          "Miro",
+          "Workshops, game flow, systems maps, review",
+          "Free 3 boards; paid per seat; real-time cursors",
+          "PNG, PDF, embed",
+          "Boards rot without an owner; heavy boards lag"
+        ],
+        [
+          "FigJam",
+          "UI flows and wireframes with designers",
+          "Free tier; paid per seat; strong Figma handoff",
+          "PNG, PDF, Figma frames",
+          "Weak for simulation; comments sprawl"
+        ],
+        [
+          "draw.io",
+          "Precise UML, ERD, deployment, versioned source",
+          "Free; desktop and web; no real-time co-edit",
+          "SVG, PNG, PDF, XML",
+          "Ugly defaults; manual layout; no simulation"
+        ],
+        [
+          "Machinations",
+          "Economy flow and balance simulation",
+          "Free tier; paid for private and advanced sim; share links",
+          "PNG, CSV, playable sim",
+          "Steep syntax; not a general diagram tool"
+        ],
+        [
+          "Twine / Ink",
+          "Narrative branches and testable prose",
+          "Free and open source; local files; Git-friendly Ink",
+          "HTML, JSON, PDF",
+          "Graph becomes a hairball; Twine HTML diffs poorly"
+        ],
+        [
+          "Obsidian Canvas",
+          "Lore, research, links between notes",
+          "Free personal; paid commercial and sync; local Markdown",
+          "PNG, JSON Canvas",
+          "No diagram semantics; not a spec tool"
+        ],
+        [
+          "Pen and paper",
+          "First pass, ambiguous problems, co-located review",
+          "Cheap; no account; anyone can join",
+          "Photo or scan",
+          "No history; illegible to remote team"
+        ]
+      ],
+      "w": [
+        70,
+        120,
+        110,
+        90,
+        114
+      ]
+    },
+    {
+      "t": "p",
+      "x": "A workable default: FigJam for flows and workshops, draw.io for UML and ERD, Machinations for economy simulation, Twine for narrative structure, and a spreadsheet for every number that appears in a diagram."
+    },
+    {
+      "t": "h2",
+      "x": "8.18 Review checklist"
+    },
+    {
+      "t": "ins",
+      "x": "Run this checklist on the exported diagram, not the source file. A reviewer should answer every item without opening another tab."
+    },
+    {
+      "t": "example",
+      "x": "Before the Moonshift vertical-slice review, the mode map passed all ten checks, including one question, a legend, labelled arrows, failure and pause exits, a dated source link, and alt text naming the three ways a shift ends. The review caught that Results had no back edge, which we fixed before QA."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The title is the question, and the diagram answers it without the caption.",
+        "The scope boundary is drawn; out-of-scope systems are grey or absent.",
+        "Every shape is in the legend and carries one meaning.",
+        "Every arrow is labelled with an event, verb, or condition.",
+        "The main path is traceable in under ten seconds.",
+        "Failure, cancel, timeout, and empty states are present.",
+        "Numbers have units, ranges, and a source: build, playtest, or spreadsheet.",
+        "The diagram names the owner, date, version, and status.",
+        "The editable source is linked, and the export matches it.",
+        "Alt text states the takeaway in two sentences."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Treat this tab as done when the diagrams are trusted enough to make decisions without a meeting. Re-check it at every milestone, not at the end of production."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The translation table is filled, and every diagram you keep has an owner in 8.16.",
+        "Every core system has exactly one primary diagram and one owner.",
+        "Every diagram drawn from a recipe has a source file, an export, and alt text in its GDD tab.",
+        "The legend matches the studio standard across all diagrams.",
+        "Every diagram passes the 8.18 checklist.",
+        "Owners and update triggers are assigned in 8.16.",
+        "No diagram is older than the last change to the system it describes.",
+        "The open questions below have owners and dates."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "p",
+      "x": "Resolve these before the diagram set is marked approved. An open question without an owner is a decision the team is avoiding."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "rows": [
+        [
+          "Do we standardise on FigJam or Miro for the whole studio?",
+          "{{Producer}}",
+          "{{Sprint 0}}"
+        ],
+        [
+          "Which save schema version ships with the demo?",
+          "{{Tech lead}}",
+          "{{Milestone 2}}"
+        ],
+        [
+          "Who owns the economy diagram after launch?",
+          "{{Economy designer}}",
+          "{{Beta}}"
+        ],
+        [
+          "Do we need a deployment diagram for the co-op slice?",
+          "{{Technical director}}",
+          "{{Vertical slice}}"
+        ],
+        [
+          "What is the review SLA for a diagram change?",
+          "{{Design director}}",
+          "{{Sprint 1}}"
+        ]
+      ],
+      "w": [
+        300,
+        102,
+        102
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

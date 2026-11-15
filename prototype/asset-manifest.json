@@ -35,17 +35,17 @@
       "id": "crew-a",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_A.glb",
       "url": "assets/models/crew-a.glb",
-      "sourceBytes": 83912,
-      "preparedBytes": 82156,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88752,
+      "preparedBytes": 84748,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "cc95bbd31ccd3f09bfdbe337b94d86a3931ab88a43880b62e7d63f4d341cccce",
-      "preparedSha256": "cc0f94d7c24a420c443e025146611381558e15ed4d25532c4286e7ec81101b48",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "d3db226c5c7db6a968556df668bd609768326a3fa179393a7f59cbc96e12438b",
+      "preparedSha256": "9d9000d32d09b2d56f60373fc3243e1dca3f991866de4df24e8d39091e178826",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -63,17 +63,17 @@
       "id": "crew-b",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_B.glb",
       "url": "assets/models/crew-b.glb",
-      "sourceBytes": 83880,
-      "preparedBytes": 82124,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88720,
+      "preparedBytes": 84716,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "238b9f31f724f1d09ce1088c5a8af43622f399aec01ba0f0360e36b5b4be4c72",
-      "preparedSha256": "a41c20f4f6c45a422cba743d836fe0ad9f2f844fd105e7ab521bc381f3abdecd",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "9be72c2a3e1f987077e8bd47217128f71d804b97ca5717869e43a4b64fb41d38",
+      "preparedSha256": "d422d0579e363ccb51e6db0a1d119a64ced082de0143fedf6c4a47c9d9c85385",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -91,17 +91,17 @@
       "id": "crew-c",
       "source": "../exports/01_Characters/MOONSHIFT_CHR_Crew_C.glb",
       "url": "assets/models/crew-c.glb",
-      "sourceBytes": 83876,
-      "preparedBytes": 82120,
-      "sourcePrimitives": 19,
+      "sourceBytes": 88716,
+      "preparedBytes": 84712,
+      "sourcePrimitives": 23,
       "preparedPrimitives": 7,
-      "sourceTriangles": 1356,
-      "preparedTriangles": 1356,
-      "sourceSha256": "56625cb63a39cd465a4ea6b8f2198b72956d0c96961e24dc4b342641e8888ad7",
-      "preparedSha256": "fd4f7b33c24fc90cf6af9f8ca96ed1d2d8be7dc751fa1be3a6403bff12f8baaa",
+      "sourceTriangles": 1404,
+      "preparedTriangles": 1404,
+      "sourceSha256": "0ede9405ba70b1079d38bf8515018508fd30071ed74554e411fac6b68a29dd79",
+      "preparedSha256": "f83054928e252edada6d3889fef51890ea4e472086ab06c1a9ed189237fb7c6e",
       "bounds": {
         "min": [
-          -0.5323396788375894,
+          -0.5333172343915004,
           -7.078051478259795e-9,
           -0.6264743951719599
         ],
@@ -113,59 +113,6 @@
       },
       "changes": [
         "Bake mesh transforms and merge static geometry by material; retain status meshes"
-      ]
-    },
-    {
-      "id": "board",
-      "source": "../exports/03_AirSystem/MOONSHIFT_AIR_Placement_Board_3x3.glb",
-      "url": "assets/models/board.glb",
-      "sourceBytes": 115836,
-      "preparedBytes": 65764,
-      "sourcePrimitives": 57,
-      "preparedPrimitives": 9,
-      "sourceTriangles": 1520,
-      "preparedTriangles": 1016,
-      "sourceSha256": "19cb2a4c21c4be7b0e4f299d0699100454c1d0bd983c821098e0ec2aa496efc7",
-      "preparedSha256": "5193550e734bed61621b4a4370774828bd7567841a43bb6db773dab17a5966ea",
-      "bounds": {
-        "min": [
-          -2.4000000059604645,
-          0,
-          -1.7999999523162842
-        ],
-        "max": [
-          2.999999875607699,
-          0.8499999940395355,
-          1.7999999523162842
-        ]
-      },
-      "changes": [
-        "Bake mesh transforms and merge static geometry by material; retain status meshes",
-        "Remove VentZone_*, ServiceZone_*, and CrewZone_* geometry; keep tiles and route markers"
-      ],
-      "removedNodes": [
-        "CrewZone_Pad",
-        "CrewZone_Ring",
-        "CrewZone_Seat0",
-        "CrewZone_Seat1",
-        "CrewZone_Sign",
-        "CrewZone_SignBody",
-        "CrewZone_SignHead",
-        "ServiceZone_Ring",
-        "ServiceZone_X0",
-        "ServiceZone_X1",
-        "VentZone_A_Edge0",
-        "VentZone_A_Edge1",
-        "VentZone_A_Stripe0",
-        "VentZone_A_Stripe1",
-        "VentZone_A_Stripe2",
-        "VentZone_A_Stripe3",
-        "VentZone_B_Edge0",
-        "VentZone_B_Edge1",
-        "VentZone_B_Stripe0",
-        "VentZone_B_Stripe1",
-        "VentZone_B_Stripe2",
-        "VentZone_B_Stripe3"
       ]
     },
     {
@@ -319,14 +266,14 @@
       "id": "garden",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Garden_Facility.glb",
       "url": "assets/models/garden.glb",
-      "sourceBytes": 71332,
-      "preparedBytes": 64696,
-      "sourcePrimitives": 28,
-      "preparedPrimitives": 11,
-      "sourceTriangles": 874,
-      "preparedTriangles": 874,
-      "sourceSha256": "dd0972780442144073c8ef62d9e94bac8ec976ee57f1e5923ba6986904c34099",
-      "preparedSha256": "31344841a2f6985fadc9bf136994000bace12ec3f538966b7adc42fd03c9b613",
+      "sourceBytes": 79092,
+      "preparedBytes": 71068,
+      "sourcePrimitives": 32,
+      "preparedPrimitives": 12,
+      "sourceTriangles": 994,
+      "preparedTriangles": 994,
+      "sourceSha256": "58d1a5299cb03b457603fa097213a62be9aa2329f00bd76dc825722130b64f26",
+      "preparedSha256": "f82a8443f35d3627289f98fcee937a5b6f2c39ed1cad415b0dff16c9ec40b66d",
       "bounds": {
         "min": [
           -1.2000000476837158,
@@ -347,14 +294,14 @@
       "id": "workshop",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Workshop_Intact.glb",
       "url": "assets/models/workshop.glb",
-      "sourceBytes": 62184,
-      "preparedBytes": 50960,
+      "sourceBytes": 66660,
+      "preparedBytes": 54392,
       "sourcePrimitives": 33,
-      "preparedPrimitives": 11,
-      "sourceTriangles": 744,
-      "preparedTriangles": 744,
-      "sourceSha256": "ce20b663cdc75cd6f1f02c0d6b437c9d02e3ff80f7d399e944a58c24f30742d7",
-      "preparedSha256": "4aaf92130a2e69f1f9022da66528e4a2b23bba47f0111c8dd697395f1346c704",
+      "preparedPrimitives": 9,
+      "sourceTriangles": 878,
+      "preparedTriangles": 878,
+      "sourceSha256": "e312f83094059b0568ddf3b47bd7efd7ebf9b2efc56d72c13efe41836bf50b7d",
+      "preparedSha256": "7f0d5580cbb9871b0416413191e4f567d7236e6a3f8aebae8bf2c5e88652964b",
       "bounds": {
         "min": [
           -1.2000000476837158,
@@ -363,7 +310,7 @@
         ],
         "max": [
           1.3999999463558197,
-          1.9499999564141035,
+          1.7800000309944153,
           0.949999988079071
         ]
       },
@@ -375,14 +322,14 @@
       "id": "radio",
       "source": "../exports/04_Facilities/MOONSHIFT_FAC_Radio_Station.glb",
       "url": "assets/models/radio.glb",
-      "sourceBytes": 61224,
-      "preparedBytes": 46760,
-      "sourcePrimitives": 37,
+      "sourceBytes": 50016,
+      "preparedBytes": 40060,
+      "sourcePrimitives": 27,
       "preparedPrimitives": 9,
-      "sourceTriangles": 678,
-      "preparedTriangles": 678,
-      "sourceSha256": "96c15203db2b992eb63f98290bd4bb5a12f3cc314f72cedc0b918db4dfca61c4",
-      "preparedSha256": "a783b6edaca867e6c95c6828e9d09400fc6ccfb44cbef867818cb550c3bfaa43",
+      "sourceTriangles": 550,
+      "preparedTriangles": 550,
+      "sourceSha256": "392de0df9b6dc556cc42ce8fb1a53ab56d0934b36cfbbcad9d274a113c382a5b",
+      "preparedSha256": "8fdf8696e659890dd3c8f4672dcbe15199b71dae448950b6effca2d0e7715daa",
       "bounds": {
         "min": [
           -0.949999988079071,
@@ -390,8 +337,8 @@
           -0.949999988079071
         ],
         "max": [
-          0.9806458086135208,
-          3.6499999538064003,
+          0.9500000178813934,
+          2.503173556156896,
           0.949999988079071
         ]
       },
@@ -426,14 +373,326 @@
       "changes": [
         "Bake mesh transforms and merge static geometry by material; retain status meshes"
       ]
+    },
+    {
+      "id": "food",
+      "source": "../exports/02_Items/MOONSHIFT_ITM_Food_Pack.glb",
+      "url": "assets/models/food.glb",
+      "sourceBytes": 28136,
+      "preparedBytes": 28168,
+      "sourcePrimitives": 9,
+      "preparedPrimitives": 7,
+      "sourceTriangles": 372,
+      "preparedTriangles": 372,
+      "sourceSha256": "3b7be9a48ed8b0be3e5fa2c86e8cbe6c3337f3fd4557bfc01e1578a114d57b33",
+      "preparedSha256": "740c85cd23beb85aa20ce45e8292a473fd1b0723b2825e5a623ac04742c6b8a1",
+      "bounds": {
+        "min": [
+          -0.3450000425800681,
+          0.009999990463256836,
+          -0.25999999046325684
+        ],
+        "max": [
+          0.3450000425800681,
+          0.6994576626948317,
+          0.316785242408514
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes",
+        "Remove known showcase root yaw; retain Y-up and +Z asset front"
+      ]
+    },
+    {
+      "id": "kit",
+      "source": "../exports/02_Items/MOONSHIFT_ITM_Garden_Kit.glb",
+      "url": "assets/models/kit.glb",
+      "sourceBytes": 35332,
+      "preparedBytes": 31656,
+      "sourcePrimitives": 15,
+      "preparedPrimitives": 7,
+      "sourceTriangles": 448,
+      "preparedTriangles": 448,
+      "sourceSha256": "13505868d5004cb813248c0c4d3257b2c5c1c5f1ada066b3aab493279a27f73b",
+      "preparedSha256": "45bb2c57506a65cfbb11eec0b9448e0e9e01f5b5356a141295fc48e42bfd0935",
+      "bounds": {
+        "min": [
+          -0.3499999940395355,
+          0,
+          -0.2649999996647239
+        ],
+        "max": [
+          0.622525038792177,
+          0.5980000181198122,
+          0.32617316395044327
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes",
+        "Remove known showcase root yaw; retain Y-up and +Z asset front"
+      ]
+    },
+    {
+      "id": "supply",
+      "source": "../exports/02_Items/MOONSHIFT_ITM_Crate_Small_1Tile.glb",
+      "url": "assets/models/supply.glb",
+      "sourceBytes": 16392,
+      "preparedBytes": 16092,
+      "sourcePrimitives": 5,
+      "preparedPrimitives": 4,
+      "sourceTriangles": 220,
+      "preparedTriangles": 220,
+      "sourceSha256": "3527433fcbe4eeceea147f033fbdc2ae3945e46e74142203977bb4aceccb4a2e",
+      "preparedSha256": "cd1792e439d6a367c944a91de0b22dd50804ca5a740d56b333e2996e6676304a",
+      "bounds": {
+        "min": [
+          -0.3199999928474426,
+          0,
+          -0.3199999928474426
+        ],
+        "max": [
+          0.3199999928474426,
+          0.5400000214576721,
+          0.343000004068017
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes",
+        "Remove known showcase root yaw; retain Y-up and +Z asset front"
+      ]
+    },
+    {
+      "id": "spare",
+      "source": "../exports/02_Items/MOONSHIFT_ITM_Air_Component.glb",
+      "url": "assets/models/spare.glb",
+      "sourceBytes": 32808,
+      "preparedBytes": 31112,
+      "sourcePrimitives": 12,
+      "preparedPrimitives": 7,
+      "sourceTriangles": 452,
+      "preparedTriangles": 452,
+      "sourceSha256": "5e8b1b4c32a75099729db84482cbbca220b8484f8bb376ed03fc9dd59d2ff2b7",
+      "preparedSha256": "d4bd45fc5d4f82d1358d5c4e06727efe038ee0d78a9af5bdb7743d024d86af99",
+      "bounds": {
+        "min": [
+          -0.3323463201522827,
+          0,
+          -0.3323463201522827
+        ],
+        "max": [
+          0.3323463201522827,
+          1.2220000475645065,
+          0.3323463201522827
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes",
+        "Remove known showcase root yaw; retain Y-up and +Z asset front"
+      ]
+    },
+    {
+      "id": "workshop-dismantled",
+      "source": "../exports/04_Facilities/MOONSHIFT_FAC_Workshop_Dismantled.glb",
+      "url": "assets/models/workshop-dismantled.glb",
+      "sourceBytes": 73060,
+      "preparedBytes": 62836,
+      "sourcePrimitives": 31,
+      "preparedPrimitives": 10,
+      "sourceTriangles": 944,
+      "preparedTriangles": 944,
+      "sourceSha256": "433146b64ddcd5f4e269e08afe25148994afde3a1a8d14c12a80c222f1b17440",
+      "preparedSha256": "a9fcd74adc8dc252172ab40dce72ab69364f2440c135b3e86b46f147e841d258",
+      "bounds": {
+        "min": [
+          -1.612377233457182,
+          -0.033819828343610914,
+          -1.3477532271854362
+        ],
+        "max": [
+          1.4445947773207066,
+          1.0750000178813934,
+          1.2648993416916547
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "lander",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Cargo_Lander_Damaged.glb",
+      "url": "assets/models/lander.glb",
+      "sourceBytes": 77348,
+      "preparedBytes": 62940,
+      "sourcePrimitives": 43,
+      "preparedPrimitives": 11,
+      "sourceTriangles": 988,
+      "preparedTriangles": 988,
+      "sourceSha256": "235f7308339a531e90298c26e4c251da788a4926d25161d129c01ae7a7e2ba0b",
+      "preparedSha256": "07f3f51d63a38817405131a078cb6e1eadab70a6a0cd9166551d83e415ac860e",
+      "bounds": {
+        "min": [
+          -2.342081786657142,
+          -0.2033642312805613,
+          -1.904856716576003
+        ],
+        "max": [
+          2.0408328779597227,
+          3.1877910682526656,
+          1.9459519778395327
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "solar-tower",
+      "source": "../exports/04_Facilities/MOONSHIFT_FAC_Solar_Tower.glb",
+      "url": "assets/models/solar-tower.glb",
+      "sourceBytes": 40248,
+      "preparedBytes": 30844,
+      "sourcePrimitives": 26,
+      "preparedPrimitives": 6,
+      "sourceTriangles": 488,
+      "preparedTriangles": 488,
+      "sourceSha256": "1caabef94c6a82fec7436fd7b340773d3154a725bbd2b444ca110ebd0104817f",
+      "preparedSha256": "8db6b4282bb5ee8935e9be53bb00e9603c5ac6b044318a9b0280e5c3fddabc5b",
+      "bounds": {
+        "min": [
+          -0.949999988079071,
+          -0.010510738325929497,
+          -0.6000000014901161
+        ],
+        "max": [
+          0.949999988079071,
+          4.000000048428774,
+          0.6000000014901161
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "landing-pad",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Landing_Pad.glb",
+      "url": "assets/models/landing-pad.glb",
+      "sourceBytes": 26100,
+      "preparedBytes": 22536,
+      "sourcePrimitives": 13,
+      "preparedPrimitives": 4,
+      "sourceTriangles": 396,
+      "preparedTriangles": 396,
+      "sourceSha256": "ef43987d6ea72a156f0cbcc01c29afc4dbb5cdb6a894c148a6382fdf6d0d9feb",
+      "preparedSha256": "ea3581b843d84139c60be5f876929d89d98d47f04ae413cdafc1f24a1964a8d2",
+      "bounds": {
+        "min": [
+          -2.299999952316284,
+          0,
+          -2.299999952316284
+        ],
+        "max": [
+          2.299999952316284,
+          0.1100000012665987,
+          2.299999952316284
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "berm",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Regolith_Berm.glb",
+      "url": "assets/models/berm.glb",
+      "sourceBytes": 4608,
+      "preparedBytes": 4672,
+      "sourcePrimitives": 1,
+      "preparedPrimitives": 1,
+      "sourceTriangles": 64,
+      "preparedTriangles": 64,
+      "sourceSha256": "447e7689fc6f7b3e8095d234c95f9e78ced1125dabd623aeb2674b2e28522033",
+      "preparedSha256": "fd4050391471eb81c749e79ade25e98e85c5535237aa1cf9df5484cb403ccd9e",
+      "bounds": {
+        "min": [
+          -1.1739253997802734,
+          0,
+          -2.6097729206085205
+        ],
+        "max": [
+          0.5500001907348633,
+          0.550000011920929,
+          2.6097729206085205
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "crater",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Terrain_Crater.glb",
+      "url": "assets/models/crater.glb",
+      "sourceBytes": 12800,
+      "preparedBytes": 12232,
+      "sourcePrimitives": 3,
+      "preparedPrimitives": 2,
+      "sourceTriangles": 184,
+      "preparedTriangles": 184,
+      "sourceSha256": "2a84ce3cacd9bc1dea5353d315c3ca8bafa9f3e0ca35f994937981695ed77b93",
+      "preparedSha256": "7f52ef1537480dda57dd32fe2413c213b0368c852c0c9e501bceab7ac0a2e906",
+      "bounds": {
+        "min": [
+          -0.9399999976158142,
+          -0.11314791068434715,
+          -0.9399999976158142
+        ],
+        "max": [
+          0.9399999976158142,
+          0.15314790979027748,
+          0.9399999976158142
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
+    },
+    {
+      "id": "path-light",
+      "source": "../exports/05_Opening_Environment/MOONSHIFT_ENV_Terrain_PathLight.glb",
+      "url": "assets/models/path-light.glb",
+      "sourceBytes": 8428,
+      "preparedBytes": 9184,
+      "sourcePrimitives": 4,
+      "preparedPrimitives": 4,
+      "sourceTriangles": 104,
+      "preparedTriangles": 104,
+      "sourceSha256": "e3fd704f696738b24dda048f8847ce39ea761a5d99ddc4466f76520745b9cb84",
+      "preparedSha256": "e322da10d71ca54c7f17e2d1303e94a480fa4362e283a91617e047694a6405ba",
+      "bounds": {
+        "min": [
+          -0.14000000059604645,
+          0,
+          -0.14000000059604645
+        ],
+        "max": [
+          0.14000000059604645,
+          0.7999999709427357,
+          0.14000000059604645
+        ]
+      },
+      "changes": [
+        "Bake mesh transforms and merge static geometry by material; retain status meshes"
+      ]
     }
   ],
   "totals": {
-    "sourceBytes": 1004032,
-    "preparedBytes": 813876,
-    "sourcePrimitives": 376,
-    "preparedPrimitives": 117,
-    "sourceTriangles": 14194,
-    "preparedTriangles": 12658
+    "sourceBytes": 1259004,
+    "preparedBytes": 1071264,
+    "sourcePrimitives": 487,
+    "preparedPrimitives": 170,
+    "sourceTriangles": 17604,
+    "preparedTriangles": 16572
   }
 }

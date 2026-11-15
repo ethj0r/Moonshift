@@ -1,0 +1,808 @@
+{
+  "tab": "09 Appendices",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 09 · APPENDICES"
+    },
+    {
+      "t": "h1",
+      "x": "Appendices"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what do we mean when we say this, what have we already decided, and where is the evidence?"
+    },
+    {
+      "t": "ins",
+      "x": "Use the glossary before the first design review, not after the third argument about the same word. Add decisions to the log the day they are made; a decision that lives only in a meeting is a decision the team will make again."
+    },
+    {
+      "t": "h2",
+      "x": "9.1 Glossary"
+    },
+    {
+      "t": "ins",
+      "x": "Define the words your team argues about, not the ones everyone already knows. If two disciplines use a term differently, write both senses and choose one for the GDD. Keep each entry to one sentence."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift defines shift as one timed puzzle session that ends with a room restored or a retry, and room as one air network with a fixed fault set. Vertical slice means the 15-minute final-quality build due in week 12, not the whole demo. Mateo Chen edits the glossary, and every new term gets a tab link before it enters the GDD."
+    },
+    {
+      "t": "p",
+      "x": "A shared glossary is the cheapest onboarding tool you will ever build. It shortens design reviews, prevents localization errors, and stops the same argument from returning under a new name. Link each term to the tab where it does real work, and review the list at every milestone."
+    },
+    {
+      "t": "p",
+      "x": "Assign one editor for the glossary and give them the authority to settle a definition. When two teams disagree, write the definition that matches player behaviour, not the one that matches internal org chart. If a term has a different meaning in code and in design, record both and mark which one the GDD uses."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Term",
+        "Definition",
+        "Where used"
+      ],
+      "rows": [
+        [
+          "Vertical slice",
+          "A 15-minute build at final quality that proves the game can be made",
+          "07 Production"
+        ],
+        [
+          "Graybox",
+          "Untextured geometry used to test space and pacing before art",
+          "02 Gameplay"
+        ],
+        [
+          "Core loop",
+          "The repeating cycle of actions that produces the main reward",
+          "02 Gameplay"
+        ],
+        [
+          "FTUE",
+          "First-time user experience; the first 10 minutes of a new save",
+          "02 Gameplay"
+        ],
+        [
+          "Build",
+          "A versioned, installable copy of the game for testing",
+          "07 Production"
+        ],
+        [
+          "Milestone",
+          "A dated checkpoint with evidence required to pass",
+          "07 Production"
+        ]
+      ],
+      "w": [
+        90,
+        300,
+        114
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Design and content terms"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Term",
+        "Definition",
+        "Where used"
+      ],
+      "rows": [
+        [
+          "Affordance",
+          "A visual cue that tells the player what can be interacted with",
+          "04 Experience: UX, UI, Audio"
+        ],
+        [
+          "Choke point",
+          "A place where players must slow down or make a forced choice",
+          "02 Gameplay"
+        ],
+        [
+          "Tuning",
+          "Adjusting numbers and timing without changing systems",
+          "02 Gameplay & Systems"
+        ],
+        [
+          "Telemetry",
+          "Automated event data used to understand player behaviour",
+          "02 Gameplay & Systems"
+        ],
+        [
+          "Placeholder",
+          "Temporary content that must be replaced before ship",
+          "05 Art"
+        ],
+        [
+          "Localization",
+          "Adapting text, audio, and layout for a language and culture",
+          "07 Production"
+        ],
+        [
+          "Shift",
+          "One timed puzzle session that ends with a room restored or a retry",
+          "02 Gameplay"
+        ],
+        [
+          "Room",
+          "A self-contained puzzle space with one air network and one fault set",
+          "02 Gameplay"
+        ]
+      ],
+      "w": [
+        90,
+        300,
+        114
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Launch and operations terms"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Term",
+        "Definition",
+        "Where used"
+      ],
+      "rows": [
+        [
+          "Certification",
+          "Platform holder review that a build meets technical requirements",
+          "07 Production"
+        ],
+        [
+          "Gold master",
+          "The final build submitted to manufacturing or stores",
+          "07 Production"
+        ],
+        [
+          "SKU",
+          "A specific sellable configuration by platform and region",
+          "07 Production"
+        ],
+        [
+          "Live operations",
+          "Ongoing content, patches, and community work after launch",
+          "07 Production"
+        ],
+        [
+          "Sunset",
+          "The planned end of live support and server availability",
+          "07 Production"
+        ],
+        [
+          "Postmortem",
+          "A structured review of what happened and what changes next",
+          "07 Production"
+        ]
+      ],
+      "w": [
+        90,
+        300,
+        114
+      ]
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One sentence per term; if it needs two, the term is doing too much.",
+        "Name the tab where the term is used; an entry without a home is trivia.",
+        "Translate the glossary before localization starts; translators need the same definitions.",
+        "Review the glossary at every milestone and delete terms the team no longer uses."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Keep the glossary in the same file as the GDD, not in a separate wiki that nobody opens. When a term changes meaning, change the entry and note the date. A glossary that is six months stale is worse than none, because it teaches new hires the wrong vocabulary with authority."
+    },
+    {
+      "t": "h2",
+      "x": "9.2 Decision log"
+    },
+    {
+      "t": "ins",
+      "x": "Write one row per irreversible or expensive decision. If reversing it costs less than a day, it does not need a row. Link the source document in the context cell and name one accountable owner."
+    },
+    {
+      "t": "example",
+      "x": "ADR-001, dated 11 February 2026, locks Moonshift to single-player because co-op would add 14 weeks and server cost; async sharing and local co-op were rejected. ADR-002 fixes the isometric camera after free orbit failed readability tests at tablet size. ADR-003 cuts room decoration from launch, and ADR-011 supersedes it by moving that work to the post-launch expansion."
+    },
+    {
+      "t": "p",
+      "x": "The decision log is an ADR-lite record: enough context to understand the choice, not a full essay. It exists so a new hire can see why the game is shaped this way, and so the team stops reopening settled questions every time a milestone gets stressful. Date every row and never delete one."
+    },
+    {
+      "t": "p",
+      "x": "A useful row records the constraint that forced the choice, not just the winner. Write what you would have done differently if the constraint disappeared, because that is the condition under which the team should revisit the decision. If no constraint existed, the row is a preference, and preferences do not need a log."
+    },
+    {
+      "t": "table",
+      "head": [
+        "ID and date",
+        "Decision",
+        "Context and alternatives",
+        "Owner",
+        "Status"
+      ],
+      "rows": [
+        [
+          "{{ADR-001}} · {{2026-02-11}}",
+          "{{Ship single-player only; no online co-op}}",
+          "{{Co-op adds 14 weeks and server cost; alternatives: async sharing, local co-op}}",
+          "{{Creative director}}",
+          "{{Accepted}}"
+        ],
+        [
+          "{{ADR-002}} · {{2026-03-04}}",
+          "{{Use a fixed isometric camera, no free orbit}}",
+          "{{Free camera breaks readability at small sizes; alternatives: 3 preset angles, zoom only}}",
+          "{{Artist}}",
+          "{{Accepted}}"
+        ],
+        [
+          "{{ADR-003}} · {{2026-04-18}}",
+          "{{Cut room decoration from launch}}",
+          "{{Costs 6 weeks and one artist; alternatives: ship after launch, cut entirely}}",
+          "{{Producer}}",
+          "{{Superseded by ADR-011}}"
+        ]
+      ],
+      "w": [
+        100,
+        140,
+        160,
+        60,
+        44
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "DECISION LOG",
+      "x": "A decision that is not written down is a decision the team will make again, usually in a longer meeting. Write the decision, the date, and the owner the same day."
+    },
+    {
+      "t": "quote",
+      "x": "Documentation is the memory a team keeps after the people who did the work have moved on. Write it for the person who joins next."
+    },
+    {
+      "t": "p",
+      "x": "Use four statuses: **proposed** for a choice under review, **accepted** for a binding choice, **superseded** for a row replaced by a later one, and **reversed** for a choice that was undone. Add a revisit date when a decision depends on a milestone result, so the team knows when to reopen it rather than guessing."
+    },
+    {
+      "t": "h3",
+      "x": "When a row is required"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "A choice that costs more than {{one week}} to reverse.",
+        "A choice that changes the store page, age rating, or platform target.",
+        "A choice that cuts or adds a **Must** feature.",
+        "A choice a new team member would otherwise reopen in their first month."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Keep the context cell under 40 words. Put the full reasoning in a one-page attachment named after the ID. If a decision cannot be explained in one page, it is not ready to be made; send it back for evidence."
+    },
+    {
+      "t": "h2",
+      "x": "9.3 Open questions tracker"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this list short and dated. A question without an owner and a needed-by date is a topic, not a question. Review it at the start of every weekly production meeting and close or re-date every row."
+    },
+    {
+      "t": "example",
+      "x": "Q-001 asks whether Switch ships at launch or after PC and tablet; the producer must answer by week 8. Q-002 is open on accepting PEGI 7 for the alarm imagery, due week 12. Q-003 is answered yes: the demo save carries into the full game, and Q-004 defers the paid expansion question to the launch review."
+    },
+    {
+      "t": "p",
+      "x": "The tracker is a forcing function, not a parking lot. Each row should be answerable with evidence: a test result, a quote, a platform document, or a budget number. If a question has been open for three reviews, either escalate it to a decision or kill it and write why."
+    },
+    {
+      "t": "p",
+      "x": "Write the question so it can be answered yes or no, or with a number. *Does the art lead approve every outsourced prop?* is a question; *who owns the art style?* is a topic. A precise question exposes whether you need a decision, a test, or a purchase, and each of those has a different owner."
+    },
+    {
+      "t": "table",
+      "head": [
+        "ID",
+        "Question",
+        "Owner",
+        "Needed by",
+        "Status"
+      ],
+      "rows": [
+        [
+          "{{Q-001}}",
+          "{{Does Switch ship at launch or after PC and tablet?}}",
+          "{{Producer}}",
+          "{{Week 8}}",
+          "{{Open}}"
+        ],
+        [
+          "{{Q-002}}",
+          "{{Do we accept a PEGI 7 rating to keep the alarm imagery?}}",
+          "{{Creative director}}",
+          "{{Week 12}}",
+          "{{Open}}"
+        ],
+        [
+          "{{Q-003}}",
+          "{{Does the demo save carry into the full game?}}",
+          "{{Programmer}}",
+          "{{Week 30}}",
+          "{{Answered: yes}}"
+        ],
+        [
+          "{{Q-004}}",
+          "{{Is one paid expansion in scope after launch?}}",
+          "{{Producer}}",
+          "{{Week 32}}",
+          "{{Deferred to launch review}}"
+        ]
+      ],
+      "w": [
+        60,
+        230,
+        90,
+        70,
+        54
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Close questions with a link to the decision row, not with a verbal answer. If a question stays open past its needed-by date, either escalate it or kill it; an expired question is a hidden blocker. Re-date only when new evidence exists, not because the meeting ran out of time."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Open**: owner is actively gathering evidence.",
+        "**Answered**: link the ADR ID and the date it was decided.",
+        "**Deferred**: name the milestone that will reopen it.",
+        "**Killed**: write why the question no longer matters."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "9.4 Reference library"
+    },
+    {
+      "t": "ins",
+      "x": "Store references where the team can open them without asking. A link that requires a request is not a reference. Date every competitor teardown, because the market moves faster than the document."
+    },
+    {
+      "t": "example",
+      "x": "The certification folder holds the current platform TRC at /references/cert/platform-trc-2026.pdf, owned by the producer and checked at beta. The accessibility baseline is the 2026 Game Accessibility Guidelines, the art team cites the Outlanders teardown for readability, and legal keeps the COPPA and GDPR guidance. The playtest consent template at /references/research/consent-v3.docx is required before recording any minor."
+    },
+    {
+      "t": "p",
+      "x": "The library is the evidence shelf behind the GDD: platform rules, accessibility standards, legal guidance, competitor teardowns, and research templates. Keep one index with five columns, not a folder tree nobody can navigate. Name files with a date and an owner, and archive obsolete references instead of deleting them."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Source",
+        "Type",
+        "Link or location",
+        "Why it matters",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "{{Platform certification requirements}}",
+          "{{Technical}}",
+          "{{/references/cert/platform-trc-2026.pdf}}",
+          "{{Legal gate for every submission}}",
+          "{{Producer}}"
+        ],
+        [
+          "{{Game Accessibility Guidelines}}",
+          "{{Design}}",
+          "{{/references/accessibility/gag-2026}}",
+          "{{Baseline for accessibility commitments}}",
+          "{{Designer}}"
+        ],
+        [
+          "{{Outlanders}}",
+          "{{Competitor}}",
+          "{{/references/teardowns/outlanders-2026.pdf}}",
+          "{{Readability and pacing benchmark}}",
+          "{{Artist}}"
+        ],
+        [
+          "{{COPPA and GDPR guidance}}",
+          "{{Legal}}",
+          "{{/references/legal/privacy-2026.pdf}}",
+          "{{Rules for collecting data from children}}",
+          "{{Producer}}"
+        ],
+        [
+          "{{Playtest consent template}}",
+          "{{Research}}",
+          "{{/references/research/consent-v3.docx}}",
+          "{{Required before recording minors}}",
+          "{{UX researcher}}"
+        ]
+      ],
+      "w": [
+        130,
+        70,
+        150,
+        110,
+        44
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Check every external link at each milestone; link rot is quiet and expensive. A reference that cannot be opened on a new hire's first day is already lost. If a source is paywalled, store the purchase receipt and a summary in the same folder."
+    },
+    {
+      "t": "p",
+      "x": "Separate reference from inspiration. A reference is something the team can cite in a review; inspiration is a mood board. Mixing them lets a personal preference masquerade as evidence. Label each row by type and delete any row nobody has opened in two milestones."
+    },
+    {
+      "t": "p",
+      "x": "Record the license for every reference you plan to imitate closely. A teardown can teach pacing; it cannot donate assets, names, or UI layouts. Note the distinction in the row so an artist does not copy a protected silhouette while following a style benchmark."
+    },
+    {
+      "t": "h2",
+      "x": "9.5 Asset and dependency tracker"
+    },
+    {
+      "t": "ins",
+      "x": "Track only assets and dependencies that block something else. A late prop is a schedule annoyance; an unlicensed font or a missing dev kit is a launch blocker. Update status in the same meeting where you review the schedule."
+    },
+    {
+      "t": "example",
+      "x": "The final logo is on track for week 10, but the trademark search is still pending. The main theme is at risk because the composer contract is unsigned, the text freeze is on track for week 24, and the console dev kit is late pending a platform application. The age-rating submission has not started because it needs the final build."
+    },
+    {
+      "t": "p",
+      "x": "This is the short list, not the full asset database. It exists to surface cross-team blockers early: a composer contract that is unsigned, a console application that has not cleared, a string freeze that depends on a final UI. Each row needs a named owner, a due date, and a blocker that someone can act on."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Asset or dependency",
+        "Type",
+        "Owner and due",
+        "Status",
+        "Blocker"
+      ],
+      "rows": [
+        [
+          "{{Final logo and wordmark}}",
+          "{{Brand}}",
+          "{{Artist}} · {{Week 10}}",
+          "{{On track}}",
+          "{{Trademark search pending}}"
+        ],
+        [
+          "{{Main theme and 3 loops}}",
+          "{{Audio}}",
+          "{{Producer}} · {{Week 24}}",
+          "{{At risk}}",
+          "{{Composer contract unsigned}}"
+        ],
+        [
+          "{{Text and subtitle freeze}}",
+          "{{Content}}",
+          "{{Producer}} · {{Week 24}}",
+          "{{On track}}",
+          "{{None}}"
+        ],
+        [
+          "{{Console dev kit}}",
+          "{{Hardware}}",
+          "{{Programmer}} · {{Week 6}}",
+          "{{Late}}",
+          "{{Platform application pending}}"
+        ],
+        [
+          "{{Age rating submission}}",
+          "{{Compliance}}",
+          "{{Producer}} · {{Week 28}}",
+          "{{Not started}}",
+          "{{Final build required}}"
+        ]
+      ],
+      "w": [
+        130,
+        70,
+        120,
+        70,
+        114
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Give every row a named blocker or write **none**. A vague “to be decided” hides a dependency; none is a claim someone can challenge. Review the tracker weekly and escalate anything late by more than five working days. A dependency that is late twice is a risk register entry, not a tracker row."
+    },
+    {
+      "t": "p",
+      "x": "Keep the list under twenty rows. If it grows beyond that, you are tracking work rather than blockers, and the schedule already lives somewhere else. Archive closed rows at each milestone so the open list stays short enough to read in one meeting."
+    },
+    {
+      "t": "h2",
+      "x": "9.6 Meeting and playtest notes template"
+    },
+    {
+      "t": "ins",
+      "x": "Write observations as behaviour, not interpretation. *Player clicked the airlock four times* is data; *player was confused* is a conclusion you have not earned yet. Fill the header before the session starts."
+    },
+    {
+      "t": "example",
+      "x": "On 14 May 2026, build 0.8.3-rc2 was tested with five players aged 9–12 and two observers. Hypothesis: players would understand the airlock loop without a prompt; four of five skipped the tutorial card and one read the resource bar as health. Decisions: move the prompt inline and label the storm warning safe; actions go to the UX writer by 18 May and a re-test by 28 May."
+    },
+    {
+      "t": "p",
+      "x": "Use the same template for design reviews, playtests, and milestone meetings. The header makes notes searchable; the hypothesis keeps the session honest; the actions table makes the follow-up visible. A note that records only what was said, and not what will change, is a transcript."
+    },
+    {
+      "t": "h3",
+      "x": "Session header"
+    },
+    {
+      "t": "fill",
+      "x": "Date: {{2026-05-14}} · Build: {{0.8.3-rc2}} · Type: {{moderated playtest}} · Participants: {{5 players aged 9–12, 2 observers}}"
+    },
+    {
+      "t": "fill",
+      "x": "Hypothesis: {{Players will understand the airlock loop without a tutorial prompt after the first mission.}}"
+    },
+    {
+      "t": "fill",
+      "x": "Tasks: {{1) Restore air to the first room. 2) Reroute the blocked vent. 3) Finish the shift without a reset.}}"
+    },
+    {
+      "t": "h3",
+      "x": "Observations"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "{{Player 3 read the resource bar as a health bar; hovered for 12 seconds before guessing.}}",
+        "{{Four of five players skipped the tutorial card; none returned to it.}}",
+        "{{Dust storm caused two players to stop and ask if they had failed.}}"
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Decisions"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "{{Replace the tutorial card with an inline prompt at the airlock.}}",
+        "{{Add a safe label to the storm warning; no fail state.}}"
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Actions"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Action",
+        "Owner",
+        "Due"
+      ],
+      "rows": [
+        [
+          "{{Rewrite airlock prompt}}",
+          "{{UX writer}}",
+          "{{2026-05-18}}"
+        ],
+        [
+          "{{Prototype storm warning label}}",
+          "{{UI designer}}",
+          "{{2026-05-20}}"
+        ],
+        [
+          "{{Re-test with 5 new players}}",
+          "{{UX researcher}}",
+          "{{2026-05-28}}"
+        ],
+        [
+          "{{Update glossary entry for fail state}}",
+          "{{Game designer}}",
+          "{{2026-05-19}}"
+        ]
+      ],
+      "w": [
+        300,
+        100,
+        104
+      ]
+    },
+    {
+      "t": "p",
+      "x": "File the notes within one hour and link the recording with timestamps. A note without a build number cannot be reproduced; a note without an owner is a diary entry. At the next session, read the previous actions aloud before starting, so the team sees what changed."
+    },
+    {
+      "t": "h2",
+      "x": "9.7 Version history and sign-off"
+    },
+    {
+      "t": "ins",
+      "x": "Bump the version when the tab changes a decision, not when a typo is fixed. Sign-off means the named person read this tab and accepts the commitments in it, not that they attended the meeting."
+    },
+    {
+      "t": "example",
+      "x": "Version 0.1 on 3 February 2026 was the first draft of scope, milestones, and budget, approved by Ana Rivera. Version 0.2 added the risk register and certification checklist on 17 March, and version 1.0 locked launch scope and the T-90 checklist on 2 April. Ana Rivera, Mateo Chen, Jon Okafor, Sana Patel, and Lina Novak signed the 1.0 tab on 2–3 April."
+    },
+    {
+      "t": "p",
+      "x": "Version history makes the GDD auditable. A reader should be able to see what changed, who changed it, and who approved it. Keep the table newest first, use semantic versions for major milestones, and link the signed copy from the tab header. A signature collected after launch approved nothing."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Version",
+        "Date",
+        "Author",
+        "Change",
+        "Approver"
+      ],
+      "rows": [
+        [
+          "{{0.1}}",
+          "{{2026-02-03}}",
+          "{{Producer}}",
+          "{{First draft: scope, milestones, budget}}",
+          "{{Creative director}}"
+        ],
+        [
+          "{{0.2}}",
+          "{{2026-03-17}}",
+          "{{Producer}}",
+          "{{Added risk register and cert checklist}}",
+          "{{Creative director}}"
+        ],
+        [
+          "{{1.0}}",
+          "{{2026-04-02}}",
+          "{{Producer}}",
+          "{{Locked launch scope and T-90 checklist}}",
+          "{{Creative director}}"
+        ]
+      ],
+      "w": [
+        60,
+        80,
+        90,
+        190,
+        84
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Re-sign after any change to scope, date, or budget. If a lead is unavailable, name a delegate in writing; an unsigned tab is an unowned commitment. Store the signed PDF next to the live document and keep the previous version, so a dispute can be settled with evidence rather than memory."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Name",
+        "Date",
+        "Signature"
+      ],
+      "rows": [
+        [
+          "Creative director",
+          "{{A. Rivera}}",
+          "{{2026-04-02}}",
+          ""
+        ],
+        [
+          "Design lead",
+          "{{M. Chen}}",
+          "{{2026-04-02}}",
+          ""
+        ],
+        [
+          "Technical lead",
+          "{{J. Okafor}}",
+          "{{2026-04-02}}",
+          ""
+        ],
+        [
+          "Art director",
+          "{{S. Patel}}",
+          "{{2026-04-03}}",
+          ""
+        ],
+        [
+          "Producer",
+          "{{L. Novak}}",
+          "{{2026-04-03}}",
+          ""
+        ]
+      ],
+      "w": [
+        126,
+        126,
+        126,
+        126
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Tick every box before calling the appendices complete. If a box cannot be ticked, add the gap to the open questions table with an owner and a date."
+    },
+    {
+      "t": "check",
+      "x": [
+        "Glossary has 15–20 terms, each with one definition and a home tab.",
+        "Every irreversible decision from the last milestone has a log row.",
+        "Open questions all have an owner and a needed-by date.",
+        "Every reference opens without requesting access.",
+        "Every blocking asset or dependency has a status and a named blocker.",
+        "The notes template is used for the last three sessions.",
+        "Version history is current and the sign-off table is signed."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this list to the questions that can change scope, date, or budget. Assign one owner and one date, then close or re-date every row at the weekly production meeting."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "rows": [
+        [
+          "{{Who owns the glossary after the producer leaves?}}",
+          "{{Creative director}}",
+          "{{Week 12}}"
+        ],
+        [
+          "{{Where is the canonical signed GDD stored?}}",
+          "{{Producer}}",
+          "{{Week 4}}"
+        ],
+        [
+          "{{How long do we retain playtest recordings of minors?}}",
+          "{{Legal counsel}}",
+          "{{Week 18}}"
+        ],
+        [
+          "{{Which decisions require publisher approval?}}",
+          "{{Producer}}",
+          "{{Week 8}}"
+        ]
+      ],
+      "w": [
+        220,
+        140,
+        144
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

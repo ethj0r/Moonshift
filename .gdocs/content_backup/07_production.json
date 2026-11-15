@@ -1,0 +1,1045 @@
+{
+  "tab": "07 Production & Launch",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 07 · PRODUCTION"
+    },
+    {
+      "t": "h1",
+      "x": "Production & Launch"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: who builds what, by when, for how much, and how the team knows a milestone is actually finished."
+    },
+    {
+      "t": "ins",
+      "x": "Fill the milestone table first, because it anchors budget, staffing, and marketing. Leave the risk register until the vertical slice, when you have evidence for probability and impact. Update this tab at every milestone review, not at the end of the project."
+    },
+    {
+      "t": "h2",
+      "x": "7.1 Scope and content plan"
+    },
+    {
+      "t": "ins",
+      "x": "Write the scope statement as one sentence a publisher could repeat from memory. Then place every feature in a tier and attach a number to every content type. A tier without a count is an opinion; a count without a cut rule is a promise you cannot keep."
+    },
+    {
+      "t": "p",
+      "x": "The scope statement is the contract between design and production. It names the player, the fantasy, the session length, the platforms, and the one thing the game will not do. Keep it under 40 words and put it at the top of every milestone review."
+    },
+    {
+      "t": "fill",
+      "x": "Scope statement: {{Moonshift is a 3–4 hour cozy lunar repair puzzle for players aged 9 and up on PC and tablet, with 6 rooms, 12 shifts, and no online requirement.}}"
+    },
+    {
+      "t": "p",
+      "x": "Use four tiers and enforce them. **Must** features are the reason the game exists; without them, do not ship. **Should** features add depth but leave a coherent game if removed. **Could** features are the first to cut when a milestone slips. **Won't** features are written down so they stop returning in every meeting as a new idea."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Feature",
+        "Tier",
+        "Ships by",
+        "Cut consequence"
+      ],
+      "rows": [
+        [
+          "{{Air-routing puzzle}}",
+          "Must",
+          "Prototype",
+          "Blocks every room; escalate immediately"
+        ],
+        [
+          "{{Cargo choice and placement}}",
+          "Must",
+          "Prototype",
+          "Core loop loses its decisions"
+        ],
+        [
+          "{{Shift timer and scoring}}",
+          "Must",
+          "Alpha",
+          "Pressure pillar disappears; retune difficulty"
+        ],
+        [
+          "{{Radio narrative}}",
+          "Should",
+          "Beta",
+          "Outpost feels empty; text logs fallback"
+        ],
+        [
+          "{{Room decoration}}",
+          "Could",
+          "Launch",
+          "Cut without replacement; remove store mention"
+        ],
+        [
+          "{{Second biome}}",
+          "Won't",
+          "Not planned",
+          "Doubles art scope for one hour of play"
+        ]
+      ],
+      "w": [
+        120,
+        60,
+        70,
+        254
+      ]
+    },
+    {
+      "t": "table",
+      "head": [
+        "Content type",
+        "Target",
+        "Minimum ship",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "Rooms",
+          "{{6}}",
+          "{{4}}",
+          "{{Designer}}"
+        ],
+        [
+          "Shifts",
+          "{{12}}",
+          "{{8}}",
+          "{{Designer}}"
+        ],
+        [
+          "Puzzle types",
+          "{{5}}",
+          "{{4}}",
+          "{{Designer}}"
+        ],
+        [
+          "Characters",
+          "{{3}}",
+          "{{2}}",
+          "{{Artist}}"
+        ],
+        [
+          "Radio lines",
+          "{{120}}",
+          "{{80}}",
+          "{{Designer}}"
+        ],
+        [
+          "Languages",
+          "{{1}}",
+          "{{1}}",
+          "{{Producer}}"
+        ]
+      ],
+      "w": [
+        120,
+        70,
+        90,
+        224
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Write the cut order before you need it. Cut in reverse tier order, cut whole features rather than shaving quality from every feature, and never cut the first 30 minutes. A cut is not finished until the store page, trailer, achievements, and help text are updated on the same day."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Cut **Could** features first, then **Should** features from the end of the game, never from the opening.",
+        "Protect the first 30 minutes, the save system, and the tutorial; these decide refunds and reviews.",
+        "Record every cut in the decision log with a date and an owner.",
+        "Require producer and creative director sign-off for any cut above {{20 hours}} of work.",
+        "Freeze new **Must** features at alpha; after that, a new feature must replace one of equal cost."
+      ]
+    },
+    {
+      "t": "quote",
+      "x": "Cut scope, not quality. A smaller game that feels finished beats a larger game that feels abandoned."
+    },
+    {
+      "t": "p",
+      "x": "Route every change through a one-page request: what changes, why now, who benefits, estimated cost, and what it displaces. Triage requests once a week with design, engineering, and production in the room. Approve, defer, or reject in the meeting; a request that leaves without a status will return."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**While we are in here**: a bug fix expands into a refactor. Cap the fix at the reported defect.",
+        "**The demo feedback said**: a playtest comment becomes a requirement. Log it as evidence, then decide.",
+        "**One more room**: content grows while headcount stays flat. Recount against the content table.",
+        "**It is only a small system**: a new system arrives after lock. Require a displaced feature of equal cost.",
+        "**Scope grows during a hiring freeze**: treat this as a stop-work signal and re-baseline the milestone."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "7.2 Milestones and schedule"
+    },
+    {
+      "t": "ins",
+      "x": "Define every milestone by evidence a reviewer can inspect, not by a percentage. Alpha means every system is present and playable end to end; 80% done means nothing. Put a named decision gate on every row and refuse to pass a gate without the evidence."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Milestone",
+        "Date",
+        "Exit criteria",
+        "Deliverable",
+        "Decision gate"
+      ],
+      "rows": [
+        [
+          "Concept",
+          "{{Week 2}}",
+          "One-page pitch, loop diagram, 3 references, budget range",
+          "Pitch deck v1",
+          "Greenlight or stop"
+        ],
+        [
+          "Prototype",
+          "{{Week 6}}",
+          "Core loop playable in graybox, 10-minute session, 5 external testers",
+          "Playable prototype",
+          "Continue or re-scope"
+        ],
+        [
+          "Vertical slice",
+          "{{Week 12}}",
+          "15 minutes at final quality, one room, one shift, UI pass",
+          "Demo build and capture",
+          "Fund production or cut"
+        ],
+        [
+          "Alpha",
+          "{{Week 24}}",
+          "All target rooms playable start to finish (6, or 4 after a logged cut), placeholder art allowed",
+          "Alpha build",
+          "Content lock"
+        ],
+        [
+          "Beta",
+          "{{Week 32}}",
+          "Feature complete, zero S1 or S2 bugs, cert pre-check passed",
+          "Release candidate",
+          "Ship date lock"
+        ],
+        [
+          "Launch",
+          "{{Week 36}}",
+          "Store live, day-one patch verified, support rota staffed",
+          "Gold master",
+          "Launch or delay"
+        ]
+      ],
+      "w": [
+        78,
+        62,
+        160,
+        110,
+        94
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "RULE",
+      "x": "A milestone without exit criteria is a date, not a milestone. Write the evidence a reviewer can inspect: a build number, a completed checklist, a signed test pass."
+    },
+    {
+      "t": "p",
+      "x": "Schedule in weeks, not percentages, and hold a 15% buffer after each phase. The producer owns the buffer and releases it only at a gate, with the reason written in the milestone notes. If buffer falls below 5% at alpha, cut scope instead of borrowing from beta. A buffer that is visible in the plan will be spent; a buffer held outside the plan will be argued about."
+    },
+    {
+      "t": "p",
+      "x": "Draw the critical path as a chain of dependencies, then protect it. For this game it runs through the core loop, save and load, the room pipeline, shift scripting, tablet performance, and certification. Art outsourcing and audio lead times are usually longer than engineering estimates, so place them early even when they feel low-risk."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Name the single task that blocks the most people each week; that is the real critical path.",
+        "Never let two milestones share the same buffer.",
+        "Start certification pre-checks at beta, not at release candidate.",
+        "Book external testers and age-rating submissions before content lock.",
+        "Put the critical path on one page and review it at the start of every weekly production meeting."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "7.3 Team and responsibilities"
+    },
+    {
+      "t": "ins",
+      "x": "Name one owner per GDD tab and one accountable person per decision. Shared ownership means no ownership. Keep the table at discipline level until a named person is actually staffed and funded."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Headcount",
+        "Responsibilities",
+        "Owns tab"
+      ],
+      "rows": [
+        [
+          "Creative director",
+          "{{0.5}}",
+          "Vision, pillars, final call on creative disputes",
+          "01 Vision"
+        ],
+        [
+          "Designer and narrative",
+          "{{1}}",
+          "Core loop, rooms, tuning, radio script",
+          "02 Gameplay, 03 Narrative"
+        ],
+        [
+          "Programmer",
+          "{{1}}",
+          "Systems, save and load, tools, performance",
+          "06 Technical"
+        ],
+        [
+          "Artist",
+          "{{1}}",
+          "Style, assets, UI, animation",
+          "05 Art, 04 Experience"
+        ],
+        [
+          "Producer and audio",
+          "{{0.5}}",
+          "Schedule, budget, partners, sound",
+          "07 Production, 09 Appendices"
+        ]
+      ],
+      "w": [
+        110,
+        50,
+        240,
+        104
+      ]
+    },
+    {
+      "t": "p",
+      "x": "QA and marketing are contractors at this scale; localization is out of scope for launch. Name their owners here even if they are part-time, and put their cost in 7.4. A discipline without a named owner will be nobody's problem until launch week."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Decision",
+        "Responsible",
+        "Accountable",
+        "Consulted",
+        "Informed"
+      ],
+      "rows": [
+        [
+          "Scope cut above 20 hours",
+          "Producer",
+          "Creative director",
+          "Design, programming",
+          "Whole team"
+        ],
+        [
+          "Milestone pass",
+          "Producer",
+          "Creative director",
+          "Whole team",
+          "Publisher"
+        ],
+        [
+          "Art style exception",
+          "Artist",
+          "Creative director",
+          "Design, marketing",
+          "Whole team"
+        ],
+        [
+          "Ship date change",
+          "Producer",
+          "Creative director",
+          "Publisher, marketing",
+          "Whole team"
+        ],
+        [
+          "Certification waiver",
+          "Producer",
+          "Programmer",
+          "Platform rep, creative director",
+          "Whole team"
+        ]
+      ],
+      "w": [
+        140,
+        90,
+        100,
+        90,
+        84
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Use RACI to end the *I thought you owned it* conversation. One person is accountable per row; the responsible person does the work; consulted people must respond within two working days; informed people cannot block. Publish the table where the team plans work, not in a folder."
+    },
+    {
+      "t": "p",
+      "x": "Keep the core loop, narrative voice, room layout, and save system in-house. These are the parts you cannot specify completely and cannot inspect cheaply. Outsource props, UI icons, trailer production, porting, and crowd QA, where the deliverable is bounded and acceptance criteria are visible."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Never outsource the thing you cannot describe in a one-page brief with references.",
+        "Assign one internal reviewer per package; a shared inbox is not a reviewer.",
+        "Require source files, layered exports, and IP assignment in the contract.",
+        "Pilot every new vendor with a paid two-week test before a large package.",
+        "Hire against a trigger, not a feeling: write the trigger, role, start date, and budget line first."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Onboarding starts before day one: accounts, build access, GDD tabs, and a named buddy. A new hire who cannot run the build on their first morning loses a week. Use three-month contract-to-hire for art and QA, and a paid test task for every programming candidate."
+    },
+    {
+      "t": "h2",
+      "x": "7.4 Budget and outsourcing"
+    },
+    {
+      "t": "ins",
+      "x": "Build the budget bottom-up from the milestone plan, then add contingency by risk rather than habit. Mark every line with a confidence level so a reader knows which numbers are quotes and which are guesses."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Category",
+        "Estimate",
+        "Confidence",
+        "Notes"
+      ],
+      "rows": [
+        [
+          "Personnel",
+          "{{$54,000}}",
+          "Medium",
+          "4 part-time, 9 months, loaded cost"
+        ],
+        [
+          "Art and audio",
+          "{{$2,000}}",
+          "Medium",
+          "6 rooms, 1 hero character, 8 tracks"
+        ],
+        [
+          "Software and licenses",
+          "{{$900}}",
+          "High",
+          "Engine seats, plugins, font licenses"
+        ],
+        [
+          "Dev kits and hardware",
+          "{{$1,200}}",
+          "Medium",
+          "Tablet and console test devices"
+        ],
+        [
+          "QA and certification",
+          "{{$400}}",
+          "Medium",
+          "Crowd test, submission fees"
+        ],
+        [
+          "Marketing",
+          "{{$1,500}}",
+          "Low",
+          "Trailer, store assets, festival fees"
+        ],
+        [
+          "Localization",
+          "{{$0}}",
+          "High",
+          "English only at launch; revisit after sales"
+        ],
+        [
+          "Contingency",
+          "{{$6,000}}",
+          "Low",
+          "10% of cash budget, released by producer"
+        ]
+      ],
+      "w": [
+        110,
+        80,
+        80,
+        234
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Report burn monthly as payroll, contractors, and fixed tools, with a three-month rolling average. Runway is cash divided by burn; keep at least three months of runway past launch. A variance above 10% in any category needs a written explanation and a correction in the next month, not a promise to catch up later."
+    },
+    {
+      "t": "p",
+      "x": "Contingency is not a slush fund. Size it from the risk register: 10% for a well-understood production, 15–20% for a new team, new engine, or new platform. Release it only with producer and creative director approval, and never use it to fund new scope."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Art props**: 40 environment assets, two-week pilot, weekly review, source files required.",
+        "**UI icons**: 30 icons at three sizes, layered source, contrast test on tablet.",
+        "**Trailer**: 60-second cut, three aspect ratios, two revision rounds, final audio mix.",
+        "**Porting**: one console port, certification support, 60-day warranty after launch.",
+        "**Crowd QA**: 20 testers, one build, written repro steps for every S1 and S2."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Tie payments to acceptance, not to calendar dates: 30% at kickoff, 30% at first delivery, 30% at final acceptance, 10% after a 30-day warranty. Define acceptance as a checklist the vendor can run themselves. Hold the final payment until source files and IP assignment are delivered."
+    },
+    {
+      "t": "h2",
+      "x": "7.5 Risk register"
+    },
+    {
+      "t": "ins",
+      "x": "Write risks as causes, not fears. *Save data may corrupt on tablet suspend* is testable; *technical risk* is not. Give every risk an owner who can change the outcome, and review the register every two weeks."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Risk",
+        "Probability / impact",
+        "Early warning",
+        "Mitigation",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "Puzzle difficulty spikes in shift 4",
+          "Medium / High",
+          "Testers stall for 3 or more minutes",
+          "Weekly room 4 playtest, skip after 3 fails",
+          "Creative director"
+        ],
+        [
+          "Touch controls feel imprecise",
+          "Medium / High",
+          "Testers misplace parts twice",
+          "Tablet prototype in week 2, grid snapping",
+          "Programmer"
+        ],
+        [
+          "Timer stress hurts cozy audience",
+          "Medium / Medium",
+          "Players pause or quit at the timer",
+          "Assist mode, pause while reading",
+          "Designer"
+        ],
+        [
+          "Art scope exceeds 4-person team",
+          "High / High",
+          "Two rooms still graybox at beta",
+          "Reuse room shells, no second biome",
+          "Artist"
+        ],
+        [
+          "Store visibility below forecast",
+          "High / Medium",
+          "Wishlists flat after demo",
+          "Demo and festival submissions by month 3",
+          "Producer"
+        ],
+        [
+          "Key contractor unavailable",
+          "Low / High",
+          "Two missed deliveries",
+          "Written handover, backup vendor",
+          "Producer"
+        ]
+      ],
+      "w": [
+        130,
+        78,
+        104,
+        128,
+        64
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Rank the top five by expected cost, not by how frightening they feel. Expected cost is probability times impact in weeks or dollars. Put the top five on one page in the weekly production meeting, each with a trigger and a pre-agreed response."
+    },
+    {
+      "t": "num",
+      "x": [
+        "Difficulty: playtest room 4 weekly and add a skip after three failures.",
+        "Touch: build the tablet prototype in week 2 and use grid snapping only.",
+        "Timer: keep assist mode and pause-while-reading in scope; test with five players.",
+        "Art: reuse six room shells and ship no second biome before launch.",
+        "Visibility: book the demo and festival submissions by month 3."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Write kill criteria before you are emotionally invested. Cancel or re-scope if the vertical slice fails two external playtests, if the remaining cost exceeds secured funding, if certification fails twice on the same requirement, or if the core loop cannot hold 70% of testers for 20 minutes. A kill decision is a business decision, not a verdict on the team."
+    },
+    {
+      "t": "h2",
+      "x": "7.6 QA and playtesting"
+    },
+    {
+      "t": "ins",
+      "x": "Match the test type to the question you are asking. Unit tests protect code, playtests protect the experience, and certification protects the store listing. Do not use one to answer another."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Test type",
+        "What it catches",
+        "When",
+        "Owner",
+        "Exit signal"
+      ],
+      "rows": [
+        [
+          "Unit",
+          "Broken logic, save math, resource edge cases",
+          "Every commit",
+          "Programming",
+          "80% coverage on core systems"
+        ],
+        [
+          "Smoke",
+          "Build will not start, menu dead, room missing",
+          "Every build",
+          "Producer",
+          "30-minute pass on all platforms"
+        ],
+        [
+          "Regression",
+          "Old bugs return, content breaks",
+          "Weekly",
+          "Producer",
+          "Zero open S1 or S2 from prior build"
+        ],
+        [
+          "Soak",
+          "Memory leaks, save corruption, long-session drift",
+          "Alpha and beta",
+          "Programming",
+          "72 hours without a crash"
+        ],
+        [
+          "Usability",
+          "Confusion, unreadable UI, bad onboarding",
+          "Biweekly",
+          "Designer",
+          "5 of 6 testers finish unaided"
+        ],
+        [
+          "Focus test",
+          "Fun, fantasy, replay intent",
+          "Each milestone",
+          "Creative director",
+          "70% would play again"
+        ],
+        [
+          "Certification",
+          "Platform rule violations",
+          "Beta onward",
+          "Producer",
+          "Pre-check clean, submission pass"
+        ]
+      ],
+      "w": [
+        78,
+        130,
+        80,
+        70,
+        146
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Run a 30-minute internal playtest every Friday and an external session every two weeks with five to eight players from the target age band. Recruit outside the team, never test only with developers, and get guardian consent before recording anyone under 16. Book the room, the build, and the note-taker before you recruit."
+    },
+    {
+      "t": "num",
+      "x": [
+        "Greet the player and guardian; read the consent line; confirm recording permission.",
+        "Ask two warm-up questions about games they already play; do not explain the game yet.",
+        "Give one task at a time in plain language; do not point at the screen or use game jargon.",
+        "Ask them to think aloud, then stay quiet for 10 seconds before rescuing.",
+        "Close with three questions: what was fun, what was confusing, would you play again.",
+        "Write notes within one hour while the build number and timestamps are fresh."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Pick five metrics before the session and keep them stable across builds: task completion, time on task, failed rooms per shift, confusion moments per 10 minutes, and would-play-again. Record behaviour on video and timestamps in notes. Never ask *was that fun?* as the only question; it invites politeness."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Severity",
+        "Definition",
+        "Example",
+        "Fix target"
+      ],
+      "rows": [
+        [
+          "S1 Blocker",
+          "Cannot progress, crash, or save loss",
+          "Room cannot be completed; vent blocked by geometry",
+          "24 hours"
+        ],
+        [
+          "S2 Critical",
+          "Major feature broken, no workaround",
+          "Air gauge shows the wrong value",
+          "3 days"
+        ],
+        [
+          "S3 Major",
+          "Feature works but is wrong or confusing",
+          "Pipe preview disappears after rotation",
+          "Next patch"
+        ],
+        [
+          "S4 Minor",
+          "Cosmetic or low-frequency annoyance",
+          "Text overlaps at tablet size",
+          "Backlog"
+        ],
+        [
+          "S5 Polish",
+          "Nice-to-have, no player impact",
+          "Slight jitter on the robot idle",
+          "Post-launch"
+        ]
+      ],
+      "w": [
+        90,
+        160,
+        170,
+        84
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "7.7 Certification and compliance"
+    },
+    {
+      "t": "ins",
+      "x": "Read the platform requirements before the vertical slice, not after beta. A certification failure is schedule risk with a known cost: a failed submission can add two to six weeks and a full re-test cycle."
+    },
+    {
+      "t": "p",
+      "x": "Download the current requirements for every platform you ship on and turn them into a checklist with an owner. Requirements change; date the copy you are using and re-check it at beta. The common failures are suspend and resume, controller disconnect, save indicator, user account switching, and text safe areas."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Platform technical requirements**: controller disconnect, suspend and resume, save icon, error dialogs.",
+        "**Store**: achievement count, leaderboard rules, purchase disclosure, privacy policy URL.",
+        "**Build**: no dev paths, no debug menus, correct SKUs, all shipped languages present.",
+        "**Offline**: if the game has no online mode, say so in the store metadata and test offline boot."
+      ]
+    },
+    {
+      "t": "table",
+      "head": [
+        "Board",
+        "Region",
+        "Submission",
+        "Typical rating",
+        "Notes"
+      ],
+      "rows": [
+        [
+          "ESRB",
+          "North America",
+          "Questionnaire and fee",
+          "E",
+          "No violence, no purchases"
+        ],
+        [
+          "PEGI",
+          "Europe",
+          "Questionnaire and fee",
+          "3",
+          "No fear imagery, no online chat"
+        ],
+        [
+          "USK",
+          "Germany",
+          "Questionnaire and fee",
+          "0",
+          "German UI required if submitted"
+        ],
+        [
+          "CERO",
+          "Japan",
+          "Not planned at launch",
+          "A",
+          "Japanese localization required"
+        ]
+      ],
+      "w": [
+        70,
+        100,
+        120,
+        100,
+        114
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Write a data map before writing the privacy policy: what you collect, why, where it is stored, who can see it, and when it is deleted. For players under 13, get verifiable parental consent under COPPA; for EU players, name the lawful basis under GDPR and honour deletion requests within 30 days. Disclose every third-party SDK in the store listing."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Collect the minimum: no precise location, no contacts, no ad ID for a kids' title.",
+        "Keep analytics aggregated and pseudonymous; never put a child's name in a log.",
+        "Publish a plain-language privacy summary next to the legal policy.",
+        "Name a data protection contact and a 30-day deletion process."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Commit to a specific accessibility baseline and publish it. Target WCAG 2.2 AA for menus, minimum 18 px body text at 1080p scalable to 200%, full input remapping, one-hand mode, subtitles with speaker labels and size options, colour-blind-safe status icons, reduced motion, and an assist mode that slows timers by 50% without changing rewards."
+    },
+    {
+      "t": "p",
+      "x": "Keep a license register for every font, plugin, sound, music track, and reference. Record the license type, expiry, attribution requirement, and proof of purchase. A missing font license can stop a launch; an unlicensed music track can force a patch."
+    },
+    {
+      "t": "p",
+      "x": "If the game contains loot boxes or randomized purchases, disclose the odds in-store and in-game before purchase, provide parental spending controls, and never sell randomized items to accounts registered as children. If there are no loot boxes, state that plainly in the store copy; parents search for it."
+    },
+    {
+      "t": "h2",
+      "x": "7.8 Marketing and launch"
+    },
+    {
+      "t": "ins",
+      "x": "Write the positioning statement before the key art. If you cannot say who the game is for and what it replaces in one sentence, the store page will not fix it. Build the launch checklist backward from the store date."
+    },
+    {
+      "t": "fill",
+      "x": "Positioning: For {{players aged 9 and up who like tidy, low-pressure puzzles}}, {{Moonshift}} is a {{cozy lunar repair puzzle}} that {{lets them restore a broken moon base one room at a time}}. Unlike {{city builders with complex economies}}, it {{teaches systems thinking in 20–40 minute sessions}}."
+    },
+    {
+      "t": "p",
+      "x": "Key art must read at 200 pixels wide. Put one character, one base silhouette, and one clear sky in the frame; leave the top-left corner clear for the platform badge. Ship three crops: 16:9, 1:1, and 9:16. No text in the art; the store localizes text separately."
+    },
+    {
+      "t": "p",
+      "x": "Cut a 60–90 second trailer in six beats. Open with a 5-second hook that shows the fantasy, not a logo. Show the loop by 15 seconds, progression by 30, world and characters by 45, and end on the release date and wishlist call to action. Capture at final quality; never ship graybox footage."
+    },
+    {
+      "t": "num",
+      "x": [
+        "0–5s: the hook image that shows the fantasy, not a logo.",
+        "5–15s: the core verb and its immediate feedback.",
+        "15–30s: three problems in quick cuts, each with a different solution.",
+        "30–45s: the base changing from broken to warm.",
+        "45–55s: the character and one moment of humour.",
+        "55–60s: title, date, platforms, wishlist."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Write the short description first; it is the only copy most people read. Lead with the fantasy and the age range, then the loop, then the platform and price. Use five screenshots that each teach one thing, a 30-second gameplay clip, and a demo button if you have one. Keep the long description scannable with short paragraphs and no lore dumps."
+    },
+    {
+      "t": "p",
+      "x": "The demo is the first two shifts, 20–30 minutes, and saves carry into the full game. Treat it as a separate build with its own store page, achievements, and bug queue; a demo that crashes costs more wishlists than no demo."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Window",
+        "Task",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "T-90",
+          "Store page live, wishlist campaign starts",
+          "Producer"
+        ],
+        [
+          "T-60",
+          "Trailer locked, demo build frozen",
+          "Producer"
+        ],
+        [
+          "T-30",
+          "Press and creator outreach, key delivery",
+          "Producer"
+        ],
+        [
+          "T-14",
+          "Certification submission, store assets final",
+          "Producer"
+        ],
+        [
+          "T-7",
+          "Build lock, day-one patch branch cut",
+          "Programmer"
+        ],
+        [
+          "T-0",
+          "Launch, monitor crash and refund dashboards",
+          "Whole team"
+        ],
+        [
+          "T+7",
+          "First hotfix, community AMA",
+          "Producer"
+        ],
+        [
+          "T+30",
+          "Launch postmortem, next patch plan",
+          "Producer"
+        ]
+      ],
+      "w": [
+        70,
+        340,
+        94
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Build a list of 10 press contacts and 15 creators who already cover cozy or kids' games. Send a personalized note, a press kit, and a key at least three weeks before embargo. Never pay for a review; disclose any sponsorship. For a kids' title, prioritize creators whose audience is parents and educators, and check their moderation record."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One-page fact sheet, 10 screenshots, 90-second trailer, logo pack, key art.",
+        "Three save files at different progress points for hands-on preview.",
+        "Named press contact, embargo date, and a link that does not expire."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Open one community space, not five. Staff it with a named moderator, publish rules in plain language, and answer bug reports within two working days. For a kids' audience, disable direct messages by default, moderate images before posting, and publish a parent-facing safety page."
+    },
+    {
+      "t": "h2",
+      "x": "7.9 Post-launch and live operations"
+    },
+    {
+      "t": "ins",
+      "x": "Plan the first 90 days before launch, when the team and context still exist. A live-ops plan written after release is a wish list with a deadline. Name the person on call for each week."
+    },
+    {
+      "t": "p",
+      "x": "Commit to a cadence you can keep: a hotfix within 48 hours for blockers, then patches as needed. A finite premium game does not need a weekly content cadence; it needs a reliable bug-fix path and a clear statement that the game is complete. Version every build and keep the previous two patches installable."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Hotfix only S1 and S2 issues; bundle everything else into the scheduled patch.",
+        "Write patch notes in player language, with a one-line summary at the top.",
+        "Keep a rollback build and a tested save migration for every patch.",
+        "Never ship a patch on a Friday without an on-call programmer."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Content seasons and expansions"
+    },
+    {
+      "t": "p",
+      "x": "If the game is finite, write a content plan with zero seasons and one optional expansion. Define the sales threshold that would justify it ({{20,000 copies}}), the scope ({{six shifts}}), and the price ({{USD 4.99}}). If the threshold is not met, publish a final patch and say so. Do not promise a roadmap you cannot staff."
+    },
+    {
+      "t": "p",
+      "x": "Review telemetry weekly for the first 90 days against five questions: where do players stop, what crashes, what do they skip, what do they replay, and what do they refund. Keep dashboards small and stable; a dashboard nobody reads is a cost, not a control. Aggregate data and never tie it to a child's identity."
+    },
+    {
+      "t": "p",
+      "x": "Publish a known-issues page and update it with every patch. Route bug reports into the same tracker as QA, with a player-facing status. Escalate threats, doxxing, and child-safety reports within 24 hours. Thank people who report bugs; they are unpaid QA."
+    },
+    {
+      "t": "p",
+      "x": "Write the sunset plan at launch. Announce the end of live support at least 90 days ahead, ship a final patch that makes the game fully playable offline, keep the store page and patch notes archived, and publish the refund policy. A game that stops working when a server closes is a game you rented, not sold."
+    },
+    {
+      "t": "p",
+      "x": "Run the postmortem within 30 days of launch with the whole team. Answer four questions: what did we expect, what happened, why, and what will we change next time. Turn the answers into actions with owners and dates, and put them in the decision log. Do not let the postmortem become a blame meeting."
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Tick every box before calling production complete. If a box cannot be ticked, write the reason and the owner in the open questions table."
+    },
+    {
+      "t": "check",
+      "x": [
+        "Scope statement is one sentence and appears in the pitch deck and store page.",
+        "Every feature has a tier and every content type has a target and a minimum.",
+        "Milestones have dates, exit criteria, deliverables, and a named decision gate.",
+        "Every role has a named owner and every GDD tab has one accountable editor.",
+        "Budget lines carry confidence levels and contingency is sized from the risk register.",
+        "The top five risks have owners, triggers, and pre-agreed responses.",
+        "Certification requirements are a dated checklist with an owner per platform.",
+        "Launch checklist covers T-90 to T+30 and the on-call rota is staffed."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this list to the questions that can change scope, date, or budget. Assign one owner and one date, then close or re-date every row at the weekly production meeting."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "rows": [
+        [
+          "{{Does Switch ship at launch or after PC and tablet?}}",
+          "{{Producer}}",
+          "{{Week 8}}"
+        ],
+        [
+          "{{Do we accept a PEGI 7 rating to keep the alarm imagery?}}",
+          "{{Creative director}}",
+          "{{Week 12}}"
+        ],
+        [
+          "{{Is one paid expansion in scope after launch?}}",
+          "{{Producer}}",
+          "{{Week 24}}"
+        ],
+        [
+          "{{Who covers QA while the producer is on leave?}}",
+          "{{Creative director}}",
+          "{{Week 16}}"
+        ]
+      ],
+      "w": [
+        220,
+        140,
+        144
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

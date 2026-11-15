@@ -1,0 +1,14 @@
+{
+  "tab": "04 Experience: UX, UI, Audio",
+  "examples": {
+    "4.1 Player journey": "In the first five minutes B.E.E.P. wakes in the cargo lander, moves one crate before the air timer hits zero, and opens the airlock at 1:20. The first session ends at Shift 2 with air at 40 percent and a radio signal nobody can identify; the first failure, a dry garden, is recoverable next shift.",
+    "4.2 UX principles and information architecture": "The HUD shows three numbers only: air, power, and shift time. When B.E.E.P. nears the air regulator, the world shows a teal gauge and an amber valve; the objective list stays one input away, so the player never reads a dashboard while the air runs out.",
+    "4.3 Screen flow": "The pause screen opens over a frozen frame and offers Resume, Objectives, Map, Settings, Save, and Quit. Back from Settings returns to the pause screen, back from Save shows the slot list, and Esc never quits to title without a confirmation.",
+    "4.4 HUD and in-game UI": "The air meter sits top left, stays visible in every shift, and turns red at 20 percent with a pulsing icon and a low hiss. It hides only in menus and cutscenes; the power meter sits beneath it and fades when the workshop is off.",
+    "4.5 Menus, settings, and save/load UX": "Defaults ship subtitles on, shake reduced, and toggle instead of hold for aim and sprint. The game autosaves at each shift start and before the garden vote, keeps three rotating autosaves plus ten manual slots, and shows a cloud-conflict card with both timestamps before the player chooses.",
+    "4.6 Onboarding and tutorials": "The first run opens on B.E.E.P. in the lander with one prompt: 'Hold E to lift the crate.' The air timer starts at 60 seconds; opening the airlock at 1:20 completes the teach-test beat. The same hold prompt returns on Shift 3 at the frozen garden pipe, ten minutes after the first lesson.",
+    "4.7 Accessibility": "Subtitles ship on by default with speaker names and bracketed sounds such as [air hiss] and [lock click]. Text scales to 200 percent, the HUD passes 4.5:1 contrast, and every action is remappable; the air alarm also flashes the screen edge and shows a red icon, never colour alone.",
+    "4.8 Audio direction": "The base bed runs at 82 BPM with felt piano, muted strings, and a soft pad. When air drops below 30 percent, a ticking string layer enters and the pad ducks 6 dB under Imani's radio line; restoring the air unit fades the tension layer over eight seconds.",
+    "4.9 Localization and text": "Tier 1 ships English, French, German, Spanish, and Portuguese with full text and VO; German buttons run 30 percent longer, so the save menu reserves two lines. The subtitle event 'Imani: The resupply is late.' runs 1.8 seconds at 18 characters per second, inside the 42-character line limit."
+  }
+}

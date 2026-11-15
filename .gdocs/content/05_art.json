@@ -1,0 +1,1228 @@
+{
+  "tab": "05 Art & Content",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 05 · ART & CONTENT"
+    },
+    {
+      "t": "h1",
+      "x": "Art & Content"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what the game looks like, why it looks that way, and what it costs to make every asset and level."
+    },
+    {
+      "t": "ins",
+      "x": "Fill 5.1 and 5.2 before any production art is commissioned; they are the contract every asset is reviewed against. Leave 5.8 counts provisional until the vertical slice passes its playtest gate."
+    },
+    {
+      "t": "h2",
+      "x": "5.1 Art direction and visual identity"
+    },
+    {
+      "t": "ins",
+      "x": "Write the visual thesis as one sentence a contractor can repeat without the document. Prove it with three pillars, four references, and a list of what the game must never look like. If two pillars conflict, the thesis decides."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift's Outpost Kepler-9 looks like a toy repair yard left on the kitchen table: cream hulls, terracotta patches, chunky bolts, and a low warm sun that never quite sets. Technician Mara Voss and B.E.E.P. read as hand-sized toys against the habitat, and every broken part is visibly repairable."
+    },
+    {
+      "t": "p",
+      "x": "The thesis is a production tool, not a slogan. It names the emotional promise, the material reality, and the rule that resolves arguments. Give it to an artist new to the project and ask for a prop sketch. If the sketch could belong to three games, the thesis is too vague."
+    },
+    {
+      "t": "fill",
+      "x": "Visual thesis: {{A working lunar outpost should look like a toy set a child assembled on the kitchen table: chunky, warm, repairable, and lit by a sun that never quite sets.}}"
+    },
+    {
+      "t": "quote",
+      "x": "A base you could hold in one hand: chunky toys, warm light, and every machine wearing its status on its face."
+    },
+    {
+      "t": "h3",
+      "x": "Three art pillars"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Readable first.** Every asset must be identifiable by silhouette at thumbnail size and in grayscale; detail only confirms what the shape already said.",
+        "**Warm ground, cool air.** Warm albedo and key light on surfaces, cool ambient and sky fill in shadows; this split carries mood without post-processing.",
+        "**Handmade, not sloppy.** Chamfers, slight rotations, and visible fasteners suggest care; broken symmetry and dirt suggest neglect. Never confuse the two."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Style references"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Reference",
+        "Useful trait",
+        "Failure mode"
+      ],
+      "rows": [
+        [
+          "{{Cozy city-builder art}}",
+          "Chunky proportions, one accent colour per building type, soft contact shadows",
+          "Dense prop clutter that hides the grid"
+        ],
+        [
+          "{{Stop-motion set photography}}",
+          "Visible material grain, practical lights, miniature depth of field",
+          "Simulated fingerprints and lens dirt on every shot"
+        ],
+        [
+          "{{Golden-age space illustration}}",
+          "Optimistic machinery, clean panels, bold graphic shapes",
+          "Retro-futurist chrome and gratuitous fins"
+        ],
+        [
+          "{{Modern low-poly indie games}}",
+          "Flat-shaded facets, limited palette, strong value blocking",
+          "Faceted noise used as a substitute for design"
+        ]
+      ],
+      "w": [
+        140,
+        200,
+        164
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Realism and stylization target"
+    },
+    {
+      "t": "p",
+      "x": "Set a target on four axes so the team argues about the right things. Proportion can be toy-like while materials stay physically plausible; lighting can be stylized while shadow direction stays consistent. Write the target as a range with a reference frame, not as \"stylized\"."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Proportion:** {{1:4 head-to-body for characters; doors 20 percent taller than realistic so avatars read at distance.}}",
+        "**Material:** {{flat base colour, roughness 0.8–0.9, metal only where the player must notice it.}}",
+        "**Lighting:** {{one warm key, one cool fill, baked bounce; no more than two shadow-casting lights in a gameplay space.}}",
+        "**Detail:** {{one hero detail per asset, three secondary details, zero micro-greebles below 2 cm at gameplay distance.}}"
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Silhouette and shape language"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Build every prop from three primitive volumes or fewer; if it needs five to read, redesign it.",
+        "Give each gameplay category a dominant shape: {{cylinders for resources, boxes for buildings, spheres for characters and pickups}}.",
+        "Reserve sharp angles for danger and round curves for safety; the player learns this without a tutorial.",
+        "Test silhouettes as pure black shapes on white at 64 px, then at gameplay camera distance.",
+        "Keep the top third of every character and interactable clear; the camera and UI live there."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "What the game must never look like"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Photoreal lunar grey: no desaturated regolith, no archival colour grading, no lens flares instead of lighting.",
+        "Asset-store collage: no mixed texel density, no competing outline styles, no props from different eras.",
+        "Dark for drama: gameplay spaces never drop below {{18 percent}} average luminance.",
+        "Detail as realism: no screws, cables, or labels that cannot be read at gameplay distance.",
+        "Symmetry as default: perfect mirror layouts read as unbuilt CAD, not as a place someone works."
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "RULE",
+      "x": "Art direction is a constraint system, not a mood board. Every reference must answer a production question: what shape, what colour, what cost, what never."
+    },
+    {
+      "t": "h2",
+      "x": "5.2 Colour, lighting, and camera language"
+    },
+    {
+      "t": "ins",
+      "x": "Define colour by role and lighting by function, then let the palette carry the mood. A palette that exists only as swatches will drift; one tied to gameplay meaning survives outsourcing."
+    },
+    {
+      "t": "example",
+      "x": "Ground is regolith #E6CFB2, structures are cream #F7E6C8, and repairs are terracotta #E2683A; teal #7EF2E0 means powered, amber #FFC857 means interactable, and coral #FF7A5C means blocked. The camera sits 35 degrees high at a 45-degree field of view, and the key sun stays 20 degrees above the horizon so shadows fall behind props and never across the repair grid."
+    },
+    {
+      "t": "h3",
+      "x": "Palette by role"
+    },
+    {
+      "t": "p",
+      "x": "Limit the game to six colour roles. Each role gets one hue family, a value range, and a meaning the player can learn. Decorative colours are the exception, not the base."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Colour",
+        "Usage",
+        "Meaning"
+      ],
+      "rows": [
+        [
+          "Ground",
+          "{{#E6CFB2}}",
+          "Terrain, floors, large surfaces",
+          "Safe, walkable, neutral"
+        ],
+        [
+          "Structure",
+          "{{#F7E6C8}}",
+          "Walls, hulls, machine bodies",
+          "Owned, built, permanent"
+        ],
+        [
+          "Accent",
+          "{{#E2683A}}",
+          "Trim, doors, interactables",
+          "Human hands were here"
+        ],
+        [
+          "Signal good",
+          "{{#7EF2E0}}",
+          "Lights, bars, active states",
+          "Powered, ready, correct"
+        ],
+        [
+          "Signal urgent",
+          "{{#FF7A5C}}",
+          "Alarms, locks, timers",
+          "Stop, danger, blocked"
+        ],
+        [
+          "Signal attention",
+          "{{#FFC857}}",
+          "Highlights, prompts, salvage",
+          "Look here, optional"
+        ]
+      ],
+      "w": [
+        96,
+        96,
+        156,
+        156
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Lighting rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One warm key per gameplay space at {{15–30 degrees}} elevation; shadows fall away from the camera, never across the play surface.",
+        "One cool fill at {{0.2–0.4}} of key intensity; it keeps shadow detail, not a second mood.",
+        "Bake static bounce into lightmaps; use real-time lights only for characters, projectiles, and state changes.",
+        "Emissive materials are status, not decoration: {{no surface larger than a fist}} glows, and every glow colour has one meaning.",
+        "Night and interior scenes raise ambient before lamps; keep walkable edges readable."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Time of day and weather"
+    },
+    {
+      "t": "table",
+      "head": [
+        "State",
+        "Key and fill",
+        "Application",
+        "Cost"
+      ],
+      "rows": [
+        [
+          "{{Long afternoon}}",
+          "Warm key, cool sky fill, long shadows",
+          "Default exploration",
+          "Baseline"
+        ],
+        [
+          "{{Shift change}}",
+          "Lower key, amber practicals, blue ambient",
+          "Transition and story beats",
+          "One baked lightmap set"
+        ],
+        [
+          "{{Dust event}}",
+          "Diffuse key, reduced contrast, particle haze",
+          "Timed hazard or mood beat",
+          "Particle and fog budget"
+        ],
+        [
+          "{{Night}}",
+          "Moonlit cool key, warm interior pools",
+          "Optional rest or stealth section",
+          "Second lightmap set"
+        ]
+      ],
+      "w": [
+        120,
+        168,
+        120,
+        96
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Camera framing rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Default camera: {{35–45 degree}} pitch, {{40–50 degree}} vertical FOV, distance set so a two-tile prop fills one third of the screen.",
+        "Keep the player on the lower third intersection; the top third belongs to the next decision.",
+        "Never move the camera during input unless the player initiated it; forced moves are for deaths, doors, and cutscenes.",
+        "Cutscenes use the same lens family; an 18 mm shot reads as a different game.",
+        "Test every framing at {{16:9, 21:9, and 4:3}}; UI safe areas are art direction, not a later fix."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Readability versus mood"
+    },
+    {
+      "t": "p",
+      "x": "Mood wants contrast, atmosphere, and detail; readability wants flat values, clear edges, and one focal point. Resolve the conflict with hierarchy: gameplay-critical shapes keep the highest local contrast, atmosphere stays in the background, and detail lives where the player is not required to act. Squint at every screenshot, then desaturate it. If the interactable disappears, the mood pass has gone too far."
+    },
+    {
+      "t": "h2",
+      "x": "5.3 Characters and environments"
+    },
+    {
+      "t": "ins",
+      "x": "Brief every character on one page and every environment as a kit, not a painting. Characters sell the fantasy; kits decide whether the game ships on time."
+    },
+    {
+      "t": "example",
+      "x": "B.E.E.P. is the companion: cargo carrier and dust-complainer; boxy torso on wide treads with a small sensor head; cream body, terracotta trim, teal eyes; sage carry rack and patched knee; walk, carry, push, wave, idle-check, and 12 emotes. The habitat kit uses eight 2 m pieces and a 4 m antenna tower as the landmark every 40 seconds."
+    },
+    {
+      "t": "h3",
+      "x": "Character brief template"
+    },
+    {
+      "t": "p",
+      "x": "A character brief is a contract between design, art, and animation. Fill every row before modelling; a missing row becomes a redesign after rigging."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Prompt",
+        "Example"
+      ],
+      "rows": [
+        [
+          "Role",
+          "Function in the loop and one line of personality",
+          "{{Carries cargo, complains about dust, never drops a box}}"
+        ],
+        [
+          "Silhouette",
+          "Three shapes and the read at 64 px",
+          "{{Tall tank, wide shoulders, small head}}"
+        ],
+        [
+          "Palette",
+          "Two body colours, one accent, one glow",
+          "{{Cream body, teal trim, amber eyes}}"
+        ],
+        [
+          "Costume logic",
+          "Why each layer exists and what it says",
+          "{{Apron pockets for tools; patched knee shows repair}}"
+        ],
+        [
+          "Animation needs",
+          "Locomotion set, emotes, prop interactions",
+          "{{Walk, carry, push, wave, idle-check, 12 emotes}}"
+        ]
+      ],
+      "w": [
+        110,
+        210,
+        184
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Environment kit rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Modular first: one wall, floor, door, corner, and roof must build {{80 percent}} of a room before a hero asset is approved.",
+        "Grid discipline: every piece snaps to {{2 m}} and shares one origin convention; a prop that cannot be placed in one drag is a bug.",
+        "Landmarks every {{30–45 seconds}}: a tower, a colour break, or a silhouette the player can name. Landmarks are navigation, not decoration.",
+        "Traversal readability: walkable edges get a {{15 percent}} value step; climbable surfaces get a unique material; blocked paths never share a colour with open ones.",
+        "Dress in layers: structure, function, story, clutter; stop where the camera stops resolving.",
+        "One hero asset per zone may break the kit; two means the kit is wrong."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Faction visual language"
+    },
+    {
+      "t": "p",
+      "x": "If the game has factions, give each a shape, palette, material, and a tell readable before combat or dialogue."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Faction",
+        "Shape",
+        "Palette",
+        "Material and tell"
+      ],
+      "rows": [
+        [
+          "{{Settlers}}",
+          "Rounded boxes, visible repairs",
+          "Cream, terracotta, sage",
+          "Painted metal, hand-lettered labels"
+        ],
+        [
+          "{{Survey corps}}",
+          "Thin frames, folding parts",
+          "White, blue, safety orange",
+          "Anodized aluminium, orange tape marks"
+        ],
+        [
+          "{{Salvagers}}",
+          "Asymmetric, bolted-on",
+          "Rust, mustard, dark plum",
+          "Bare steel, mismatched panels"
+        ]
+      ],
+      "w": [
+        104,
+        150,
+        130,
+        120
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5.4 UI art and iconography"
+    },
+    {
+      "t": "ins",
+      "x": "Build the icon grid and type scale before drawing a single icon. UI art fails when every screen invents its own spacing, stroke, and state colours."
+    },
+    {
+      "t": "example",
+      "x": "The repair icon uses a 24 px grid, 2 px stroke, and 1 px corner radius, drawn as a wrench over a cracked hex; hover adds a 1 px amber ring and scales to 1.04, while disabled drops to 40 percent grey. Body text is Lato 16/18 pt, headings are Montserrat 24/32 pt, and dark mode sets #F7E6C8 text on #2C3A4E panels; light mode inverts the pair."
+    },
+    {
+      "t": "h3",
+      "x": "Icon grid and stroke"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Draw on a {{24 px}} grid with a {{2 px}} stroke at 1x; at 4K the icon is scaled, not redrawn.",
+        "Keep {{2 px}} padding inside the grid; icons that touch the edge look larger than their neighbours.",
+        "Use one corner radius, {{1 px}} at 1x, and one cap style across the set.",
+        "Filled shapes carry state, outlines carry category; never mix both without a reason.",
+        "Ship SVG source plus PNG at 1x and 2x; the engine imports the raster, the source stays editable."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "States and colour semantics"
+    },
+    {
+      "t": "table",
+      "head": [
+        "State",
+        "Colour",
+        "Extra cue",
+        "Anti-pattern"
+      ],
+      "rows": [
+        [
+          "Default",
+          "Neutral {{#F7E6C8}}",
+          "Full opacity",
+          "Rely on colour alone"
+        ],
+        [
+          "Hover or focus",
+          "Accent {{#FFC857}}",
+          "1 px outer ring plus scale {{1.04}}",
+          "Animate longer than 120 ms"
+        ],
+        [
+          "Pressed",
+          "Accent dark",
+          "Inset shadow, no movement",
+          "Change layout"
+        ],
+        [
+          "Disabled",
+          "{{40 percent}} grey",
+          "No ring, reduced contrast",
+          "Hide the label"
+        ],
+        [
+          "Error",
+          "Urgent {{#FF7A5C}}",
+          "Icon plus text",
+          "Flash more than twice"
+        ]
+      ],
+      "w": [
+        110,
+        140,
+        150,
+        104
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Typography pairing"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Face",
+        "Size and weight",
+        "Scope"
+      ],
+      "rows": [
+        [
+          "Display",
+          "{{Humanist sans, rounded terminals}}",
+          "{{48–72 pt}}, bold",
+          "Screen titles only"
+        ],
+        [
+          "Heading",
+          "Same family",
+          "{{24–32 pt}}, semibold",
+          "Panel headers"
+        ],
+        [
+          "Body",
+          "Same family",
+          "{{16–18 pt}}, regular",
+          "Descriptions, dialogue"
+        ],
+        [
+          "Numeric",
+          "{{Tabular monospace}}",
+          "{{16 pt}}, medium",
+          "Timers, costs, stats"
+        ]
+      ],
+      "w": [
+        90,
+        170,
+        124,
+        120
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Pair one display face with one text face at most. If the display face cannot set numbers cleanly, add a tabular numeric face instead of changing the whole UI."
+    },
+    {
+      "t": "h3",
+      "x": "Export and theming"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Export at {{1x, 2x, 3x}} with power-of-two atlases; pack by screen, not by icon set.",
+        "Use 9-slice for panels and buttons; a stretched border makes a UI look amateur.",
+        "Define colour, spacing, radius, and type as tokens; screens reference tokens, never hex values.",
+        "Ship dark and light from the same tokens; test {{4.5:1}} for body text and {{3:1}} for large text and icons.",
+        "Never use pure black or white as a surface; the highest contrast belongs to the one action you want taken."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5.5 Animation and VFX"
+    },
+    {
+      "t": "ins",
+      "x": "Budget animation by category and count before blocking a single pose. Animation is the most common place for a small team to promise forty sets and ship twelve."
+    },
+    {
+      "t": "example",
+      "x": "B.E.E.P. ships with 8 locomotion sets, 24 idle loops, 60 interaction clips, 18 environment loops, and 30 UI transitions; the repair action holds contact for 3 frames and opens its cancel window at 60 percent of recovery. The welder VFX is a 0.4 s amber cone capped at 200 particles, and repair-mode hit-stop never exceeds 40 ms."
+    },
+    {
+      "t": "h3",
+      "x": "Animation budget"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Category",
+        "Count",
+        "Fidelity",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "Player locomotion",
+          "{{8 sets}}",
+          "{{8-way blend, 30 fps}}",
+          "{{Animation lead}}"
+        ],
+        [
+          "NPC and vendor idles",
+          "{{24 loops}}",
+          "{{Upper-body only where possible}}",
+          "{{Outsource}}"
+        ],
+        [
+          "Combat or interaction",
+          "{{60 clips}}",
+          "{{Hand-keyed, 3–12 frames}}",
+          "{{Animation team}}"
+        ],
+        [
+          "Environment loops",
+          "{{18 loops}}",
+          "{{Looping, 2–6 s}}",
+          "{{Technical art}}"
+        ],
+        [
+          "UI and camera",
+          "{{30 transitions}}",
+          "{{Curve-driven, no keyframes}}",
+          "{{UI artist}}"
+        ]
+      ],
+      "w": [
+        140,
+        96,
+        168,
+        100
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Key poses and cancel windows"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every action reads in three poses: anticipation, contact, recovery. If the contact pose is not legible as a still, it will not read in motion.",
+        "Hold contact for {{2–4 frames}}; the eye needs a beat to register impact.",
+        "Open the cancel window at {{60 percent}} of recovery for movement, {{80 percent}} for defence; never cancel anticipation.",
+        "Buffer input {{100–150 ms}} before the window opens; players press early, not late.",
+        "Keep root motion and the gameplay capsule in sync; if the animation moves the character, the code must know first."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "VFX readability rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Silhouette first: an effect must read in one frame at gameplay distance, before colour is processed.",
+        "One effect, one colour role: damage urgent, healing good, buff attention; never reuse a colour for two meanings.",
+        "Cap screen coverage at {{25 percent}} per effect; if it hides the floor, it hides the fight.",
+        "Telegraphs last at least {{0.4 s}} and never share a shape with the effect they warn about.",
+        "Particle counts are a budget: {{200}} per gameplay effect, {{800}} for a hero moment, {{3}} overlapping systems maximum."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Hit-stop and screen shake"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Effect",
+        "Default",
+        "Maximum",
+        "Accessibility"
+      ],
+      "rows": [
+        [
+          "Hit-stop",
+          "{{40 ms}}",
+          "{{90 ms}}",
+          "Toggle to zero"
+        ],
+        [
+          "Camera shake",
+          "{{0.15 deg}}",
+          "{{0.5 deg}}",
+          "Slider, default 50 percent"
+        ],
+        [
+          "Flash",
+          "{{1 frame}}",
+          "{{3 frames}}",
+          "Disable flashing option"
+        ],
+        [
+          "Slow motion",
+          "{{0.25 s}}",
+          "{{0.6 s}}",
+          "Skip in assisted mode"
+        ]
+      ],
+      "w": [
+        104,
+        110,
+        110,
+        180
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Performance cost"
+    },
+    {
+      "t": "p",
+      "x": "Assign a cost to every animation and effect before it enters the build. Measure at the target camera distance, not a test scene. A character with {{120}} bones and four blend layers costs more than a crowd of props; a full-screen effect costs more than either. Put the numbers in the budget table and review them every milestone."
+    },
+    {
+      "t": "h2",
+      "x": "5.6 Asset production plan"
+    },
+    {
+      "t": "ins",
+      "x": "Count assets by category, then lock the pipeline on one hero asset before the team scales. A pipeline that has not shipped one asset end to end is a hypothesis."
+    },
+    {
+      "t": "example",
+      "x": "The vertical slice ships 2 hero characters, 60 props, 80 modular pieces, 20 VFX meshes, and 70 UI icons; the long cargo crate is PRP_Crate_Long_2m at 1,800 tris, with LOD1 at 720 and LOD2 at 270 on a 1K shared atlas. It clears blockout Monday, model review Wednesday, texture Friday, and the final gate in Hadley Depot before sprint end."
+    },
+    {
+      "t": "h3",
+      "x": "Asset categories"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Category",
+        "Count",
+        "Tri budget",
+        "Texture",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "Hero characters",
+          "{{6}}",
+          "{{25k–40k}}",
+          "{{2K, 4 masks}}",
+          "{{Character art}}"
+        ],
+        [
+          "Props and interactables",
+          "{{180}}",
+          "{{800–4k}}",
+          "{{1K, shared atlas}}",
+          "{{Environment art}}"
+        ],
+        [
+          "Modular environment",
+          "{{240}}",
+          "{{500–2k}}",
+          "{{2K trim sheet}}",
+          "{{Environment art}}"
+        ],
+        [
+          "VFX meshes",
+          "{{60}}",
+          "{{200–1k}}",
+          "{{512, additive}}",
+          "{{Technical art}}"
+        ],
+        [
+          "UI and icons",
+          "{{220}}",
+          "n/a",
+          "{{Vector source}}",
+          "{{UI artist}}"
+        ]
+      ],
+      "w": [
+        140,
+        80,
+        104,
+        100,
+        80
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Pipeline"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Blockout: prove scale, silhouette, and pivot in engine with grey materials.",
+        "High poly: add the hero detail and bevel language; no surface noise.",
+        "Low poly: retopologize to budget, keep the silhouette, bake once.",
+        "UV and texture: one trim sheet or atlas per category; check texel density at gameplay distance.",
+        "Import and validate: naming, scale, collision, LODs, and material count pass an automated scene test.",
+        "Art pass: lighting, decals, and dressing signed off in the target level, not a viewer."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Naming and LODs"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Asset type",
+        "Pattern",
+        "Example"
+      ],
+      "rows": [
+        [
+          "Character",
+          "{{CHR_<Name>_<Variant>}}",
+          "{{CHR_Engineer_A}}"
+        ],
+        [
+          "Prop",
+          "{{PRP_<Category>_<Name>_<Size>}}",
+          "{{PRP_Crate_Long_2m}}"
+        ],
+        [
+          "Environment kit",
+          "{{ENV_<Kit>_<Piece>_<Size>}}",
+          "{{ENV_Hab_Wall_4m}}"
+        ],
+        [
+          "Material",
+          "{{M_<Category>_<Name>}}",
+          "{{M_Metal_Painted}}"
+        ],
+        [
+          "Texture",
+          "{{T_<Asset>_<Map>}}",
+          "{{T_Crate_BaseColor}}"
+        ]
+      ],
+      "w": [
+        120,
+        200,
+        184
+      ]
+    },
+    {
+      "t": "bul",
+      "x": [
+        "LOD0 at {{100 percent}} triangles, LOD1 at {{40 percent}}, LOD2 at {{15 percent}}, plus an impostor beyond {{60 m}}.",
+        "Textures: {{2K}} for hero characters, {{1K}} for props, {{512}} for dressing, shared trim sheets for kits.",
+        "One material per prop unless it changes state; every extra material is a draw call and a variant.",
+        "Author collision for anything the player stands on; generated convex hulls are for clutter only."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Outsourcing package"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One-page brief with silhouette, palette, tri and texture budget, and review camera distance.",
+        "Engine test scene with the target lighting rig, neighbouring assets, and a capture camera.",
+        "Naming, pivot, unit, and export checklist, plus a known-good asset as reference.",
+        "Acceptance test in writing: what passes, what gets one revision, what gets rejected.",
+        "Two revision rounds included; a third is a new brief and quote."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Review gates"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Gate",
+        "Reviewer",
+        "Pass condition"
+      ],
+      "rows": [
+        [
+          "Blockout",
+          "{{Art director}}",
+          "Silhouette and scale read in engine"
+        ],
+        [
+          "Model",
+          "{{Lead artist}}",
+          "Budget met, bevel language consistent"
+        ],
+        [
+          "Texture",
+          "{{Art director}}",
+          "Palette and texel density match neighbours"
+        ],
+        [
+          "Final",
+          "{{Art lead and design}}",
+          "Reads at gameplay distance in the target level"
+        ]
+      ],
+      "w": [
+        100,
+        160,
+        244
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5.7 Level and content production"
+    },
+    {
+      "t": "ins",
+      "x": "Lock level metrics before blockout and keep them in one table. A level that is fun but three times the planned scope is a scope change, not a level."
+    },
+    {
+      "t": "example",
+      "x": "Hadley Depot runs 12 minutes on the critical path, places one interaction every 20 m, and uses a 4 m antenna tower as its landmark every 40 seconds. Blockout passed when 4 of 5 players reached the airlock without a guide; the art pass replaced every grey surface with approved kit, and polish closed at 60 fps with no blocker bugs."
+    },
+    {
+      "t": "h3",
+      "x": "Production stages"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Stage",
+        "Goal",
+        "Exit criteria",
+        "Owner"
+      ],
+      "rows": [
+        [
+          "Blockout",
+          "Prove route, sightlines, and pacing",
+          "{{A player can finish without guidance}}",
+          "{{Level designer}}"
+        ],
+        [
+          "Art pass",
+          "Replace grey with kit and lighting",
+          "{{All surfaces use approved assets}}",
+          "{{Environment art}}"
+        ],
+        [
+          "Polish",
+          "Fix collisions, decals, audio, and performance",
+          "{{Budget met, no blocker bugs}}",
+          "{{Level owner}}"
+        ]
+      ],
+      "w": [
+        96,
+        160,
+        168,
+        80
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Level metrics"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Metric",
+        "Target",
+        "Rationale"
+      ],
+      "rows": [
+        [
+          "Critical path",
+          "{{10–15 minutes}} per level",
+          "Keeps a session inside one sitting"
+        ],
+        [
+          "Traversal speed",
+          "{{4 m/s walk, 7 m/s sprint}}",
+          "Sets distance and camera scale"
+        ],
+        [
+          "Landmark interval",
+          "{{30–45 s}}",
+          "Prevents disorientation"
+        ],
+        [
+          "Playable density",
+          "{{1 interaction per 20 m}}",
+          "Avoids empty corridors"
+        ],
+        [
+          "Verticality",
+          "{{2.5 m}} per climbable step",
+          "Matches character metrics"
+        ]
+      ],
+      "w": [
+        130,
+        160,
+        214
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Modular kits and set dressing"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Build one kit per biome or faction, not per level; a kit that serves one room is a hero asset in disguise.",
+        "Kit pieces: floor, wall, corner, door, window, stairs, roof, and one damaged variant. Eight build a room; forty build a district.",
+        "Set dressing follows function: daily items at hand height, storage high or low, broken things where they fell.",
+        "Leave one clear path through every room; clutter on the critical path is a collision bug with a texture.",
+        "Reuse kits across levels and rotate {{90, 180, 270 degrees}}; rotation is free variety."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Playtest gates"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Gate",
+        "Sample",
+        "Question",
+        "Pass criterion"
+      ],
+      "rows": [
+        [
+          "Paper",
+          "{{3 designers}}",
+          "Is the route legible on the map?",
+          "Route drawn without help"
+        ],
+        [
+          "First playable",
+          "{{5 external players}}",
+          "Can they finish without a guide?",
+          "{{4 of 5}} finish"
+        ],
+        [
+          "Art pass",
+          "{{8 target players}}",
+          "Do they name the landmarks?",
+          "{{6 of 8}} name three"
+        ],
+        [
+          "Polish",
+          "{{20 players}}",
+          "Does it hold attention for a session?",
+          "Median session {{25 min}}"
+        ]
+      ],
+      "w": [
+        110,
+        130,
+        170,
+        94
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Content reuse"
+    },
+    {
+      "t": "p",
+      "x": "Plan reuse before production. Every kit, rig, animation set, and UI component should have two planned uses; a one-use asset needs a hero justification and a higher review bar. Track reuse in the content matrix so the producer sees the new-to-reused ratio per level. A healthy vertical slice runs on {{60 percent}} reused assets and {{40 percent}} new; a final level should not cost more than the first."
+    },
+    {
+      "t": "h2",
+      "x": "5.8 Content matrix and scope"
+    },
+    {
+      "t": "ins",
+      "x": "Build the matrix in hours and cost, not in asset counts. Counts hide the work; hours expose it, and the cut list needs hours to be honest."
+    },
+    {
+      "t": "example",
+      "x": "The launch matrix funds 6 levels at 320 hours each, 6 characters, 480 props and kit pieces, 140 animation sets, 24 UI screens, and an audio package for 8,840 hours and $531k at $60 per hour. The vertical slice is one 12-minute Hadley level with 70 percent final art; the cut list drops the second biome and fourth crew variant if the slice misses its playtest gate."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Content type",
+        "Count",
+        "Hours each",
+        "Total hours",
+        "Cost"
+      ],
+      "rows": [
+        [
+          "Playable levels",
+          "{{6}}",
+          "{{320}}",
+          "{{1,920}}",
+          "{{$115k}}"
+        ],
+        [
+          "Characters",
+          "{{6}}",
+          "{{120}}",
+          "{{720}}",
+          "{{$43k}}"
+        ],
+        [
+          "Props and kits",
+          "{{480}}",
+          "{{6}}",
+          "{{2,880}}",
+          "{{$173k}}"
+        ],
+        [
+          "Animation sets",
+          "{{140}}",
+          "{{14}}",
+          "{{1,960}}",
+          "{{$118k}}"
+        ],
+        [
+          "UI screens",
+          "{{24}}",
+          "{{40}}",
+          "{{960}}",
+          "{{$58k}}"
+        ],
+        [
+          "Audio and VO",
+          "{{1 package}}",
+          "{{400}}",
+          "{{400}}",
+          "{{$24k}}"
+        ]
+      ],
+      "w": [
+        120,
+        80,
+        92,
+        100,
+        112
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Vertical slice contents"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "One complete level from title card to results, {{10–15 minutes}} long, with final art on {{70 percent}} of visible assets.",
+        "Two characters: the player avatar and one NPC with a full interaction loop.",
+        "The core loop playable three times, including one failure and one recovery.",
+        "All UI screens the slice touches, in dark and light themes.",
+        "One hero VFX moment and one ambient loop, mixed at final loudness.",
+        "A build on minimum spec at target frame rate, with telemetry and crash reporting on."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Cut-list criteria"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Cut anything absent from the vertical slice or the first {{30 minutes}}.",
+        "Cut any asset used once, unless it carries a story beat or a store screenshot.",
+        "Cut any system whose failure cannot be explained in one sentence.",
+        "Cut any feature needing a new tool, hire, or platform approval inside {{8 weeks}}.",
+        "Protect the loop, readability, and frame rate; everything else is negotiable."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Keep a {{20 percent}} schedule buffer and a cut list ranked by cost saved per unit of player value lost. Review it every milestone; a cut list that never changes is a wish list."
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Mark this tab done only when a new artist, contractor, and engineer can use it without asking a question."
+    },
+    {
+      "t": "check",
+      "x": [
+        "Visual thesis fits in one sentence and three external artists can sketch a prop from it.",
+        "Every vertical-slice asset traces to a category, a budget, and a named reviewer.",
+        "The palette has six roles or fewer, and every gameplay signal has a non-colour cue.",
+        "Character and environment briefs exist for every shipped asset, with silhouette and animation needs.",
+        "The UI token set covers dark and light themes and passes contrast checks on the target display.",
+        "Animation and VFX budgets list counts, owners, and measured costs at the target camera distance.",
+        "The content matrix reconciles counts, hours, and cost, and the cut list has a named owner.",
+        "A full asset has passed blockout, model, texture, and final gates in the target level."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this list short and dated. An open question without an owner and a date is a decision someone is avoiding."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "rows": [
+        [
+          "{{Do we ship one biome or two in the vertical slice?}}",
+          "{{Creative director}}",
+          "{{Sprint 4}}"
+        ],
+        [
+          "{{Is the character rig outsourced or in-house?}}",
+          "{{Art lead}}",
+          "{{Sprint 5}}"
+        ],
+        [
+          "{{Which platform gets the first cert pass?}}",
+          "{{Producer}}",
+          "{{Milestone 2}}"
+        ],
+        [
+          "{{Do we need a fourth faction palette for DLC?}}",
+          "{{Art director}}",
+          "{{Post-launch}}"
+        ]
+      ],
+      "w": [
+        280,
+        120,
+        104
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

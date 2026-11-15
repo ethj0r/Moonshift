@@ -67,3 +67,7 @@ A 2D sprite version remains a fallback if measured devices cannot meet the 3D pe
 9. **Validate the result.** Run a glTF validator, compare screenshots against the source renders, inspect glass ordering and emissive intensity, and record prepared bytes/primitives. Geometry compression is conditional: first compare its transfer saving with decoder download and CPU cost. Texture codecs offer little benefit to these texture-free models.
 
 Do not block the prototype on new character rigs, a lander interior, physical pipes for every route, a full terrain generator, or production-quality asset variants.
+
+## Voiceover
+
+`public/assets/voice/*.mp3` are ElevenLabs (Eleven v4, web app) reads of every fixed line, one voice per speaker: Commander — Sarah, Technician — Charlie, Researcher — Matilda, Earth — Daniel, B.E.E.P. — Eva (Futuristic Robot Helper; the name is read as "Beep"), cutscene/guess narrator — George (Warm, Captivating Storyteller); the opening prologue is narrator-68..79. `src/voice.json` maps each line (as read aloud, markup stripped) to its clip. Lines with live numbers, and any line edited after recording, fall back to the browser's speech voice. Clips are mono 40 kbps and load only when a line is spoken.

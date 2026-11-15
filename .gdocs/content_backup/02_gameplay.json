@@ -1,0 +1,1184 @@
+{
+  "tab": "02 Gameplay & Systems",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 02 · GAMEPLAY"
+    },
+    {
+      "t": "h1",
+      "x": "Gameplay & Systems"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what does the player do, how does each system respond, and how will we prove it works?"
+    },
+    {
+      "t": "ins",
+      "x": "Start with 2.1 and 2.2. Do not open 2.5 to 2.7 until the core loop is playable on paper. Fill 2.10 with numbers from the build, not estimates from a pitch meeting."
+    },
+    {
+      "t": "h2",
+      "x": "2.1 Core loop"
+    },
+    {
+      "t": "ins",
+      "x": "Describe three nested loops with different time scales. For each, name the goal, the verbs, the reward, the failure, and the exit condition. If two loops share the same reward, one of them is decoration."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Loop",
+        "Goal",
+        "Verbs",
+        "Reward / failure",
+        "Exit condition"
+      ],
+      "w": [
+        88,
+        104,
+        104,
+        124,
+        84
+      ],
+      "rows": [
+        [
+          "Moment (5–30 s)",
+          "Clear one fault",
+          "Scan, choose, place",
+          "Room stabilises / gauge falls",
+          "Fault resolved or timer ends"
+        ],
+        [
+          "Session (20–60 min)",
+          "Finish a shift",
+          "Route, repair, ration",
+          "Crew reacts, new room opens / air runs out",
+          "Shift summary or retry"
+        ],
+        [
+          "Long-term (days / weeks)",
+          "Make the outpost self-sufficient",
+          "Upgrade, specialise, replay",
+          "Ending, score, new layout / restart",
+          "Credits or player stops"
+        ]
+      ]
+    },
+    {
+      "t": "quote",
+      "x": "{{Scan the room, spend one resource, place one part, watch the gauge move. Repeat until the shift ends, then keep what you learned for the next one.}} *Four verbs, one visible number, one clock: the loop is testable before it is fun.*"
+    },
+    {
+      "t": "h3",
+      "x": "Drawing the loop diagram"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Draw three concentric circles, labelled moment, session, and long-term.",
+        "Put the player verb on each arrow, not the system name.",
+        "Mark every failure exit with a red arrow back to the last decision, not to the start.",
+        "Annotate each loop close with the sense it targets: relief, progress, or mastery.",
+        "Trace one real playtest minute through the diagram; if the trace leaves the page, redraw it."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Good loop test: every arrow can be observed in a 10-minute playtest. If the diagram needs a paragraph to explain a transition, the transition is missing a verb or a reward."
+    },
+    {
+      "t": "h2",
+      "x": "2.2 Player verbs and mechanics"
+    },
+    {
+      "t": "ins",
+      "x": "List every verb the player can perform, then mark one primary and at most three secondary. A verb earns its place only if it creates a new decision, not a new animation."
+    },
+    {
+      "t": "p",
+      "x": "**Test before you build.** Write the test first: what the player does, what the build shows, and what number proves it works. A verb with no test is an animation with a keyboard shortcut."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Verb",
+        "Input",
+        "Immediate feedback",
+        "Depth",
+        "Unlocks / system"
+      ],
+      "w": [
+        86,
+        100,
+        128,
+        110,
+        80
+      ],
+      "rows": [
+        [
+          "Scan",
+          "{{Tap or cursor}}",
+          "{{Fault glows, gauge highlights}}",
+          "{{Priority reading under time}}",
+          "{{Start}} / {{Air}}"
+        ],
+        [
+          "Choose cargo",
+          "{{Tap card}}",
+          "{{Item snaps to rack, stats update}}",
+          "{{Trade-offs under a cap}}",
+          "{{Start}} / {{Cargo}}"
+        ],
+        [
+          "Place part",
+          "{{Drag to grid}}",
+          "{{Ghost preview, valid or invalid tint}}",
+          "{{Spatial routing}}",
+          "{{Shift 1}} / {{Air}}"
+        ],
+        [
+          "Reroute air",
+          "{{Rotate pipe}}",
+          "{{Path redraws live}}",
+          "{{Network optimisation}}",
+          "{{Shift 3}} / {{Air}}"
+        ],
+        [
+          "Dismantle",
+          "{{Hold}}",
+          "{{Parts fly to inventory, noise}}",
+          "{{Salvage versus keep}}",
+          "{{Shift 2}} / {{Cargo}}"
+        ],
+        [
+          "Overclock",
+          "{{Double-tap}}",
+          "{{Meter spikes, warning glow}}",
+          "{{Risk and reward timing}}",
+          "{{Shift 5}} / {{Power}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Primary verb: {{place}}, because it carries every puzzle. Secondary: {{scan, choose, reroute}}. If a proposed verb cannot change the outcome of a shift, it is a shortcut or a setting, not a mechanic."
+    },
+    {
+      "t": "h3",
+      "x": "Verb count discipline"
+    },
+    {
+      "t": "p",
+      "x": "Ship {{4–6}} verbs. Each additional verb needs a tutorial beat, a UI state, an animation set, and a failure case, which is roughly {{2 weeks}} of team time. Cut any verb that only duplicates a decision an existing verb already makes."
+    },
+    {
+      "t": "h3",
+      "x": "Easy to learn, hard to master test"
+    },
+    {
+      "t": "check",
+      "x": [
+        "A new player uses the verb correctly within 10 seconds of seeing it.",
+        "An expert uses the same verb to solve a problem the tutorial never showed.",
+        "The verb has at least two valid uses with different costs.",
+        "The verb's failure is readable without a message.",
+        "The verb still creates a decision in the final level."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a player discovers a use for the verb that the designer did not script, and that use does not break the economy. That is depth; extra buttons are not."
+    },
+    {
+      "t": "h2",
+      "x": "2.3 Controls and camera"
+    },
+    {
+      "t": "ins",
+      "x": "Write one control table per platform, then a single camera spec. Test on the smallest supported screen and the weakest supported device; if the camera needs a tutorial, simplify the camera."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Action",
+        "Keyboard / mouse",
+        "Gamepad",
+        "Touch"
+      ],
+      "w": [
+        110,
+        140,
+        120,
+        134
+      ],
+      "rows": [
+        [
+          "Move cursor",
+          "{{Mouse}}",
+          "{{Left stick}}",
+          "{{Drag}}"
+        ],
+        [
+          "Select",
+          "{{Left click}}",
+          "{{A / cross}}",
+          "{{Tap}}"
+        ],
+        [
+          "Rotate part",
+          "{{R}}",
+          "{{RB / R1}}",
+          "{{Two-finger twist}}"
+        ],
+        [
+          "Cancel",
+          "{{Esc or right click}}",
+          "{{B / circle}}",
+          "{{Tap outside}}"
+        ],
+        [
+          "Pause",
+          "{{Space}}",
+          "{{Start}}",
+          "{{Two-finger tap}}"
+        ],
+        [
+          "Speed up shift",
+          "{{Tab}}",
+          "{{Y / triangle}}",
+          "{{Hold clock}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Remapping: every action must be rebindable on keyboard and gamepad, with one preset for left-handed play. Touch uses fixed gestures; offer a tap-only alternative for every drag, because a drag fails on a bus and a tap does not."
+    },
+    {
+      "t": "h3",
+      "x": "Camera behaviour"
+    },
+    {
+      "t": "p",
+      "x": "Camera: {{fixed isometric, four snap angles, no free orbit}}. Zoom: {{three steps, 100–140% of default}}. Follow: {{none; the room fits one screen}}. Shake: {{off by default, slider to 50%}}. Never move the camera during a placement preview; the player needs a stable reference."
+    },
+    {
+      "t": "h3",
+      "x": "Sensitivity, aim assist, and latency"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Parameter",
+        "Default",
+        "Range",
+        "Note"
+      ],
+      "w": [
+        120,
+        90,
+        90,
+        204
+      ],
+      "rows": [
+        [
+          "Pointer sensitivity",
+          "{{1.0}}",
+          "{{0.5–2.0}}",
+          "{{Separate cursor and camera scales.}}"
+        ],
+        [
+          "Aim assist",
+          "{{not applicable}}",
+          "{{none}}",
+          "{{No aiming verbs; do not add a hidden magnet.}}"
+        ],
+        [
+          "Input latency",
+          "{{under 80 ms}}",
+          "{{under 120 ms}}",
+          "{{Measure tap to visual response.}}"
+        ],
+        [
+          "Animation lock",
+          "{{0 ms}}",
+          "{{0–50 ms}}",
+          "{{Never block a cancel.}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Latency budget: {{16 ms}} input poll, {{33 ms}} simulation, {{50 ms}} render, with {{100 ms}} total tap-to-feedback as the hard ceiling. Profile on the target tablet, not on a development PC."
+    },
+    {
+      "t": "h3",
+      "x": "Accessibility hooks"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Hold-to-toggle for every hold action; no chorded inputs required.",
+        "UI scale {{100–200%}} and a high-contrast cursor.",
+        "Colour-blind palettes plus shape-coded status icons.",
+        "One-hand layout for touch and gamepad."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a player who has never seen a controller finishes the first room on touch, and a keyboard player never needs the mouse to pause. Every platform has a complete path, not a port of the primary one."
+    },
+    {
+      "t": "h2",
+      "x": "2.4 Game modes and session structure"
+    },
+    {
+      "t": "ins",
+      "x": "List only modes that ship. For each, write the length, the goal, and how the player leaves. Then describe the session shape around the mode, including what happens when a player has 10 minutes, not 40."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Mode",
+        "Length",
+        "Goal",
+        "Exit"
+      ],
+      "w": [
+        120,
+        80,
+        180,
+        124
+      ],
+      "rows": [
+        [
+          "{{Campaign shift}}",
+          "{{8–12 min}}",
+          "{{Restore one room before the timer}}",
+          "{{Summary, next shift, or retry}}"
+        ],
+        [
+          "{{Free build}}",
+          "{{open}}",
+          "{{Optimise a solved room}}",
+          "{{Quit anytime; state saves}}"
+        ],
+        [
+          "{{Daily puzzle}}",
+          "{{5–8 min}}",
+          "{{One fixed layout, one score}}",
+          "{{Score screen; no streak loss}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Session shape: {{menu, one to four shifts, summary, quit}}. A full session should fit in {{20–60 minutes}} with a natural stop after each shift. Autosave at the start of every shift and after every placement; never ask the player to replay a solved room."
+    },
+    {
+      "t": "h3",
+      "x": "Save, checkpoint, and pause"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Checkpoint: start of shift, plus every {{10}} placements.",
+        "Resume: restore camera, open panel, and timer within {{2 s}}.",
+        "Pause: stops the timer and all animation; menu is reachable in one input.",
+        "Quit: no confirmation if the last checkpoint is under {{60 seconds}} old.",
+        "Cloud conflict: keep the newer save, offer the older one as a copy."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Multiplayer and social: {{none at launch}}. If added later, use asynchronous scores, not real-time co-op; the puzzle needs a stable camera and a single decision-maker."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a player can stop mid-shift, close the app, and return to the same camera and timer. If resuming takes longer than the original decision, the save model is too heavy."
+    },
+    {
+      "t": "h2",
+      "x": "2.5 Progression and unlocks"
+    },
+    {
+      "t": "ins",
+      "x": "Define progression as new decisions, not bigger numbers. Map each unlock to the verb or room it opens, then check that the player can explain why they earned it."
+    },
+    {
+      "t": "p",
+      "x": "Axes: {{room access}} (where you can work), {{verb set}} (what you can do), {{knowledge}} (what the player understands), and {{cosmetic rank}} (how the base looks). Only the first three change play; the fourth rewards completion without gating it."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Time",
+        "Unlock",
+        "New verb or content",
+        "Why here"
+      ],
+      "w": [
+        80,
+        120,
+        150,
+        154
+      ],
+      "rows": [
+        [
+          "{{0–10 min}}",
+          "{{Place and rotate}}",
+          "{{First room, straight pipes}}",
+          "{{Teach the grid before the network}}"
+        ],
+        [
+          "{{10–25 min}}",
+          "{{Dismantle}}",
+          "{{Salvage from crates}}",
+          "{{Introduce cost before scarcity}}"
+        ],
+        [
+          "{{25–45 min}}",
+          "{{Reroute}}",
+          "{{Branching air paths}}",
+          "{{First non-linear solution}}"
+        ],
+        [
+          "{{45–70 min}}",
+          "{{Overclock}}",
+          "{{Power spike, timed risk}}",
+          "{{Combine two resources}}"
+        ],
+        [
+          "{{70–120 min}}",
+          "{{Room chain}}",
+          "{{Two rooms share one supply}}",
+          "{{Final exam, no new verb}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Unlock graph and power curve"
+    },
+    {
+      "t": "p",
+      "x": "Draw unlocks as a directed graph: node equals unlock, edge equals prerequisite. No node should have more than two parents, and no unlock should arrive without a room that tests it. The power curve rises in steps, then plateaus before the finale; a straight line feels like a grind."
+    },
+    {
+      "t": "p",
+      "x": "Avoid numeric inflation: prefer a new interaction over a small percentage increase in air. If a number must grow, pair it with a new constraint so the player's decisions change, not only the totals. A bigger tank with the same leaks is not progression."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: the player can name the last three things they unlocked and what each one let them do. If the answer is a percentage, the progression is a spreadsheet, not a game."
+    },
+    {
+      "t": "h2",
+      "x": "2.6 Economy and resources"
+    },
+    {
+      "t": "ins",
+      "x": "List every resource the player can gain or spend, including time. For each, name one source, one sink, a cap, and the decision it creates. A resource without a sink is a score; a sink without a source is a soft lock."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Resource",
+        "Source",
+        "Sink",
+        "Cap",
+        "Purpose"
+      ],
+      "w": [
+        80,
+        100,
+        100,
+        60,
+        164
+      ],
+      "rows": [
+        [
+          "{{Air}}",
+          "{{Processing and tanks}}",
+          "{{Crew upkeep per shift}}",
+          "{{100}}",
+          "{{Main fail timer and spatial puzzle}}"
+        ],
+        [
+          "{{Power}}",
+          "{{Solar and batteries}}",
+          "{{Fans, tools, lights}}",
+          "{{12 units}}",
+          "{{Forces prioritisation}}"
+        ],
+        [
+          "{{Parts}}",
+          "{{Dismantle and cargo}}",
+          "{{Repairs and upgrades}}",
+          "{{20}}",
+          "{{Connects salvage to building}}"
+        ],
+        [
+          "{{Time}}",
+          "{{Shift clock}}",
+          "{{Every action}}",
+          "{{8 min}}",
+          "{{Creates urgency without reflexes}}"
+        ],
+        [
+          "{{Crew trust}}",
+          "{{Completed shifts}}",
+          "{{Optional requests}}",
+          "{{5 stars}}",
+          "{{Soft score, no fail}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Faucet and sink balance: for a {{10-minute}} shift, total income should exceed mandatory spend by {{20–30%}}, leaving room for one optional repair. If the player ends with more than {{50%}} of a resource cap for three shifts, add a sink or lower the faucet."
+    },
+    {
+      "t": "h3",
+      "x": "Inflation and monetization boundary"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "No resource purchasable with real money. The premium price buys the whole game.",
+        "No daily login bonus, energy gate, or streak that punishes absence.",
+        "Cap stockpiles so a patient player cannot trivialise the finale.",
+        "If an expansion adds a resource, it must add a sink in the same update."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Economy flow diagram: draw sources on the left, sinks on the right, and the player's decision in the centre. Label every arrow with a rate per shift. If an arrow has no rate, it is flavour, not economy."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a player can explain what they are saving for and what they gave up to save it. If the answer is everything, there is no economy, only a counter."
+    },
+    {
+      "t": "h2",
+      "x": "2.7 Challenge, combat, and difficulty"
+    },
+    {
+      "t": "ins",
+      "x": "Name the challenge types before the enemies. Most cozy games need spatial, resource, and time pressure, not combat. If combat is in scope, write its grammar as roles and counters, then cut every enemy that does not teach one."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Challenge",
+        "Example",
+        "Skill tested",
+        "Failure cost"
+      ],
+      "w": [
+        110,
+        150,
+        130,
+        114
+      ],
+      "rows": [
+        [
+          "Spatial",
+          "{{Route air through a 3×3 board}}",
+          "{{Planning and rotation}}",
+          "{{Retry the room, no loss}}"
+        ],
+        [
+          "Resource",
+          "{{Spend the last battery on fan or light}}",
+          "{{Prioritisation}}",
+          "{{One room stays dim}}"
+        ],
+        [
+          "Time",
+          "{{Crew arrives in six minutes}}",
+          "{{Decision speed}}",
+          "{{Lower score, same progress}}"
+        ],
+        [
+          "Knowledge",
+          "{{A hidden valve changes the path}}",
+          "{{Observation}}",
+          "{{One wasted attempt}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Difficulty curve: introduce one challenge type per {{2–3}} shifts, then combine two. The hardest room should be the second-to-last; the finale tests mastery with a familiar layout, not a new rule. A new rule in the finale reads as a trick."
+    },
+    {
+      "t": "h3",
+      "x": "Encounter grammar"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Behaviour",
+        "Counter",
+        "Teaches"
+      ],
+      "w": [
+        100,
+        150,
+        120,
+        134
+      ],
+      "rows": [
+        [
+          "{{Blocker}}",
+          "{{Occupies a grid cell}}",
+          "{{Dismantle or route around}}",
+          "{{Space has a cost}}"
+        ],
+        [
+          "{{Leak}}",
+          "{{Drains air each tick}}",
+          "{{Patch before rerouting}}",
+          "{{Order of operations}}"
+        ],
+        [
+          "{{Brownout}}",
+          "{{Cuts power to one branch}}",
+          "{{Battery or shed a load}}",
+          "{{Prioritisation}}"
+        ],
+        [
+          "{{Inspector}}",
+          "{{Checks a room at shift end}}",
+          "{{Meet the minimum, not the max}}",
+          "{{Enough is a valid answer}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Adaptive difficulty: {{no hidden rubber-banding}}. Offer explicit assists, such as a timer bonus of {{50%}} and hints after {{3}} fails, and record when they are used. Hidden adaptation makes failure feel arbitrary and breaks speedrun trust."
+    },
+    {
+      "t": "h3",
+      "x": "Failure recovery and damage formula"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Failure returns the player to the last shift start, with knowledge intact.",
+        "Show the exact cause: one sentence and one highlighted cell.",
+        "Offer a hint after three fails, never before the second attempt.",
+        "Never delete a completed room or a discovered shortcut."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Damage placeholder: {{damage = max(1, attack × (1 − armor / (armor + 50)))}}. For a non-combat game, replace damage with {{air_loss = leak_rate × seconds_open}} and keep the same shape: one clamp, one scaling constant, one readable output."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: after a failure, the player can state the mistake in one sentence and the fix in one action. If they say the game cheated, the encounter taught the wrong lesson."
+    },
+    {
+      "t": "h2",
+      "x": "2.8 Systems interaction matrix"
+    },
+    {
+      "t": "ins",
+      "x": "Build the matrix with one row per system and one owner per row. Mark every dependency with the data that crosses the boundary. The dangerous cells are the ones two teams believe they own."
+    },
+    {
+      "t": "table",
+      "head": [
+        "System (owner)",
+        "Air",
+        "Power",
+        "Cargo",
+        "Crew"
+      ],
+      "w": [
+        124,
+        95,
+        95,
+        95,
+        95
+      ],
+      "rows": [
+        [
+          "Air ({{Systems}})",
+          "{{state: pressure, leaks}}",
+          "{{draws power per shift}}",
+          "{{reads filter parts}}",
+          "{{fails below minimum}}"
+        ],
+        [
+          "Power ({{Systems}})",
+          "{{runs fans}}",
+          "{{state: charge, load}}",
+          "{{reads battery items}}",
+          "{{brownout affects trust}}"
+        ],
+        [
+          "Cargo ({{Design}})",
+          "{{supplies filters}}",
+          "{{supplies batteries}}",
+          "{{state: stock, cap}}",
+          "{{feeds requests}}"
+        ],
+        [
+          "Crew ({{Narrative}})",
+          "{{consumes air}}",
+          "{{requests light}}",
+          "{{requests items}}",
+          "{{state: trust, schedule}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Finding hidden coupling: trace one shift end to end and write every value that crosses a system boundary. If two systems read the same value, name one owner and make the other subscribe. Shared mutable state is the usual source of impossible bugs."
+    },
+    {
+      "t": "p",
+      "x": "Review the matrix at every milestone. A new feature that adds a column is a scope warning; a new row is a new system and needs an owner, a test, and a data schema. If a cell has no owner, it will be implemented twice."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: an engineer can point to any cell and name the system that writes the value and the systems that only read it. The matrix is a contract, not a diagram."
+    },
+    {
+      "t": "h2",
+      "x": "2.9 Content and level design"
+    },
+    {
+      "t": "ins",
+      "x": "Count content before you design it. For each content type, write the player purpose, the count you can finish, and the cost per unit. Then chart the beats on one page; if the chart needs a second page, the scope is too large."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Content type",
+        "Purpose",
+        "Count",
+        "Cost"
+      ],
+      "w": [
+        130,
+        190,
+        70,
+        114
+      ],
+      "rows": [
+        [
+          "{{Campaign room}}",
+          "{{Teach or test one rule}}",
+          "{{6}}",
+          "{{3 days each}}"
+        ],
+        [
+          "{{Shift variant}}",
+          "{{Replay with a new constraint}}",
+          "{{12}}",
+          "{{0.5 day each}}"
+        ],
+        [
+          "{{Radio beat}}",
+          "{{Story and tone}}",
+          "{{10}}",
+          "{{0.5 day each}}"
+        ],
+        [
+          "{{Cosmetic set}}",
+          "{{Expression and reward}}",
+          "{{3}}",
+          "{{2 days each}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Beat chart and pacing"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Beat",
+        "Player learns",
+        "Content",
+        "Duration"
+      ],
+      "w": [
+        110,
+        180,
+        130,
+        84
+      ],
+      "rows": [
+        [
+          "{{Arrival}}",
+          "{{The base is broken but safe}}",
+          "{{Cargo bay, first repair}}",
+          "{{5 min}}"
+        ],
+        [
+          "{{First breath}}",
+          "{{Air is a network}}",
+          "{{3×3 board}}",
+          "{{10 min}}"
+        ],
+        [
+          "{{First shortage}}",
+          "{{Power is a budget}}",
+          "{{Two-room split}}",
+          "{{12 min}}"
+        ],
+        [
+          "{{First setback}}",
+          "{{Failure is recoverable}}",
+          "{{Leak and timer}}",
+          "{{10 min}}"
+        ],
+        [
+          "{{Final shift}}",
+          "{{Combine everything}}",
+          "{{Whole-base reroute}}",
+          "{{15 min}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Pacing curve: alternate {{tension}} and {{release}} every {{8–12 minutes}}. Put the first real failure after the player has succeeded twice. Critical path: {{5 rooms, 60–80 minutes}}; optional: {{3 challenge rooms, cosmetics, radio logs}}. Replayability comes from {{layout variants and score}}, not from procedural noise."
+    },
+    {
+      "t": "h3",
+      "x": "Content budget"
+    },
+    {
+      "t": "p",
+      "x": "If one room takes {{3 days}} and you have {{12 weeks}}, six rooms is the ceiling. Write the ceiling down before the level designer starts. A budget discovered late is a cut list written by exhaustion."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Content",
+        "Planned",
+        "Built",
+        "Owner"
+      ],
+      "w": [
+        150,
+        100,
+        100,
+        154
+      ],
+      "rows": [
+        [
+          "{{Campaign rooms}}",
+          "{{6}}",
+          "{{2}}",
+          "{{Level design}}"
+        ],
+        [
+          "{{Shift variants}}",
+          "{{12}}",
+          "{{4}}",
+          "{{Design}}"
+        ],
+        [
+          "{{Radio beats}}",
+          "{{10}}",
+          "{{3}}",
+          "{{Narrative}}"
+        ],
+        [
+          "{{Cosmetic sets}}",
+          "{{3}}",
+          "{{0}}",
+          "{{Art}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: every room has one sentence describing what the player learns, and no two rooms teach the same sentence. If a room exists only to fill time, cut it."
+    },
+    {
+      "t": "h2",
+      "x": "2.10 Balance and tuning"
+    },
+    {
+      "t": "ins",
+      "x": "Put every number a designer can change in one table, with a range and an owner. If a value lives only in code, it will not be tuned. If it lives only in a spreadsheet, it will drift from the build."
+    },
+    {
+      "t": "callout",
+      "label": "Rule",
+      "x": "If it cannot be tested, it is not a mechanic yet. A tunable without a test case is a guess with a slider."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Parameter",
+        "Range",
+        "Default",
+        "Owner"
+      ],
+      "w": [
+        150,
+        90,
+        90,
+        174
+      ],
+      "rows": [
+        [
+          "{{Shift length}}",
+          "{{4–12 min}}",
+          "{{8 min}}",
+          "{{Design}}"
+        ],
+        [
+          "{{Air drain per crew}}",
+          "{{0.5–2.0 per min}}",
+          "{{1.0}}",
+          "{{Systems}}"
+        ],
+        [
+          "{{Battery output}}",
+          "{{1–3 units}}",
+          "{{1}}",
+          "{{Systems}}"
+        ],
+        [
+          "{{Hint delay}}",
+          "{{60–240 s}}",
+          "{{120 s}}",
+          "{{UX}}"
+        ],
+        [
+          "{{Assist timer bonus}}",
+          "{{0–100%}}",
+          "{{50%}}",
+          "{{Accessibility}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Formulas: keep one sheet with named inputs and expected outputs. Example: {{air_end = air_start + production × shift − crew × drain}}. For each formula, write one worked example and one boundary case at zero, at maximum, and below zero."
+    },
+    {
+      "t": "h3",
+      "x": "Telemetry and playtests"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Event",
+        "Fields",
+        "Question answered"
+      ],
+      "w": [
+        120,
+        180,
+        204
+      ],
+      "rows": [
+        [
+          "{{room_start}}",
+          "{{room_id, shift, assist_on}}",
+          "{{Where do players stop?}}"
+        ],
+        [
+          "{{placement}}",
+          "{{item_id, cell, valid, time_since_start}}",
+          "{{Which placements confuse?}}"
+        ],
+        [
+          "{{room_end}}",
+          "{{result, attempts, time, air_left}}",
+          "{{Is the difficulty curve right?}}"
+        ],
+        [
+          "{{hint_shown}}",
+          "{{room_id, fails_before}}",
+          "{{Are hints too early or too late?}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Cadence: {{weekly}} internal playtest, {{biweekly}} external, one balance pass per milestone. Watch three players before changing a number; one player is an anecdote. Keep a tuning log with date, change, reason, and result."
+    },
+    {
+      "t": "p",
+      "x": "Spreadsheets versus in-engine data: prototype in a spreadsheet, ship with data files loaded at runtime. The spreadsheet is for finding the range; the build is the source of truth."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a designer changes a value, reruns one test scene, and knows within a minute whether the shift got better. If tuning needs a programmer, the parameter is in the wrong place."
+    },
+    {
+      "t": "h2",
+      "x": "2.11 First-time user experience (FTUE)"
+    },
+    {
+      "t": "ins",
+      "x": "Design the first five minutes as a beat sheet, not a tutorial pop-up. The player should perform the core verb before reading a full sentence, and recover from a mistake without opening a menu."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Time",
+        "Beat",
+        "Player does",
+        "We teach",
+        "Fail-safe"
+      ],
+      "w": [
+        60,
+        90,
+        120,
+        120,
+        114
+      ],
+      "rows": [
+        [
+          "{{0:00}}",
+          "{{Wake in the cargo bay}}",
+          "{{Move the cursor}}",
+          "{{Camera and selection}}",
+          "{{No timer yet}}"
+        ],
+        [
+          "{{0:30}}",
+          "{{First broken panel}}",
+          "{{Place one part}}",
+          "{{Grid snapping}}",
+          "{{Ghost preview stays}}"
+        ],
+        [
+          "{{1:30}}",
+          "{{Air gauge moves}}",
+          "{{Connect two pipes}}",
+          "{{Cause and effect}}",
+          "{{Path auto-corrects}}"
+        ],
+        [
+          "{{2:30}}",
+          "{{First shortage}}",
+          "{{Choose one of two crates}}",
+          "{{Trade-off}}",
+          "{{Both choices viable}}"
+        ],
+        [
+          "{{4:00}}",
+          "{{Shift ends}}",
+          "{{Read summary}}",
+          "{{Retry and next}}",
+          "{{No lost progress}}"
+        ],
+        [
+          "{{5:00}}",
+          "{{Crew radio call}}",
+          "{{Listen or skip}}",
+          "{{Tone and goal}}",
+          "{{Subtitles on}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Teach without text"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Put the verb in the first 10 seconds; explain it after it works.",
+        "Use one ghost preview, one sound, and one gauge movement per lesson.",
+        "Speak at most one sentence at a time, under 12 words.",
+        "Let the player skip any line without losing the instruction.",
+        "Repeat the lesson in a new context before adding a second rule."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Completion metrics: {{90%}} place a part, {{75%}} finish the first shift, {{60%}} start the second, {{under 5%}} quit during the first timer. If first-shift completion is below {{70%}}, fix the teaching before touching the difficulty."
+    },
+    {
+      "t": "p",
+      "x": "What good looks like: a player who never reads the tutorial still finishes the first shift, and can explain the air rule back to you in their own words. If they parrot the tooltip, you taught a sentence, not a system."
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Tick these only when the build proves them. A mechanic that exists in a design document but not in a playable scene is not done."
+    },
+    {
+      "t": "check",
+      "x": [
+        "Three nested loops are drawn and traced against a real playtest.",
+        "Every shipped verb has an input, feedback, test, and failure case.",
+        "Controls are mapped on every target platform and fully remappable.",
+        "The unlock graph has no orphan node and no more than two parents.",
+        "Every resource has a source, sink, cap, and owner.",
+        "The systems matrix has one owner per row and no unowned shared data.",
+        "Telemetry events fire in the build and land in one dashboard.",
+        "The first five minutes are playable without placeholder text."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Keep this table short and alive. If a question has no owner, it is not a question; it is a rumour."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "w": [
+        300,
+        110,
+        94
+      ],
+      "rows": [
+        [
+          "{{Does the timer belong in the first session or the second?}}",
+          "{{Design lead}}",
+          "{{FTUE review, week 3}}"
+        ],
+        [
+          "{{Can touch players rotate parts without a second hand?}}",
+          "{{UX lead}}",
+          "{{Tablet test, week 2}}"
+        ],
+        [
+          "{{How many rooms can we finish at current art cost?}}",
+          "{{Producer}}",
+          "{{Milestone 2}}"
+        ],
+        [
+          "{{Which system owns the air value at shift end?}}",
+          "{{Tech lead}}",
+          "{{Before systems lock}}"
+        ]
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

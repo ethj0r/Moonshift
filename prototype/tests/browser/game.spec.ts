@@ -1,199 +1,168 @@
 import { expect, test, type Page } from "@playwright/test";
-import { OrthographicCamera, Vector3 } from "three";
 
-async function start(page: Page) {
-  await page.goto("/?diagnostics");
-  await expect(page.getByRole("button", { name: "Start shift 3" })).toBeEnabled(
-    { timeout: 25000 },
-  );
-  await page.getByRole("button", { name: "Start shift 3" }).click();
-  await page.getByRole("button", { name: "Begin", exact: true }).click();
+// Walk B.E.E.P. to an object through the "Walk to…" list; arriving uses it.
+async function walkTo(page: Page, label: string | RegExp) {
+  await page.getByRole("button", { name: "Walk to…" }).click();
+  await page.getByRole("button", { name: label }).click();
 }
-async function store(page: Page) {
-  await page.getByRole("button", { name: "Select research crate" }).click();
-  await page.getByRole("button", { name: "Rotate", exact: true }).click();
-  await page.locator('[data-cell="0"]').click();
-  await page
-    .getByRole("button", { name: "Select battery", exact: true })
-    .click();
-  await page.locator('[data-cell="6"]').click();
-  await expect(page.getByRole("button", { name: "Run shift 3" })).toBeEnabled();
-  await page.getByRole("button", { name: "Run shift 3" }).click();
-  await page.getByRole("button", { name: "Skip feedback" }).click();
-  await page.getByRole("button", { name: "Continue to shift 4" }).click();
+// Cutscenes (opening, flare, storm, rescue) can be skipped.
+async function skipScene(page: Page) {
+  const skip = page.getByRole("button", { name: /Skip scene/ });
+  if (await skip.isVisible().catch(() => false)) await skip.click().catch(() => {});
+}
+async function brief(page: Page, answer: string, seen: string[] = []) {
+  const next = page.getByRole("button", { name: /^Next/ });
+  await expect(next.or(page.getByRole("button", { name: /Skip scene/ }))).toBeVisible({ timeout: 10000 });
+  await skipScene(page);
+  await next.waitFor({ timeout: 10000 });
+  let text = "";
+  while (await next.isVisible().catch(() => false)) {
+    text += await page.locator("body").innerText();
+    await next.click();
+  }
+  // Lines that must appear somewhere in this brief (e.g. NASA data in Earth's reply).
+  for (const s of seen) expect(text).toContain(s);
+  // Scaffolded guess: facts shown first; choosing explains the option before it is confirmed.
+  await expect(page.getByText("What you know")).toBeVisible();
+  await expect(page.locator(".know-art")).toBeVisible();
+  const confirm = page.getByRole("button", { name: "That's my guess" });
+  await expect(confirm).toBeDisabled();
+  await page.getByRole("button", { name: answer, exact: true }).click();
+  await expect(page.locator(".guess-hint")).toContainText(answer);
+  await confirm.click();
+  await page.getByRole("button", { name: /Let's go|Open the cargo bay/ }).click();
+}
+async function runShift(page: Page, nextLabel: string | RegExp) {
+  await expect(page.getByRole("button", { name: /Run shift|Back to the outpost/ })).toBeEnabled({ timeout: 10000 });
+  await page.getByRole("button", { name: /Run shift|Back to the outpost/ }).click();
+  const skip = page.getByRole("button", { name: "Skip" });
+  if (await skip.isVisible().catch(() => false)) await skip.click().catch(() => {});
+  await page.getByRole("button", { name: nextLabel }).click();
+}
+async function turn(page: Page, times: number) {
+  for (let i = 0; i < times; i++) await page.getByRole("button", { name: "Turn left" }).click();
 }
 
-test("complete a crew-safe plan, send research, and replay", async ({
-  page,
-}) => {
+test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ page }) => {
+  test.setTimeout(900000); // headless software GL is slow; real browsers finish far sooner
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await start(page);
-  await store(page);
-  await page.getByRole("button", { name: /Top route/ }).click();
-  await page.getByRole("button", { name: /Power the fan/ }).click();
-  await page.getByRole("button", { name: /Move crew to shelter/ }).click();
-  await page.getByRole("button", { name: /Use spare battery/ }).click();
-  await page.getByRole("button", { name: "Garden", exact: true }).click();
-  await page.getByRole("button", { name: /Care for garden/ }).click();
-  await page.getByRole("button", { name: "Run shift 4" }).click();
-  await page.getByRole("button", { name: "Skip feedback" }).click();
-  await expect(
-    page.getByRole("heading", { name: "All three, safely inside." }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Continue to shift 5" }).click();
-  await expect(page.getByTestId("food-count")).toHaveText("3");
-  await page.getByRole("button", { name: "Research", exact: true }).click();
-  await page.getByRole("button", { name: /Prepare research/ }).click();
-  await page.getByRole("button", { name: "Radio", exact: true }).click();
-  await page.getByRole("button", { name: /Power the radio/ }).click();
-  await page.getByRole("radio", { name: "Research results" }).check();
-  await page.getByRole("button", { name: "Run shift 5" }).click();
-  await page.getByRole("button", { name: "Skip feedback" }).click();
-  await page.getByRole("button", { name: "See mission summary" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Ready for the final shift." }),
-  ).toBeVisible();
-  await expect(page.getByText("Sent!", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Try another plan" }).click();
-  await expect(page.getByTestId("food-count")).toHaveText("3");
-  await expect(
-    page.getByRole("button", { name: "Run shift 3" }),
-  ).toBeDisabled();
-  expect(errors).toEqual([]);
-});
-
-test("menus preserve focus and reduced motion, with responsive layout", async ({
-  page,
-}) => {
-  await start(page);
-  await page.getByRole("button", { name: "Pause game" }).click();
-  await page.getByRole("button", { name: "Settings", exact: true }).click();
-  await page.getByRole("checkbox", { name: /Reduced motion/ }).check();
-  await page.getByRole("checkbox", { name: /Low graphics/ }).check();
-  await page.getByRole("button", { name: "Done", exact: true }).click();
-  await page.getByRole("button", { name: "Resume", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Pause game" })).toBeFocused();
-  await page.getByRole("button", { name: "Select research crate" }).click();
-  await page.locator('[data-cell="0"]').focus();
-  await page.keyboard.press("r");
-  await page.keyboard.press("Enter");
-  await expect(page.locator('[data-cell="3"]')).toHaveAttribute(
-    "aria-label",
-    /Research crate/,
+  // Headless GL is slow; keep frames cheap so walking stays quick.
+  await page.addInitScript(() =>
+    localStorage.setItem("moonshift-preferences", JSON.stringify({ lowGraphics: true, reducedMotion: true, voice: false })),
   );
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth,
-    ),
-  ).toBe(true);
-});
+  await page.goto("/?diagnostics");
+  await expect(page.getByRole("button", { name: /Mission 1/ })).toBeEnabled({ timeout: 25000 });
+  // Judges and kids see that the story is made up but the data is real.
+  await expect(page.getByLabel("Made-up story, real science")).toContainText("September 2017");
+  await expect(page.getByRole("button", { name: /Specialist/ })).toHaveCount(0);
+  await page.getByRole("button", { name: /Mission 1/ }).click();
 
-test("unsafe protection needs confirmation and records the crew outcome", async ({
-  page,
-}) => {
-  await start(page);
-  await store(page);
-  await page.getByRole("button", { name: /Top route/ }).click();
-  await page.getByRole("button", { name: /Power the fan/ }).click();
-  await page.getByRole("button", { name: "Run shift 4" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Continue without shelter?" }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Return to plan", exact: true })
-    .click();
-  await expect(page.getByTestId("food-count")).toHaveText("2");
-  await page.getByRole("button", { name: "Run shift 4" }).click();
-  await page
-    .getByRole("button", { name: "Continue without shelter", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Skip feedback" }).click();
-  await expect(
-    page.getByText("The crew did not shelter during the storm.", {
-      exact: true,
-    }),
-  ).toBeVisible();
-});
+  // Prologue: a new player first learns where they are and who they are, before any choice.
+  await expect(page.getByText(/The Moon's south pole/)).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText(/This little robot is you/)).toBeVisible({ timeout: 10000 });
+  await expect(page.locator(".world-label", { hasText: "You: B.E.E.P." })).toBeVisible();
 
-test("the 3D board dispatches the same placements as the accessible grid", async ({
-  page,
-}) => {
-  await start(page);
-  async function clickCell(cell: number) {
-    const canvas = page.locator("canvas");
-    await canvas.scrollIntoViewIfNeeded();
-    const box = (await canvas.boundingBox())!;
-    const narrow = box.width < 761;
-    const height = Math.max(
-      narrow ? 8.5 : 11,
-      (narrow ? 10.7 : 19) / (box.width / box.height),
-    );
-    const camera = new OrthographicCamera(
-      (-height * box.width) / box.height / 2,
-      (height * box.width) / box.height / 2,
-      height / 2,
-      -height / 2,
-      0.1,
-      100,
-    );
-    const target = new Vector3(narrow ? 0.8 : -0.4, 0.3, narrow ? 2.2 : 1.1);
-    camera.position.copy(target).add(new Vector3(15, 18, 15));
-    camera.lookAt(target);
-    camera.updateMatrixWorld();
-    const point = new Vector3(
-      1.15 + ((cell % 3) - 1) * 1.05,
-      0.415,
-      3.1 + (Math.floor(cell / 3) - 1) * 1.05,
-    ).project(camera);
-    await page.mouse.click(
-      box.x + ((point.x + 1) * box.width) / 2,
-      box.y + ((-point.y + 1) * box.height) / 2,
-    );
+  // Opening: pack Kit + Research + Battery (GDD v2 §10).
+  await brief(page, "Food pack");
+  for (const item of [/Pack Garden kit/, /Pack Research crate/, /Pack Spare battery/]) {
+    await walkTo(page, item);
+    await expect(page.getByRole("button", { name: item })).toHaveCount(0, { timeout: 10000 });
   }
-  await page.getByRole("button", { name: "Select research crate" }).click();
-  await page.getByRole("button", { name: "Rotate", exact: true }).click();
-  await clickCell(0);
-  await expect(page.locator('[data-cell="0"]')).toHaveAttribute(
-    "aria-label",
-    /Research crate/,
-  );
-  await expect(page.locator('[data-cell="3"]')).toHaveAttribute(
-    "aria-label",
-    /Research crate/,
-  );
-  await page
-    .getByRole("button", { name: "Select battery", exact: true })
-    .click();
-  await clickCell(6);
-  await expect(page.getByRole("button", { name: "Run shift 3" })).toBeEnabled();
-});
+  await expect(page.getByLabel("Backpack")).toContainText("4/4");
+  await runShift(page, "Start shift 1");
 
-test("recovers from an asset failure and remains usable without downloaded fonts", async ({
-  page,
-}) => {
-  let failed = false;
-  await page.route("**/*.woff2", (route) => route.abort());
-  await page.route("**/models/research.glb", (route) => {
-    if (!failed) {
-      failed = true;
-      return route.abort();
-    }
-    return route.continue();
-  });
-  await page.goto("/");
-  await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible();
-  await page.getByRole("button", { name: "Retry 3D" }).click();
-  await expect(page.getByRole("button", { name: "Start shift 3" })).toBeEnabled(
-    { timeout: 25000 },
-  );
-  await page.getByRole("button", { name: "Start shift 3" }).click();
-  await page.getByRole("button", { name: "Begin", exact: true }).click();
-  await store(page);
-  await expect(page.getByTestId("food-count")).toHaveText("2");
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
+  // S1: turn the pipe joint by hand.
+  await brief(page, "Into the habitat");
+  // First shift: a short spotlight tour of the HUD (rescue track, power, food, shield).
+  await expect(page.getByText(/it comes after shift 5/)).toBeVisible({ timeout: 10000 });
+  for (let i = 0; i < 3; i++) await page.getByRole("button", { name: /^Next/ }).click();
+  await page.getByRole("button", { name: "Got it" }).click();
+  await expect(page.getByRole("dialog", { name: "What the panels show" })).toHaveCount(0);
+  await walkTo(page, "Turn the pipe");
+  await expect(page.getByRole("button", { name: "Do it for me" })).toHaveCount(0);
+  await turn(page, 9);
+  await expect(page.getByRole("button", { name: /Run shift/ })).toBeEnabled({ timeout: 5000 });
+  await runShift(page, "Start shift 2");
+  // Result cards: no repeated "ate one meal" line, and a crew member reacts.
+  await expect(page.getByText("The crew ate one meal.")).toHaveCount(0);
+
+  // S2: keep the workshop, point the antenna and ask Earth.
+  await brief(page, "Garden lamp");
+  // One workshop point, two decisions.
+  await walkTo(page, /Workshop: keep it or take it apart/);
+  await page.getByRole("button", { name: /Keep it/ }).click();
+  await expect(page.getByText(/Choose: keep the workshop/)).toHaveCount(0, { timeout: 15000 });
+  await walkTo(page, /Radio Earth/);
+  await turn(page, 9);
+  await page.getByRole("button", { name: /Send · 1 power/ }).click();
+  await expect(page.getByText("1 message: reply next shift")).toBeVisible();
+  await runShift(page, "Start shift 3");
+
+  // S3: Earth's reply makes the water tank movable; build the wall.
+  // Earth's reply quotes the real NASA DONKI measurement and forecast of the 10 Sep 2017 cloud.
+  await brief(page, "A1", ["2,650 km every second", "predicts"]);
+  await expect(page.getByText("Reply from Earth arrived")).toBeVisible();
+  // DONKI timing: the flare at 15:35 UTC, particles at 16:45 UTC.
+  await expect(page.getByText("A giant flare. Particles came 70 minutes later.")).toBeVisible();
+  // In-world markers on the things driven by real data.
+  await expect(page.locator(".world-label", { hasText: "NASA forecast" })).toHaveCount(1); // on the radio, may be off-camera
+  await expect(page.locator(".world-label", { hasText: "Real NASA data" })).toBeVisible();
+  const map = page.getByLabel("Shelter map");
+  await map.getByRole("button", { name: "Supply crate", exact: true }).first().click();
+  await map.getByRole("button", { name: /^A1:/ }).click();
+  await map.getByRole("button", { name: "Supply crate", exact: true }).first().click();
+  await map.getByRole("button", { name: /^A3:/ }).click();
+  await map.getByRole("button", { name: "Water tank", exact: true }).click();
+  await map.getByRole("button", { name: /Turn tank/ }).click();
+  await map.getByRole("button", { name: /^B1:/ }).click();
+  await expect(page.getByLabel(/Shield: 4 of 8/)).toBeVisible();
+  await walkTo(page, /Care for the garden/);
+  await runShift(page, "Start shift 4");
+
+  // S4: move the crew, battery, sample lamp, harvest by hand.
+  await brief(page, "Habitat");
+  await page.getByRole("button", { name: "Move crew" }).click();
+  await page.getByRole("button", { name: "+1 battery" }).click();
+  await walkTo(page, /Sample lamp on/);
+  await walkTo(page, /Harvest the garden/);
+  for (let i = 1; i <= 3; i++) await page.getByRole("button", { name: `Pick pot ${i}` }).click();
+  await runShift(page, "Start shift 5");
+
+  // S5: send the research.
+  await brief(page, "Yes");
+  await walkTo(page, /Send research to Earth/);
+  await turn(page, 9);
+  await page.getByRole("button", { name: /Send · 1 power/ }).click();
+  await runShift(page, "Wait for the rescue lander");
+  await expect(page.getByRole("button", { name: /Skip scene/ })).toBeVisible();
+  await skipScene(page);
+
+  await expect(page.getByRole("heading", { name: "Safe and Sound!" })).toBeVisible();
+  await expect(page.getByText("Earth: data received!")).toBeVisible();
+  await page.getByRole("button", { name: "Debrief" }).click();
+  // Mission report 1/3: the crew check, with this run's ending lit next to the other one.
+  await expect(page.getByRole("button", { name: /Crew check/ })).toHaveAttribute("aria-current", "step");
+  await expect(page.getByRole("heading", { name: "Safe and Sound" })).toBeVisible();
+  await expect(page.getByText("Everyone was shielded from the storm and ate every meal.")).toBeVisible();
+  await expect(page.getByText("Your ending")).toBeVisible();
+  // 2/3: the chain of choices; nothing went wrong, so no step is blamed.
+  await page.getByRole("button", { name: /Why did this happen/ }).click();
+  await expect(page.getByText(/heavy water tank could join the wall/)).toBeVisible();
+  await expect(page.getByText("Changed the ending")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Every choice paid off" })).toBeVisible();
+  // 3/3: dose bars scaled to Artemis I, the real DONKI event chain, badges.
+  await page.getByRole("button", { name: /What did we learn/ }).click();
+  await expect(page.getByLabel("What really happened")).toContainText("16:45");
+  await expect(page.getByText(/Artemis I/)).toBeVisible();
+  await expect(page.getByText("Moon Scientist")).toBeVisible();
+  // The decision tree shows this run's path and the branches still hidden.
+  await page.getByRole("button", { name: /Decision tree/ }).click();
+  await expect(page.getByRole("heading", { name: "Every path to the end" })).toBeVisible();
+  await expect(page.getByText("★ Your choice this run")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Not found yet" }).first()).toBeVisible();
+  await page.getByRole("button", { name: "Close decision tree" }).click();
+  await page.getByRole("button", { name: /Replay from shift 1/ }).click();
+  await expect(page.getByText("SHIFT 1 OF 5")).toBeVisible();
+  expect(errors).toEqual([]);
 });

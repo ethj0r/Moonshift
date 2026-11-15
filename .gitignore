@@ -1,1 +1,12 @@
 *.blend1
+.gdocs/token.json
+.gdocs/credentials.json
+.gdocs/*.pdf
+.gdocs/*.docx
+.gdocs/scratch*
+.gdocs/test_*
+.gdocs/fonttest*
+.gdocs/*_p*.png
+.gdocs/flow_test.png
+.gdocs/murl.txt
+__pycache__/

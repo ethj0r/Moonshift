@@ -1,69 +1,164 @@
+import { Component, lazy, Suspense, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type PointerEvent, type ReactNode } from "react";
 import {
-  Component,
-  lazy,
-  Suspense,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
-import {
+  BADGES,
+  batteryAvailable,
+  CARGO,
+  CARGO_IDS,
   cellName,
+  DEBRIEF,
+  doseBars,
+  earnedBadges,
+  ending,
   evaluate,
+  foodPackAvailable,
+  freePower,
   initialSession,
-  ITEMS,
-  itemName,
-  occupied,
-  placeItem,
-  placementError,
-  readiness,
-  ROUTES,
-  routeStatus,
+  MAX_SLOTS,
+  MISSION_1,
+  PICKUP,
+  placeOnWall,
+  randomMission,
+  removeFromWall,
   sessionReducer,
-  toggleBattery,
+  SHELTER_CELL,
+  shieldOf,
+  shieldTier,
+  slotsUsed,
+  VENTS,
+  wallables,
+  wallName,
+  wallPlacementError,
+  type Badge,
+  type CargoId,
   type Device,
-  type Draft,
-  type Item,
-  type Route,
+  type Plan,
+  type WallId,
 } from "./game/rules";
+import { AHA, briefLine, CELL_HINT, clue, crewReaction, DATA_BOOK, dataPanel, extraLines, GLOSSARY, GUESS, hint, SPEAKER, STAGE_TITLE, WHY, type Line } from "./game/content";
+import { interactables, nextGoal, type Gesture, type Vec2 } from "./game/world";
 import { Dialog } from "./ui/Dialog";
+import { angleGap, Dial, Hold, Pots } from "./ui/Gestures";
 import { Icon, type IconName } from "./ui/Icons";
+import { plain, Rich } from "./ui/Rich";
+import { KnowArt } from "./ui/KnowArt";
+import { StormChainArt, WhyArt } from "./ui/WhyArt";
+import { DecisionTree, MissionReport } from "./ui/Report";
+import { runPath } from "./game/tree";
+import { CineArtPanel, RescueTrack } from "./ui/CineArt";
+import { initAudio, setAudio, setMusic, sfx, type Mood } from "./audio";
+import { cutscene, type Cine, type CutsceneId } from "./game/cutscenes";
+import type { Speaker } from "./game/content";
+import VOICE from "./voice.json";
 
 const Scene = lazy(() => import("./scene/Scene"));
-type Panel = "cargo" | "air" | "garden" | "workshop" | "radio";
-type Modal = "pause" | "help" | "settings" | "risk" | "restart" | "exit" | null;
-type Settings = { reducedMotion: boolean; lowGraphics: boolean };
-const OBJECTIVES = {
-  3: "A place for everything.",
-  4: "Bring everyone inside.",
-  5: "Leave the crew ready.",
+type Mode = "cadet" | "specialist";
+type Modal = "pause" | "help" | "settings" | "risk" | "restart" | "exit" | "databook" | null;
+interface Settings {
+  reducedMotion: boolean;
+  lowGraphics: boolean;
+  voice: boolean;
+  sound: boolean;
+  music: boolean;
+  timer: boolean;
+  mode: Mode;
+}
+interface Progress {
+  badges: Badge[];
+  newMission: boolean;
+  /** Decision-tree nodes found in any run, and how many runs lit each one. */
+  tree?: string[];
+  counts?: Record<string, number>;
+  runs?: number;
+}
+const TERMS: Partial<Record<number, string[]>> = { 2: ["Contact window"], 3: ["Solar flare", "Particles", "Shield"], 4: ["Dose", "Particles"], 5: ["DONKI"] };
+const STORM_DATE: Record<string, string[]> = {
+  sep2017: ["", "8 Sep 2017", "6 Sep 2017", "10 Sep 2017", "10–11 Sep 2017", "14 Sep 2017"],
+  oct2003: ["", "Oct 2003", "Oct 2003", "28 Oct 2003", "28–29 Oct 2003", "Nov 2003"],
 };
-const GOALS = {
-  3: "Store both items. Keep an air route clear.",
-  4: "Choose a route, power the fan, and move the crew.",
-  5: "Save a ration for the final shift. Research is a bonus.",
-};
-const PANEL_ICONS: Record<Panel, IconName> = {
-  cargo: "cargo",
-  air: "air",
-  garden: "garden",
-  workshop: "research",
-  radio: "radio",
-};
-const PANEL_NAMES: Record<Panel, string> = {
-  cargo: "Storage",
-  air: "Shelter",
-  garden: "Garden",
-  workshop: "Research",
-  radio: "Radio",
-};
+const PIPE_START = 135;
+const ANTENNA_TARGET = 60;
 
-class SceneBoundary extends Component<
-  { children: ReactNode; onError: () => void },
-  { failed: boolean }
-> {
+function load<T>(key: string, fallback: T): T {
+  try {
+    return { ...fallback, ...JSON.parse(localStorage.getItem(key) ?? "{}") };
+  } catch {
+    return fallback;
+  }
+}
+function save(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* Preferences stay in memory. */
+  }
+}
+// ElevenLabs clips, one voice per speaker; keyed by the line as read aloud. Lines with live numbers fall back to the browser voice.
+const VOICE_CLIPS: Record<string, string> = VOICE;
+const voiceKey = (text: string) => plain(text).replace(/\*kshh\*/g, "").replace(/\s+/g, " ").trim();
+let clip: HTMLAudioElement | null = null;
+const clips = new Map<string, HTMLAudioElement>();
+function clipFor(file: string) {
+  let audio = clips.get(file);
+  if (!audio) {
+    audio = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
+    audio.preload = "auto";
+    clips.set(file, audio);
+  }
+  return audio;
+}
+/** Start downloading the clips for lines that are about to be read, so they play without a gap. */
+function preloadVoice(texts: string[]) {
+  for (const t of texts) {
+    const file = VOICE_CLIPS[voiceKey(t)];
+    if (file) clipFor(file);
+  }
+}
+/** Read a line aloud. Resolves when it has finished, been cut off, or could not play, so a cutscene can wait for it. */
+function speak(text: string): Promise<void> {
+  return new Promise((done) => {
+    try {
+      clip?.pause();
+      if ("speechSynthesis" in window) speechSynthesis.cancel();
+      const file = VOICE_CLIPS[voiceKey(text)];
+      if (file) {
+        const audio = clipFor(file);
+        clip = audio;
+        audio.currentTime = 0;
+        for (const ev of ["ended", "pause", "error"]) audio.addEventListener(ev, () => done(), { once: true });
+        return void audio.play().catch(() => done());
+      }
+      if (!("speechSynthesis" in window)) return done();
+      const utterance = new SpeechSynthesisUtterance(plain(text));
+      utterance.rate = 0.9;
+      utterance.lang = "en-US";
+      utterance.onend = utterance.onerror = () => done();
+      speechSynthesis.speak(utterance);
+    } catch {
+      /* Voice is optional; text is always shown. */
+      done();
+    }
+  });
+}
+function stopVoice() {
+  clip?.pause();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+const PORTRAIT: Record<Speaker, IconName> = { commander: "crew", technician: "air", researcher: "research", earth: "radio", beep: "star" };
+function Portrait({ speaker }: { speaker: Speaker }) {
+  return (
+    <span className={`portrait p-${speaker}`} aria-hidden="true">
+      <Icon name={PORTRAIT[speaker]} size={18} />
+    </span>
+  );
+}
+function effectIcon(text: string): IconName {
+  const t = text.toLowerCase();
+  return /meal|food|harvest|garden/.test(t) ? "food" : /power|battery/.test(t) ? "power" : /wall|shield|shelter|tank/.test(t) ? "shield"
+    : /earth|message|radio/.test(t) ? "mail" : /research|sample|plant/.test(t) ? "research" : /air|pipe|joint|vent/.test(t) ? "air" : /crew/.test(t) ? "crew" : "check";
+}
+
+class SceneBoundary extends Component<{ children: ReactNode; onError: () => void }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
@@ -76,280 +171,562 @@ class SceneBoundary extends Component<
   }
 }
 
-function initialSettings(): Settings {
-  const fallback = {
-    reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
-    lowGraphics: false,
-  };
-  try {
-    return {
-      ...fallback,
-      ...JSON.parse(localStorage.getItem("moonshift-preferences") ?? "{}"),
-    };
-  } catch {
-    return fallback;
-  }
-}
-
 export default function App() {
-  const [session, dispatch] = useReducer(
-    sessionReducer,
-    undefined,
-    initialSession,
-  );
-  const [screen, setScreen] = useState<"title" | "briefing" | "game">("title");
+  const [session, dispatch] = useReducer(sessionReducer, MISSION_1, initialSession);
+  const [screen, setScreen] = useState<"title" | "game">("title");
   const [modal, setModal] = useState<Modal>(null);
   const [returnToPause, setReturnToPause] = useState(false);
-  const [settings, setSettings] = useState(initialSettings);
-  const [panel, setPanel] = useState<Panel>("cargo");
-  const [selected, setSelected] = useState<Item | null>(null);
-  const [vertical, setVertical] = useState(false);
-  const [focusedCell, setFocusedCell] = useState<number | null>(null);
-  const [notice, setNotice] = useState("");
+  // One mode for everyone: Cadet (pictures, short words, lines read aloud). An old saved "specialist" is ignored.
+  const [settings, setSettings] = useState<Settings>(() => ({
+    ...load("moonshift-preferences", {
+      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+      lowGraphics: false,
+      voice: true,
+      sound: true,
+      music: true,
+      timer: false,
+      mode: "cadet" as Mode,
+    }),
+    mode: "cadet" as Mode,
+  }));
+  const [progress, setProgress] = useState<Progress>(() => load("moonshift-progress", { badges: [], newMission: false }));
   const [ready, setReady] = useState(false);
   const [loadProgress, setLoadProgress] = useState(0);
   const [sceneError, setSceneError] = useState(false);
   const [sceneGeneration, setSceneGeneration] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const [overview, setOverview] = useState(false);
-  const [visible, setVisible] = useState(!document.hidden);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [walk, setWalk] = useState<{ at: Vec2; id: string | null; nonce: number } | null>(null);
+  const [carrying, setCarrying] = useState<WallId | null>(null);
+  const [tankVertical, setTankVertical] = useState(false);
+  const [gesture, setGesture] = useState<Gesture | null>(null);
+  const [pipeAngle, setPipeAngle] = useState(PIPE_START);
+  const [antenna, setAntenna] = useState(200);
+  const [goggles, setGoggles] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [bubble, setBubble] = useState<Line | null>(null);
+  const [guessed, setGuessed] = useState<string | null>(null);
+  // Guess = choose, read what it means, then confirm. peek: the option under the mouse or keyboard focus.
+  const [choice, setChoice] = useState<string | null>(null);
+  const [peek, setPeek] = useState<string | null>(null);
+  const [briefStep, setBriefStep] = useState(0);
+  const [intro, setIntro] = useState(false);
+  const [hintLevel, setHintLevel] = useState(0);
+  const [showWhy, setShowWhy] = useState(false);
+  const [term, setTerm] = useState<string | null>(null);
+  const [debriefPage, setDebriefPage] = useState(0);
+  const [treeOpen, setTreeOpen] = useState(false);
+  /** Badges owned before this debrief, so new ones can say "new!". */
+  const knownBadges = useRef<Badge[]>([]);
+  const [cargoStart, setCargoStart] = useState(0);
+  const [fastCargo, setFastCargo] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const [placesOpen, setPlacesOpen] = useState(false);
+  const [missionInfo, setMissionInfo] = useState<string | null>(null);
+  const [cine, setCine] = useState<Cine | null>(null);
+  // First-play tour of the HUD: spotlight each meter once, with one short line.
+  const [tour, setTour] = useState<number | null>(null);
+  const tourDone = useRef(false);
+  const seenOpening = useRef(false);
+  const [lastChoice, setLastChoice] = useState<string | null>(null);
+  const [yaw, setYaw] = useState(0);
+  const [trayNudge, setTrayNudge] = useState(0);
+  const drag = useRef<number | null>(null);
+  const turnView = (dir: 1 | -1) => setYaw((y) => y + (dir * Math.PI) / 4);
+  const lastActivity = useRef(Date.now());
+  /** The stage's first brief line has been read aloud. */
+  const briefRead = useRef(false);
+  /** A hint is being read; it goes quiet once the shift is run. */
+  const hintVoice = useRef(false);
   const dialogInvoker = useRef<HTMLElement | null>(null);
-  const { state, draft, phase } = session;
-  const preview = useMemo(() => evaluate(state, draft), [state, draft]);
-  const cells = useMemo(() => occupied(state, draft), [state, draft]);
-  const canEdit =
-    screen === "game" && phase === "planning" && !modal && ready && !sceneError;
+  const { state, plan, phase } = session;
+  const stage = state.stage;
+  // Compare mission content rather than object identity so equivalent mission copies do not
+  // look like a newly selected mission to the stage-entry effect.
+  const missionKey = JSON.stringify(state.mission);
+  const cadet = settings.mode === "cadet";
+  const preview = useMemo(() => evaluate(state, plan), [state, plan]);
+  const things = useMemo(() => interactables(state, plan, carrying), [state, plan, carrying]);
+  const focused = things.find((item) => item.id === focusId) ?? null;
+  const playing = screen === "game" && phase === "play" && stage <= 5 && !modal && ready && !sceneError && !cine;
+  const controlsLocked = !playing || !!gesture;
+  // Visual guidance (route + pointer): always for Cadet, after the first hint for Specialist.
+  const goal = playing && !gesture && (cadet || hintLevel >= 1) ? nextGoal(state, plan, carrying, things, !!preview.errors.length || !!carrying, tankVertical) : null;
+  // Decision clue: for the object B.E.E.P. stands at, or the last choice made (it stays to explain it).
+  const clueCard = playing && !gesture && !placesOpen ? clue(state, plan, focusId ?? lastChoice ?? "") : null;
+  const pointAt = (ui: "run" | "moveCrew" | "act") =>
+    !goal ? "" : (ui === "act" ? !goal.choice && !!focusId && goal.targets.includes(focusId) : goal.ui === ui) ? "guide-me" : "";
 
+  useEffect(() => save("moonshift-preferences", settings), [settings]);
+  useEffect(() => save("moonshift-progress", progress), [progress]);
+
+  // Say a line: show the bubble and, in Cadet mode, read it aloud.
+  function say(line: Line, voice = cadet && settings.voice) {
+    setBubble(line);
+    hintVoice.current = false;
+    if (line.speaker === "beep") sfx("beep");
+    else if (line.speaker === "earth" || line.text.startsWith("*kshh*")) sfx("crackle");
+    if (voice) speak(line.text.replace(/\*kshh\*/g, ""));
+  }
+  function update(next: Plan) {
+    if (!playing) return;
+    dispatch({ type: "plan", plan: next });
+    lastActivity.current = Date.now();
+    setHintLevel(0);
+  }
+
+  // New stage → camera intro, brief bubble, reset per-stage UI.
   useEffect(() => {
-    try {
-      localStorage.setItem("moonshift-preferences", JSON.stringify(settings));
-    } catch {
-      /* Preferences remain usable in memory. */
-    }
-  }, [settings]);
+    if (screen !== "game") return;
+    setCarrying(null);
+    setGesture(null);
+    setGoggles(false);
+    setGuessed(null);
+    setChoice(null);
+    setBriefStep(0);
+    setHintLevel(0);
+    setShowWhy(false);
+    setPipeAngle(PIPE_START);
+    setAntenna(200);
+    setDebriefPage(0);
+    setLastChoice(null);
+    setIntro(true);
+    lastActivity.current = Date.now();
+    // The first brief line is read when the brief panel appears (after any cutscene), not now.
+    if (stage <= 5) setBubble(briefLine(state));
+    briefRead.current = false;
+    if (stage <= 5) preloadVoice([briefLine(state), ...extraLines(state), hint(state, 1), hint(state, 2)].map((l) => l.text));
+    if (stage === 0) setCargoStart(0);
+    const scene: CutsceneId | null =
+      stage === 0 && !seenOpening.current ? "opening" : stage === 3 ? "flare" : stage === 4 ? "storm" : stage === PICKUP ? "rescue" : null;
+    if (scene === "opening") seenOpening.current = true;
+    setCine(scene ? { id: scene, shots: cutscene(scene, state), shot: 0, start: performance.now() } : null);
+    const t = setTimeout(() => setIntro(false), settings.reducedMotion ? 0 : 1600);
+    return () => clearTimeout(t);
+  }, [stage, screen, missionKey]);
+
+  useEffect(initAudio, []);
+  useEffect(() => setAudio({ sfx: settings.sound, music: settings.music }), [settings.sound, settings.music]);
+  const mood: Mood = screen === "title" ? "calm" : stage >= PICKUP ? "warm" : stage === 3 || stage === 4 ? "tense" : "calm";
+  useEffect(() => setMusic(mood), [mood]);
+  // One sound per change the player caused, read from state so every input path (tap, E, Walk to…, Do it for me) is covered.
+  const before = useRef({ plan, carrying, phase, stage });
   useEffect(() => {
-    if (screen !== "game" || phase !== "planning") return;
-    const frame = requestAnimationFrame(() =>
-      document.querySelector<HTMLElement>(".objective h1")?.focus(),
-    );
-    return () => cancelAnimationFrame(frame);
-  }, [screen, state.shift, phase]);
+    const was = before.current;
+    before.current = { plan, carrying, phase, stage };
+    if (phase !== was.phase) return void (phase === "running" ? sfx("whoosh") : phase === "result" && sfx("chime"));
+    if (stage !== was.stage) return;
+    if (carrying !== was.carrying) return sfx(carrying ? "pickup" : "place");
+    if (plan.power.includes("radio") && !was.plan.power.includes("radio")) return sfx("radio");
+    if ((plan.pipeFixed && !was.plan.pipeFixed) || (plan.openFood && !was.plan.openFood) || plan.power.length > was.plan.power.length) return sfx("success");
+    if (plan.cargo.length !== was.plan.cargo.length) sfx(plan.cargo.length > was.plan.cargo.length ? "pack" : "unpack");
+  }, [plan, carrying, phase, stage]);
+
+  // Cutscene: each shot lasts its own time, and when Cadet hears the caption it also waits for the voice to finish.
   useEffect(() => {
-    const visibility = () => setVisible(!document.hidden);
-    document.addEventListener("visibilitychange", visibility);
-    return () => document.removeEventListener("visibilitychange", visibility);
-  }, []);
-  useEffect(() => {
-    if (phase !== "resolving" || modal || !visible) return;
-    const timer = setTimeout(
-      () => dispatch({ type: "result" }),
-      settings.reducedMotion ? 50 : 1400,
-    );
-    return () => clearTimeout(timer);
-  }, [phase, modal, settings.reducedMotion, visible]);
-  useEffect(() => {
-    const key = (event: KeyboardEvent) => {
-      if (
-        event.key === "Escape" &&
-        !modal &&
-        screen === "game" &&
-        !document.querySelector("dialog[open]")
-      ) {
-        if (selected) {
-          setSelected(null);
-          setNotice("Selection canceled. Your plan is unchanged.");
-        } else setModal("pause");
-      }
+    if (!cine || !ready || modal) return;
+    const shot = cine.shots[cine.shot];
+    if (cine.shot === 0) preloadVoice(cine.shots.map((s) => s.caption));
+    const voiced = cadet && settings.voice;
+    let live = true;
+    let timeUp = false;
+    let heard = !voiced;
+    const next = () => live && setCine((c) => (c && c.shot + 1 < c.shots.length ? { ...c, shot: c.shot + 1, start: performance.now() } : null));
+    const advance = () => timeUp && heard && next();
+    const timers: number[] = [];
+    if (voiced)
+      speak(shot.caption).then(() => {
+        // A short breath after the line, then move on.
+        timers.push(window.setTimeout(() => ((heard = true), advance()), 450));
+      });
+    if (shot.shake) sfx("thud");
+    if (shot.key === "beep" && cine.id === "opening") sfx("beep");
+    if (shot.key === "jump") sfx("whoosh");
+    if (shot.key === "meal") sfx("unpack");
+    if (shot.key === "pad") sfx("chime");
+    if (shot.flash) sfx("flare");
+    if (cine.id === "rescue" && cine.shot === 0) sfx(ending(state) === "safe" ? "fanfare" : "chime");
+    timers.push(window.setTimeout(() => ((timeUp = true), advance()), shot.ms));
+    // Safety net: a stalled clip never freezes the story.
+    if (voiced) timers.push(window.setTimeout(next, shot.ms + 12000));
+    return () => {
+      live = false;
+      timers.forEach(clearTimeout);
     };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
-  }, [modal, screen, selected]);
+  }, [cine?.id, cine?.shot, ready, modal]);
+  useEffect(() => {
+    if (tourDone.current || stage !== 1 || phase !== "play" || cine || modal || !ready || intro) return;
+    tourDone.current = true;
+    setTour(0);
+  }, [stage, phase, cine, modal, ready, intro]);
+  function skipCine() {
+    setCine(null);
+    try {
+      stopVoice();
+    } catch {
+      /* no voice */
+    }
+  }
 
-  function update(next: Draft) {
-    if (canEdit) {
-      dispatch({ type: "draft", draft: next });
-      setNotice("");
+  // Resolve animation, then the result card.
+  useEffect(() => {
+    if (phase !== "running" || modal) return;
+    const t = setTimeout(() => dispatch({ type: "result" }), settings.reducedMotion ? 50 : stage === 4 ? 2600 : 1400);
+    return () => clearTimeout(t);
+  }, [phase, modal, settings.reducedMotion, stage]);
+
+  // Hint ladder (Interaksi §7): 0 world signs always; 1 crew speaks; 2 scan highlights.
+  useEffect(() => {
+    if (!playing) return;
+    const id = setInterval(() => {
+      setNow(Date.now());
+      const idle = (Date.now() - lastActivity.current) / 1000;
+      const [l1, l2] = cadet ? [15, 30] : [25, 45];
+      if (hintLevel < 1 && idle > l1) raiseHint(1);
+      else if (hintLevel < 2 && idle > l2) raiseHint(2);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [playing, hintLevel, cadet, stage]);
+  function raiseHint(level: 1 | 2) {
+    setHintLevel(level);
+    say(hint(state, level));
+    hintVoice.current = true;
+    if (level === 2) {
+      setScanning(true);
+      setTimeout(() => setScanning(false), 4000);
     }
   }
-  function selectItem(item: Item) {
-    if (
-      !canEdit ||
-      state.shift === 5 ||
-      (item === "battery" && (state.batteryUsed || draft.battery))
-    )
-      return;
-    setSelected(item);
-    setVertical(draft.placements[item]?.vertical ?? false);
-    setPanel("cargo");
-    setNotice(
-      `Choose a cell for the ${item === "battery" ? "battery" : "research crate"}.`,
-    );
-  }
-  function place(cell: number) {
-    if (!canEdit || state.shift === 5) return;
-    setFocusedCell(cell);
-    if (!selected) {
-      const owner = cells.get(cell);
-      if (owner) selectItem(owner);
-      else setNotice("Choose an item first, then its cell.");
-      return;
-    }
-    const placement = { anchor: cell, vertical };
-    const problem = placementError(state, draft, selected, placement);
-    if (problem) {
-      setNotice(problem);
-      return;
-    }
-    update(placeItem(state, draft, selected, placement));
-    setNotice(
-      `${itemName(selected)} placed at ${cellName(cell)}. You can still change your plan.`,
-    );
-  }
-  function rotate() {
-    if (!canEdit || selected !== "research") return;
-    const placement = draft.placements.research;
-    if (placement) {
-      const next = { ...placement, vertical: !vertical };
-      const problem = placementError(state, draft, "research", next);
-      if (problem) {
-        setNotice(problem);
+  useEffect(() => {
+    const active = () => (lastActivity.current = Date.now());
+    window.addEventListener("pointerdown", active);
+    window.addEventListener("keydown", active);
+    return () => {
+      window.removeEventListener("pointerdown", active);
+      window.removeEventListener("keydown", active);
+    };
+  }, []);
+
+  // Cargo timer (optional, Settings): Lightning badge.
+  useEffect(() => {
+    if (stage === 0 && phase === "play" && settings.timer && !cargoStart) setCargoStart(Date.now());
+  }, [stage, phase, settings.timer, cargoStart]);
+  const cargoLeft = settings.timer && cargoStart ? Math.max(0, 60 - Math.floor((now - cargoStart) / 1000)) : null;
+
+  // Keyboard: E acts, Space scans (hold), G goggles, R turns the tank, Escape pauses.
+  useEffect(() => {
+    const down = (event: KeyboardEvent) => {
+      const el = event.target as HTMLElement;
+      if (el.closest("input, textarea, select, [data-own-keys]") || document.querySelector("dialog[open]")) return;
+      const key = event.key.toLowerCase();
+      const onButton = !!el.closest("button");
+      if (cine) {
+        if (key === "escape") skipCine();
         return;
       }
-      update(placeItem(state, draft, "research", next));
-    }
-    setVertical(!vertical);
-  }
-  function toggleDevice(device: Device) {
-    update({
-      ...draft,
-      devices: draft.devices.includes(device)
-        ? draft.devices.filter((value) => value !== device)
-        : [...draft.devices, device],
-    });
-  }
-  function chooseRoute(route: Route) {
-    const status = routeStatus(state, draft, route);
-    if (status !== "available") {
-      setNotice(
-        status === "locked"
-          ? "The middle route needed a spare connection in Shift 1. Use top or bottom."
-          : "Move the cargo away from this vent first.",
-      );
+      if (key === "escape") {
+        if (gesture) setGesture(null);
+        else if (screen === "game") setModal("pause");
+        return;
+      }
+      if (!playing || gesture) return;
+      if (key === "e" || (key === "enter" && !onButton)) {
+        event.preventDefault();
+        if (focused) act(focused.id);
+      } else if (key === " " && !onButton) {
+        event.preventDefault();
+        setScanning(true);
+      } else if (key === "g" && stage >= 3) setGoggles((v) => !v);
+      else if (key === "r" && carrying === "tank") setTankVertical((v) => !v);
+      else if (key === "q") turnView(-1);
+      else if (key === "z") turnView(1);
+    };
+    const up = (event: KeyboardEvent) => event.key === " " && setScanning(false);
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+    };
+  });
+
+  function addPower(device: Device, next: Plan = plan) {
+    if (next.power.includes(device)) return update({ ...next, power: next.power.filter((d) => d !== device) });
+    if (next.power.length + 1 > freePower(state, next)) {
+      say({ speaker: "beep", text: "No free power. Turn something off, or plug in a battery." });
       return;
     }
-    update({ ...draft, route });
+    update({ ...next, power: [...next.power, device] });
   }
+  function toggleBattery(kind: "cargo" | "workshop") {
+    const next = { ...plan, battery: plan.battery === kind ? ("none" as const) : kind };
+    if (stage === 3) next.wall = removeFromWall(next.wall, kind === "cargo" ? "battery" : "workshopBattery");
+    if (next.battery === "none" && next.power.length > freePower(state, next)) next.power = next.power.slice(0, freePower(state, next));
+    update(next);
+  }
+
+  /** The single action button (E or tap an object). */
+  function act(id: string) {
+    if (!playing) return;
+    const item = things.find((thing) => thing.id === id);
+    if (!item) return;
+    lastActivity.current = Date.now();
+    setLastChoice(id);
+    if (item.gesture) {
+      setGesture(item.gesture);
+      return;
+    }
+    const [kind, arg] = id.split(":");
+    switch (kind) {
+      case "cargo": {
+        const cargo = arg as CargoId;
+        if (slotsUsed([...plan.cargo, cargo]) > MAX_SLOTS) {
+          say({ speaker: "beep", text: "Too heavy. Put something back first." });
+          return;
+        }
+        update({ ...plan, cargo: [...plan.cargo, cargo] });
+        return;
+      }
+      case "spare":
+        return update({ ...plan, installSpare: !plan.installSpare });
+      case "door":
+        return update({
+          ...plan,
+          workshop: arg as "keep" | "dismantle",
+          battery: arg === "keep" && plan.battery === "workshop" ? "none" : plan.battery,
+        });
+      case "garden":
+      case "radio":
+        if (item.info) return say({ speaker: "beep", text: item.label });
+        return addPower(kind);
+      case "lamp":
+        return addPower("lamp");
+      case "battery":
+        return toggleBattery("cargo");
+      case "workshopBattery":
+        return toggleBattery("workshop");
+      case "foodpack":
+        return update({ ...plan, openFood: !plan.openFood });
+      case "shelter":
+        update({ ...plan, moveCrew: !plan.moveCrew });
+        if (!plan.moveCrew) say({ speaker: "commander", text: "Everyone, to the shelter. One, two, three!" });
+        return;
+      case "pick": {
+        const wid = arg as WallId;
+        setCarrying(wid);
+        setTankVertical(plan.wall.filter((v) => v === "tank").length === 2 && plan.wall.indexOf("tank") + 3 === plan.wall.lastIndexOf("tank"));
+        update({ ...plan, wall: removeFromWall(plan.wall, wid) });
+        return;
+      }
+      case "cell":
+        return placeCarried(Number(arg));
+      case "putback":
+        setCarrying(null);
+        return;
+      case "tank":
+        return say({ speaker: "technician", text: "Too heavy to move in time. Earth's warning would help." });
+    }
+  }
+  function placeCarried(cell: number) {
+    if (!carrying) return;
+    const problem = wallPlacementError(state, plan, carrying, cell, tankVertical);
+    if (problem) return say({ speaker: "beep", text: problem });
+    update(placeOnWall(state, plan, carrying, cell, tankVertical));
+    setCarrying(null);
+  }
+  /** Tap an object → B.E.E.P. walks there and uses it; tap ground → walk there. */
+  function pick(id: string) {
+    if (!playing) return;
+    if (id.startsWith("ground:")) {
+      const [x, z] = id.slice(7).split(",").map(Number);
+      setWalk({ at: [x, z], id: null, nonce: Date.now() });
+      return;
+    }
+    const item = things.find((thing) => thing.id === id);
+    if (item) setWalk({ at: item.at, id, nonce: Date.now() });
+  }
+
   function run() {
-    if (!canEdit) return;
-    if (preview.errors.length) {
-      setNotice(preview.errors[0]);
-      return;
-    }
-    if (preview.risks.length) {
-      setModal("risk");
-      return;
-    }
-    dispatch({ type: "commit" });
-    setSelected(null);
+    if (!playing) return;
+    if (carrying) return say({ speaker: "beep", text: "Put down what B.E.E.P. is carrying first." });
+    if (preview.errors.length) return say({ speaker: "beep", text: preview.errors[0] });
+    // Review: no warning before a risky plan; the child sees the consequence instead (no game over).
+    commit(true);
   }
-  function nextShift() {
-    dispatch({ type: "continue" });
-    setSelected(null);
-    setNotice("");
-    setPanel(state.shift === 3 ? "air" : "garden");
-    setOverview(false);
-  }
-  function restart() {
-    dispatch({ type: "restart" });
-    setPanel("cargo");
-    setSelected(null);
-    setFocusedCell(null);
-    setNotice("");
+  function commit(acceptRisk: boolean) {
+    if (stage === 0 && settings.timer && cargoStart && Date.now() - cargoStart <= 60000) setFastCargo(true);
+    stopVoice();
+    dispatch({ type: "commit", acceptRisk });
+    setGoggles(false);
     setModal(null);
+  }
+  function next() {
+    setShowWhy(false);
+    dispatch({ type: "continue" });
+  }
+  // Save badges and unlock Misi Baru when the debrief opens.
+  useEffect(() => {
+    if (stage !== DEBRIEF) return;
+    const won = earnedBadges(state, fastCargo);
+    const path = runPath(state);
+    knownBadges.current = progress.badges;
+    setDebriefPage(0);
+    setProgress((p) => ({
+      badges: [...new Set([...p.badges, ...won])],
+      newMission: p.newMission || ending(state) === "safe",
+      tree: [...new Set([...(p.tree ?? []), ...path])],
+      counts: path.reduce((c, id) => ({ ...c, [id]: (c[id] ?? 0) + 1 }), { ...(p.counts ?? {}) }),
+      runs: (p.runs ?? 0) + 1,
+    }));
+  }, [stage]);
+
+  function startGame(mission = MISSION_1) {
+    dispatch({ type: "restart", mission });
+    setFastCargo(false);
     setScreen("game");
-    setZoom(1);
-    setOverview(false);
+    setModal(null);
   }
   function closeModal() {
-    setModal(
-      returnToPause && (modal === "help" || modal === "settings")
-        ? "pause"
-        : null,
-    );
+    setModal(returnToPause && (modal === "help" || modal === "settings") ? "pause" : null);
     setReturnToPause(false);
   }
-  function openFromPause(target: "help" | "settings") {
-    setReturnToPause(true);
-    setModal(target);
-  }
-  const titleMenu = screen !== "game";
-  const panels: Panel[] =
-    state.shift === 3
-      ? ["cargo"]
-      : state.shift === 4
-        ? ["cargo", "air", "garden", "radio"]
-        : [
-            "garden",
-            "workshop",
-            "radio",
-            ...(!state.branchReady ? ["air" as const] : []),
-          ];
-  const useBattery = (
-    <button
-      className={`button battery-button ${draft.battery ? "is-selected" : ""}`}
-      disabled={!canEdit || state.batteryUsed}
-      aria-pressed={draft.battery}
-      onClick={() => {
-        update(toggleBattery(state, draft));
-        setSelected(null);
-      }}
-    >
-      <Icon name="power" />
-      {state.batteryUsed
-        ? "Battery used"
-        : draft.battery
-          ? "Cancel battery"
-          : "Use spare battery"}
-      <span className="button-meta">+1</span>
-    </button>
-  );
-  const deviceButton = (
-    device: Device,
-    label: string,
-    icon: IconName,
-    disabled = false,
-  ) => (
-    <button
-      className={`button option-button ${draft.devices.includes(device) ? "is-selected" : ""}`}
-      aria-pressed={draft.devices.includes(device)}
-      disabled={!canEdit || disabled}
-      onClick={() => toggleDevice(device)}
-    >
-      <Icon name={icon} />
-      <span>{label}</span>
-      <span className="button-meta">
-        {draft.devices.includes(device) ? (
-          <Icon name="check" size={16} />
-        ) : (
-          "1 power"
+
+  const guess = GUESS[stage];
+  const guessHint = (label: string | null) =>
+    !label || !guess
+      ? ""
+      : stage === 3
+        ? CELL_HINT[VENTS.some((cell) => cellName(cell) === label) ? "vent" : "empty"]
+        : (guess.options.find((option) => option.label === label)?.hint ?? "");
+  const guessProps = (label: string) => ({
+    "aria-pressed": choice === label,
+    onPointerEnter: (event: PointerEvent) => {
+      if (event.pointerType === "mouse") setPeek(label);
+    },
+    onPointerLeave: () => setPeek(null),
+    onFocus: () => setPeek(label),
+    onBlur: () => setPeek(null),
+    onClick: () => {
+      setChoice(label);
+      if (cadet && settings.voice) speak(guessHint(label));
+    },
+  });
+  const shownGuess = peek ?? choice;
+  const lines = [briefLine(state), ...extraLines(state)];
+  // Read the first brief line the moment the brief panel shows (after the cutscene), and get the
+  // guess clips ready so they start without a pause.
+  const briefVisible = screen === "game" && phase === "brief" && !modal && ready && !intro && !cine;
+  useEffect(() => {
+    if (!briefVisible || briefRead.current || briefStep !== 0) return;
+    // A short wait: on the first frame of a stage its cutscene hasn't started yet.
+    const t = setTimeout(() => {
+      briefRead.current = true;
+      say(lines[0]);
+      if (guess) preloadVoice([`${guess.know} ${guess.question}`, ...guess.options.map((o) => o.hint ?? "")]);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [briefVisible, stage]);
+  // A hint that is still being read when the shift runs is old news: stop it.
+  useEffect(() => {
+    if (phase !== "play" && hintVoice.current) {
+      hintVoice.current = false;
+      stopVoice();
+    }
+  }, [phase]);
+  const panel = dataPanel(state);
+  const date = STORM_DATE[state.mission.storm.key]?.[stage] ?? "";
+  const shieldNow = stage === 3 ? shieldOf(plan.wall) : state.shield;
+  const need = state.mission.storm.need;
+  const airUnits = stage === 4 && plan.moveCrew && state.spareInstalled ? 1 : 2;
+  const mealsNeeded = stage >= 1 && stage <= 5 ? 6 - stage : 0;
+  // Meals still to eat this run (this shift .. pickup) vs meals the crew will have with this plan.
+  const mealsToEat = mealsNeeded + 1;
+  const mealsHave = preview.next.missed > state.missed ? 0 : preview.next.food + 1;
+  const batteryKind = batteryAvailable(state, plan, "cargo") ? "cargo" : batteryAvailable(state, plan, "workshop") ? "workshop" : null;
+  const titleMenu = screen === "title";
+
+  const meter = (
+    <div className="meters" aria-label="Three meters">
+      <div className="meter power" aria-label={`Power: ${preview.power.used} of ${preview.power.free} free units used, ${airUnits} for air`}>
+        <span className="meter-name">
+          <Icon name="power" size={16} /> Power
+        </span>
+        <span className="cells">
+          {Array.from({ length: airUnits }, (_, i) => (
+            <span key={`a${i}`} className="cell air" title="Air">
+              <Icon name="lock" size={11} />
+            </span>
+          ))}
+          {Array.from({ length: Math.max(preview.power.free, preview.power.used) }, (_, i) => (
+            <span key={i} className={`cell ${i < preview.power.used ? "used" : "free"} ${i >= preview.power.free ? "over" : ""}`} />
+          ))}
+        </span>
+        <small>{cadet ? "New power each shift" : `${airUnits} air · ${preview.power.free} free · new each shift`}</small>
+        {batteryKind && stage >= 1 && stage <= 5 && phase === "play" && (
+          <button className="chip" disabled={!playing} aria-pressed={plan.battery !== "none"} onClick={() => toggleBattery(batteryKind)}>
+            {plan.battery !== "none" ? "Unplug battery" : "+1 battery"}
+          </button>
         )}
-      </span>
-    </button>
+      </div>
+      <div className="meter food" aria-label={`Food: ${mealsHave} meals for ${mealsToEat} still to eat`}>
+        <span className="meter-name">
+          <Icon name="food" size={16} /> Food
+        </span>
+        <span className="plates" title={`${mealsHave} meals · ${mealsToEat} still to eat`}>
+          {Array.from({ length: Math.max(mealsToEat, mealsHave) }, (_, i) => (
+            <span key={i} className={`plate ${i < mealsHave ? "full" : "missing"}`} />
+          ))}
+        </span>
+        {!cadet && stage >= 1 && stage <= 5 && (
+          <small>
+            {state.food} → {preview.next.food} · need {mealsNeeded - 1} more after this
+          </small>
+        )}
+        {foodPackAvailable(state) && stage >= 1 && stage <= 5 && phase === "play" && (
+          <button className="chip" disabled={!playing} aria-pressed={plan.openFood} onClick={() => (plan.openFood ? update({ ...plan, openFood: false }) : setGesture("foodpack"))}>
+            {plan.openFood ? "Close food pack" : "Open food pack"}
+          </button>
+        )}
+      </div>
+      <div className="meter shield" aria-label={`Shield: ${shieldNow} of 8, storm needs ${need}`}>
+        <span className="meter-name">
+          <Icon name="shield" size={16} /> Shield
+        </span>
+        <span className="segments">
+          {Array.from({ length: 8 }, (_, i) => (
+            <span key={i} className={`seg ${i < shieldNow ? "on" : ""} ${i === need - 1 ? "need" : ""}`} />
+          ))}
+        </span>
+        <small>
+          {shieldTier(shieldNow)}
+          {!cadet && ` · ${shieldNow}/8 · storm needs ${need}`}
+        </small>
+      </div>
+    </div>
   );
 
   return (
     <main
-      className={`app ${titleMenu ? "menu-mode" : "game-mode"} ${settings.reducedMotion ? "reduced-motion" : ""}`}
+      className={`app stage-${stage} ${cine && !titleMenu ? "cine-on" : ""} ${titleMenu ? "menu-mode" : "game-mode"} ${settings.reducedMotion ? "reduced-motion" : ""} ${goggles ? "goggles-on" : ""}`}
       onPointerDownCapture={(event) => {
         const target = event.target as HTMLElement;
-        if (!target.closest("dialog"))
-          dialogInvoker.current = target.closest("button");
+        if (!target.closest("dialog")) dialogInvoker.current = target.closest("button");
       }}
     >
       <div
         className="scene-region"
-        aria-label="Interactive isometric lunar outpost"
+        aria-label="Lunar outpost, third-person view"
+        // Right-drag orbits the camera (left click still walks/uses).
+        onContextMenu={(event) => event.preventDefault()}
+        onPointerDown={(event) => {
+          if (event.button === 2) drag.current = event.clientX;
+        }}
+        onPointerMove={(event) => {
+          if (drag.current === null) return;
+          const dx = event.clientX - drag.current;
+          drag.current = event.clientX;
+          setYaw((y) => y - dx * 0.008);
+        }}
+        onPointerUp={() => (drag.current = null)}
+        onPointerLeave={() => (drag.current = null)}
       >
         <SceneBoundary
           key={sceneGeneration}
@@ -360,25 +737,30 @@ export default function App() {
         >
           <Suspense fallback={null}>
             <Scene
+              mode={titleMenu ? "menu" : "play"}
               state={state}
-              activePanel={panel}
-              draft={draft}
+              plan={plan}
               phase={phase}
-              selected={selected}
-              vertical={vertical}
-              focusedCell={focusedCell}
-              interactive={canEdit}
+              interactables={playing ? things : []}
+              carrying={carrying}
+              walk={walk}
+              controlsLocked={controlsLocked}
+              gesture={gesture}
+              pipeAngle={pipeAngle}
+              goggles={goggles}
+              scanning={scanning}
+              intro={intro}
+              cine={titleMenu ? null : cine}
+              guide={goal?.targets ?? []}
+              guideChoice={!!goal?.choice}
+              yaw={yaw}
               paused={!!modal}
-              menu={titleMenu}
               lowGraphics={settings.lowGraphics}
               reducedMotion={settings.reducedMotion}
-              zoom={zoom}
-              overview={overview}
-              onCell={place}
-              onItem={selectItem}
-              onFacility={(value) => {
-                if (canEdit && panels.includes(value)) setPanel(value);
-              }}
+              zoom={1}
+              onFocus={setFocusId}
+              onArrive={(id) => id && act(id)}
+              onPick={pick}
               onReady={() => setReady(true)}
               onProgress={setLoadProgress}
               onError={() => {
@@ -390,547 +772,591 @@ export default function App() {
         </SceneBoundary>
       </div>
 
+      {titleMenu && <div className="title-shade" aria-hidden="true" />}
+      {titleMenu && <TruthCard />}
       {titleMenu ? (
         <section className="title-menu" aria-label="Main menu">
           <div className="mission-patch">
             <Icon name="crew" size={23} />
-            <span>OUTPOST 03</span>
-            <span className="patch-star">✦</span>
+            <span>LUNAR SOUTH POLE OUTPOST</span>
           </div>
           <h1>MOONSHIFT</h1>
-          <p className="title-subtitle">A little lunar rescue.</p>
-          {screen === "title" ? (
-            <>
-              <p className="title-description">
-                Three crew. One small outpost.
-                <br /> Every thoughtful choice helps.
-              </p>
-              <nav className="main-menu-buttons" aria-label="Start menu">
-                <button
-                  className="button primary menu-button"
-                  disabled={!ready || sceneError}
-                  onClick={() => setScreen("briefing")}
-                >
-                  Start shift 3 <Icon name="arrow" size={21} />
-                </button>
-                <button
-                  className="button menu-button"
-                  onClick={() => setModal("help")}
-                >
-                  How to play
-                </button>
-                <button
-                  className="button menu-button"
-                  onClick={() => setModal("settings")}
-                >
-                  Settings
-                </button>
-              </nav>
-              <p className="prototype-note">
-                A three-shift story · Play at your own pace
-              </p>
-            </>
-          ) : (
-            <div className="briefing panel">
-              <h2>A storm is on its way.</h2>
-              <p>
-                B.E.E.P. has brought a battery and a research crate. The air is
-                repaired, and the garden needs one more care turn.
-              </p>
-              <ol className="briefing-steps">
-                <li>Store your cargo.</li>
-                <li>Shelter all three astronauts.</li>
-                <li>Save food for the final shift.</li>
-              </ol>
-              <p className="hint">
-                You have 3 team rations. One ration feeds the whole crew for one
-                shift.
-              </p>
-              <button
-                className="button primary"
-                onClick={() => {
-                  setScreen("game");
-                  setPanel("cargo");
-                }}
-              >
-                Begin
+          <p className="title-subtitle">Help B.E.E.P. the robot keep three astronauts safe.</p>
+          <p className="title-description">You are B.E.E.P. A real solar storm from NASA data is coming. You have five shifts.</p>
+          <nav className="main-menu-buttons" aria-label="Start menu">
+            <button className="button primary menu-button" disabled={!ready || sceneError} onClick={() => startGame()}>
+              Mission 1 <Icon name="arrow" size={21} />
+            </button>
+            {progress.newMission && (
+              <button className="button menu-button" disabled={!ready || sceneError} onClick={() => startGame(randomMission())}>
+                New mission · random storm
               </button>
-              <button
-                className="text-button"
-                onClick={() => setScreen("title")}
-              >
-                Back to menu
+            )}
+            {(progress.runs ?? 0) > 0 && (
+              <button className="button menu-button" onClick={() => setTreeOpen(true)}>
+                Decision tree
               </button>
-            </div>
+            )}
+            <button className="button menu-button" onClick={() => setModal("help")}>
+              How to play
+            </button>
+            <button className="button menu-button" onClick={() => setModal("settings")}>
+              Settings
+            </button>
+          </nav>
+          {progress.badges.length > 0 && (
+            <p className="badge-row">
+              {progress.badges.map((b) => (
+                <span key={b} className="badge">
+                  <Icon name="star" size={14} /> {BADGES[b].name}
+                </span>
+              ))}
+            </p>
           )}
+          <p className="prototype-note">No account. No timer unless you want one.</p>
         </section>
       ) : (
         <>
           <header className="hud">
-            <div className="objective">
-              <span className="shift-label">
-                SHIFT {state.shift} <span>OF 6</span>
-              </span>
-              <h1 tabIndex={-1}>{OBJECTIVES[state.shift]}</h1>
-              <p>{GOALS[state.shift]}</p>
+            <div className="hud-left">
+              <div className="shift-chip">
+                <strong>{stage === 0 ? "OPENING" : stage <= 5 ? `SHIFT ${stage} OF 5` : stage === PICKUP ? "RESCUE" : "DEBRIEF"}</strong>
+                <span>{STAGE_TITLE[stage]}</span>
+                {date && stage <= 5 && <small>{date} · time sped up</small>}
+              </div>
+              {stage <= 5 && (
+                <div className="goal-track" data-tour="rescue">
+                  <span className="meter-name">Rescue lander</span>
+                  <RescueTrack stage={stage} />
+                </div>
+              )}
+              {stage >= 1 && stage <= 5 && meter}
             </div>
-            <div className="status-cluster">
-              <div className="resource">
-                <Icon name="food" />
-                <div>
-                  <span>Food</span>
-                  <strong data-testid="food-count">{state.food}</strong>
+            <div className="hud-right">
+              {stage <= 5 && (
+                <div className="contact" aria-label={`Contact window open in shifts ${state.mission.windows.join(" and ")}`}>
+                  <span className="meter-name">
+                    <Icon name="radio" size={16} /> {cadet ? "Earth can hear us" : "Contact window"}
+                  </span>
+                  <span className="dots">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <span key={s} title={`Shift ${s}`} className={`dot ${state.mission.windows.includes(s) ? "open" : ""} ${s === stage ? "now" : ""}`}>
+                        {state.mission.windows.includes(s) && <Icon name="radio" size={11} />}
+                        {s}
+                      </span>
+                    ))}
+                  </span>
+                  {(state.forecast !== "none" || plan.power.includes("radio")) && (
+                    <span className={`envelope ${state.forecast === "arrived" ? "arrived" : ""}`}>
+                      <Icon name="mail" size={15} />
+                      {state.forecast === "arrived" ? "Reply from Earth arrived" : "1 message: reply next shift"}
+                    </span>
+                  )}
                 </div>
-              </div>
-              <div className="resource">
-                <Icon name="power" />
-                <div>
-                  <span>Flexible power</span>
-                  <strong>
-                    {phase === "planning"
-                      ? `${preview.power.used}/${preview.power.available}`
-                      : "—"}
-                  </strong>
-                </div>
-              </div>
-              <button
-                className="icon-button pause-button"
-                aria-label="Pause game"
-                onClick={() => setModal("pause")}
-              >
+              )}
+              <button className="icon-button pause-button" aria-label="Pause game" onClick={() => setModal("pause")}>
                 <Icon name="pause" />
               </button>
             </div>
           </header>
 
-          <section
-            className="action-region"
-            aria-label="Shift planning"
-            aria-disabled={!canEdit}
-          >
-            <div className="context-panel panel">
-              <nav className="panel-tabs" aria-label="Outpost actions">
-                {panels.map((value) => (
+          {bubble && stage <= 5 && phase === "play" && !gesture && (
+            <div className={`bubble speaker-${bubble.speaker}`} role="status" aria-live="polite">
+              <Portrait speaker={bubble.speaker} />
+              <strong>{SPEAKER[bubble.speaker]}:</strong>{" "}
+              <span>
+                <Rich text={bubble.text} />
+              </span>
+              <button className="icon-button small" aria-label="Read aloud" onClick={() => speak(bubble.text)}>
+                <Icon name="speaker" size={16} />
+              </button>
+            </div>
+          )}
+
+          {panel && stage <= 5 && (
+            <button className="data-panel" onClick={() => setModal("databook")} aria-label={cadet ? `Real NASA data: ${panel.kid}. Where is this from?` : `Data: ${panel.what}, ${panel.when}, ${panel.source}, archive. Where is this from?`}
+            >
+              <span className="archive">{cadet ? "REAL NASA DATA" : "ARCHIVE"}</span>
+              <strong>{cadet ? panel.kid : panel.what}</strong>
+              {!cadet && (
+                <span>
+                  {panel.when} · {panel.source}
+                </span>
+              )}
+              <small>{cadet ? "From the past, not live" : "Real NASA data, not live"}</small>
+            </button>
+          )}
+
+          {stage === 0 && phase === "play" && (
+            <div className="backpack panel" aria-label="Backpack">
+              <span className="meter-name">
+                <Icon name="cargo" size={16} /> Backpack {slotsUsed(plan.cargo)}/{MAX_SLOTS}
+                {cargoLeft !== null && <span className="timer">{cargoLeft}s</span>}
+              </span>
+              <div className="needs" aria-label="What the outpost needs">
+                <span className="need kw-s">
+                  <Icon name="cargo" size={15} /> Crates <b>{state.mission.supplies}</b>
+                  <small>at the outpost</small>
+                </span>
+                <span className="need kw-f">
+                  <Icon name="food" size={15} /> Meals <b>{state.food}</b>
+                  <small>the crew eats 6</small>
+                </span>
+                <span className="need kw-p">
+                  <Icon name="power" size={15} /> Power <b>1</b>
+                  <small>free each shift</small>
+                </span>
+              </div>
+              <div className="slots">
+                {plan.cargo.flatMap((id) =>
+                  Array.from({ length: CARGO[id].slots }, (_, i) => (
+                    <button key={`${id}${i}`} className={`slot ${id}`} disabled={!playing} onClick={() => update({ ...plan, cargo: plan.cargo.filter((c) => c !== id) })} aria-label={`Put back ${CARGO[id].name}`}>
+                      {i === 0 ? CARGO[id].name : "↔"}
+                    </button>
+                  )),
+                )}
+                {Array.from({ length: Math.max(0, MAX_SLOTS - slotsUsed(plan.cargo)) }, (_, i) => (
+                  <span key={i} className="slot empty" />
+                ))}
+              </div>
+              <small>Walk to an item and press E, or tap it. Tap a slot to put it back.</small>
+            </div>
+          )}
+
+          {stage === 3 && phase === "play" && (
+            <aside className="shelter-map panel" aria-label="Shelter map" data-own-keys>
+              <span className="meter-name">
+                <Icon name="shield" size={16} /> Shelter wall {carrying ? `· carrying ${wallName(carrying).toLowerCase()}` : ""}
+              </span>
+              <div className="grid">
+                {plan.wall.map((value, cell) => (
                   <button
-                    key={value}
-                    className={panel === value ? "active" : ""}
-                    aria-pressed={panel === value}
+                    key={cell}
+                    disabled={!playing || cell === SHELTER_CELL}
+                    className={`${cell === SHELTER_CELL ? "core" : ""} ${VENTS.includes(cell) ? "vent" : ""} ${value ? `filled ${value.startsWith("supply") ? "supply" : value}` : ""} ${
+                      carrying && cell !== SHELTER_CELL ? (wallPlacementError(state, plan, carrying, cell, tankVertical) ? "cannot" : "can") : ""
+                    }`}
+                    aria-label={`${cellName(cell)}: ${cell === SHELTER_CELL ? "shelter" : value ? wallName(value) : VENTS.includes(cell) ? "open vent" : "empty"}`}
                     onClick={() => {
-                      setPanel(value);
-                      setNotice("");
+                      if (carrying) placeCarried(cell);
+                      else if (value) act(`pick:${value}`);
+                      else {
+                        // Tapped a square first: point at the shelf instead of doing nothing.
+                        setTrayNudge(Date.now());
+                        sfx("nope");
+                        say({ speaker: "beep", text: "First pick something from the **shelf** below." });
+                      }
                     }}
                   >
-                    <Icon name={PANEL_ICONS[value]} size={19} />
-                    <span>{PANEL_NAMES[value]}</span>
+                    {cell === SHELTER_CELL ? "Crew" : value ? wallName(value).split(" ")[0] : VENTS.includes(cell) ? "≋" : cellName(cell)}
                   </button>
                 ))}
-              </nav>
-              <div className="panel-body">
-                {panel === "cargo" && (
-                  <>
-                    <div className="section-heading">
-                      <h2>Make a little room.</h2>
-                      <span className="small-label">3 × 3</span>
-                    </div>
-                    <p className="panel-description">
-                      Choose an item, then a cell. Striped cells carry air.
-                    </p>
-                    <div className="cargo-items">
-                      {ITEMS.map((item) => (
-                        <button
-                          key={item}
-                          className={`cargo-card ${selected === item ? "selected" : ""}`}
-                          disabled={
-                            !canEdit ||
-                            (item === "battery" &&
-                              (state.batteryUsed || draft.battery))
-                          }
-                          aria-label={`Select ${item === "research" ? "research crate" : "battery"}`}
-                          aria-pressed={selected === item}
-                          onClick={() => selectItem(item)}
-                        >
-                          <Icon
-                            name={item === "battery" ? "power" : "research"}
-                            size={27}
-                          />
-                          <strong>
-                            {item === "battery" ? "Battery" : "Research"}
-                          </strong>
-                          <span>
-                            {item === "battery"
-                              ? state.batteryUsed
-                                ? "Used"
-                                : draft.battery
-                                  ? "Scheduled"
-                                  : "1 cell"
-                              : "2 cells"}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                    <div
-                      className="storage-grid"
-                      ref={gridRef}
-                      role="group"
-                      aria-label="Storage cells"
-                      onKeyDown={(event) => {
-                        if (event.key.toLowerCase() === "r") {
-                          event.preventDefault();
-                          rotate();
-                        }
-                        const moves: Record<string, number> = {
-                          ArrowLeft: -1,
-                          ArrowRight: 1,
-                          ArrowUp: -3,
-                          ArrowDown: 3,
-                        };
-                        if (moves[event.key] !== undefined) {
-                          event.preventDefault();
-                          const current = Number(
-                            (event.target as HTMLElement).dataset.cell ?? 0,
-                          );
-                          const next = Math.max(
-                            0,
-                            Math.min(8, current + moves[event.key]),
-                          );
-                          gridRef.current
-                            ?.querySelector<HTMLButtonElement>(
-                              `[data-cell="${next}"]`,
-                            )
-                            ?.focus();
-                        }
-                      }}
-                    >
-                      {Array.from({ length: 9 }, (_, cell) => (
-                        <button
-                          key={cell}
-                          data-cell={cell}
-                          className={`${cell % 3 === 1 ? "vent-cell" : ""} ${cells.has(cell) ? `occupied ${cells.get(cell)}` : ""} ${focusedCell === cell ? "cell-focused" : ""}`}
-                          disabled={!canEdit}
-                          onFocus={() => setFocusedCell(cell)}
-                          aria-label={`${cellName(cell)}, ${cells.has(cell) ? itemName(cells.get(cell)!) : cell % 3 === 1 ? (cell === 4 ? "middle vent, connection missing" : "available vent") : "empty"}`}
-                          onClick={() => place(cell)}
-                        >
-                          <span>{cellName(cell)}</span>
-                          {cells.has(cell) ? (
-                            <Icon
-                              name={
-                                cells.get(cell) === "battery"
-                                  ? "power"
-                                  : "research"
-                              }
-                              size={17}
-                            />
-                          ) : cell % 3 === 1 ? (
-                            <span className="vent-lines">≋</span>
-                          ) : (
-                            <span className="cell-dot">·</span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="row-actions">
-                      <button
-                        className="button small"
-                        disabled={!canEdit || selected !== "research"}
-                        onClick={rotate}
-                      >
-                        <Icon name="rotate" size={17} />
-                        Rotate
-                      </button>
-                      <button
-                        className="text-button"
-                        disabled={!selected}
-                        onClick={() => {
-                          setSelected(null);
-                          setNotice("Selection canceled.");
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                    <p className="hint">
-                      {selected === "research"
-                        ? `${vertical ? "Vertical" : "Horizontal"} · Rotate with R in the grid.`
-                        : "Top and bottom vents can reach the shelter."}
-                    </p>
-                  </>
-                )}
-                {panel === "air" && (
-                  <>
-                    <h2>
-                      {state.shift === 4
-                        ? "A safe place to wait."
-                        : "One repair before we go."}
-                    </h2>
-                    <p className="panel-description">
-                      {state.shift === 4
-                        ? "The walls reduce exposure. The fan brings fresh air."
-                        : "Repair the air branch. It cannot undo the earlier storm."}
-                    </p>
-                    <div className="route-list">
-                      {ROUTES.map((route, index) => (
-                        <button
-                          className={`button route-button ${draft.route === route ? "is-selected" : ""}`}
-                          key={route}
-                          aria-pressed={draft.route === route}
-                          disabled={!canEdit}
-                          onClick={() => chooseRoute(route)}
-                        >
-                          <span className={`route-dots route-${route}`}>
-                            {"●".repeat(index + 1)}
-                          </span>
-                          <span>
-                            {route[0].toUpperCase() + route.slice(1)} route
-                            <small>
-                              {routeStatus(state, draft, route) === "available"
-                                ? "Clear for air"
-                                : routeStatus(state, draft, route) === "locked"
-                                  ? "Needs Shift 1 connection"
-                                  : "Blocked by cargo"}
-                            </small>
-                          </span>
-                          {draft.route === route && (
-                            <Icon name="check" size={17} />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                    {state.shift === 5 && (
-                      <button
-                        className={`button option-button ${draft.job === "correction" ? "is-selected" : ""}`}
-                        aria-pressed={draft.job === "correction"}
-                        disabled={!canEdit}
-                        onClick={() =>
-                          update({
-                            ...draft,
-                            job:
-                              draft.job === "correction"
-                                ? "none"
-                                : "correction",
-                          })
-                        }
-                      >
-                        <Icon name="air" />
-                        Correct air branch
-                        <span className="button-meta">1 job</span>
-                      </button>
-                    )}
-                    {deviceButton("fan", "Power the fan", "air")}
-                    {state.shift === 4 && (
-                      <button
-                        className={`button option-button ${draft.moveCrew ? "is-selected" : ""}`}
-                        aria-pressed={draft.moveCrew}
-                        disabled={!canEdit}
-                        onClick={() =>
-                          update({ ...draft, moveCrew: !draft.moveCrew })
-                        }
-                      >
-                        <Icon name="crew" />
-                        Move crew to shelter
-                        <span className="button-meta">
-                          {draft.moveCrew ? (
-                            <Icon name="check" size={16} />
-                          ) : (
-                            "Order"
-                          )}
-                        </span>
-                      </button>
-                    )}
-                    {useBattery}
-                  </>
-                )}
-                {panel === "garden" && (
-                  <>
-                    <Icon name="garden" size={35} />
-                    <h2>A little care goes far.</h2>
-                    <p className="panel-description">
-                      {state.harvested
-                        ? "The harvest is safely in the food store. Thank you, little plants."
-                        : "The garden has had one care turn. One more brings two team rations."}
-                    </p>
-                    <div className="garden-progress">
-                      <span className="done">
-                        <Icon name="check" size={16} />
-                        Planted
-                      </span>
-                      <span className={state.harvested ? "done" : ""}>
-                        {state.harvested && <Icon name="check" size={16} />}
-                        Harvest
-                      </span>
-                    </div>
-                    {deviceButton(
-                      "garden",
-                      state.harvested ? "Already harvested" : "Care for garden",
-                      "garden",
-                      state.harvested,
-                    )}
-                    {useBattery}
-                    <p className="hint">
-                      Harvest happens before the crew eats. Each care turn uses
-                      1 power.
-                    </p>
-                  </>
-                )}
-                {panel === "workshop" && (
-                  <>
-                    <Icon name="research" size={35} />
-                    <h2>Something worth sharing.</h2>
-                    <p className="panel-description">
-                      The workshop can prepare the research crate. Sending it is
-                      a bonus; crew safety comes first.
-                    </p>
-                    <button
-                      className={`button option-button ${draft.job === "research" ? "is-selected" : ""}`}
-                      aria-pressed={draft.job === "research"}
-                      disabled={!canEdit}
-                      onClick={() =>
-                        update({
-                          ...draft,
-                          job: draft.job === "research" ? "none" : "research",
-                        })
-                      }
-                    >
-                      <Icon name="research" />
-                      Prepare research
-                      <span className="button-meta">
-                        {draft.job === "research" ? (
-                          <Icon name="check" size={16} />
-                        ) : (
-                          "1 job"
-                        )}
-                      </span>
+              </div>
+              <div key={trayNudge} className={`tray ${trayNudge ? "nudge" : ""}`}>
+                {wallables(state, plan)
+                  .filter((id) => !plan.wall.includes(id) && id !== carrying)
+                  .map((id) => (
+                    <button key={id} className="chip" disabled={!playing || !!carrying} onClick={() => act(`pick:${id}`)}>
+                      {wallName(id)}
                     </button>
-                    <p className="hint">
-                      One job this shift. Use the radio to send prepared
-                      research.
-                    </p>
-                    <button
-                      className="text-button"
-                      onClick={() => setPanel("radio")}
-                    >
-                      Open radio controls <Icon name="arrow" size={16} />
+                  ))}
+                {carrying && (
+                  <>
+                    {carrying === "tank" && (
+                      <button className="chip" onClick={() => setTankVertical((v) => !v)}>
+                        Turn tank (R) · {tankVertical ? "up-down" : "side"}
+                      </button>
+                    )}
+                    <button className="chip" onClick={() => setCarrying(null)}>
+                      Put back
                     </button>
                   </>
                 )}
-                {panel === "radio" && (
-                  <>
-                    <Icon name="radio" size={35} />
-                    <h2>A familiar voice.</h2>
-                    <p className="panel-description">
-                      {state.shift === 4
-                        ? "A routine update is optional. Shelter comes first."
-                        : "Power the radio, then choose one message to send."}
-                    </p>
-                    {deviceButton("radio", "Power the radio", "radio")}
-                    {state.shift === 5 && (
-                      <fieldset className="message-options">
-                        <legend>One message</legend>
-                        {(["none", "report", "research"] as const).map(
-                          (message) => (
-                            <label key={message}>
-                              <input
-                                type="radio"
-                                name="message"
-                                value={message}
-                                checked={draft.message === message}
-                                disabled={!canEdit}
-                                onChange={() => update({ ...draft, message })}
-                              />
-                              {message === "none"
-                                ? "No message"
-                                : message === "report"
-                                  ? "Station report"
-                                  : "Research results"}
-                            </label>
-                          ),
-                        )}
-                      </fieldset>
-                    )}
-                    {useBattery}
-                    <p className="hint">
-                      The pickup call belongs to Shift 6, beyond this prototype.
-                    </p>
-                  </>
+              </div>
+              <small>
+                {carrying
+                  ? "Green squares fit. Tap one."
+                  : state.spareInstalled
+                    ? "Spare joint installed: vents may close."
+                    : "Keep one ≋ vent open so the crew can breathe."}
+              </small>
+            </aside>
+          )}
+
+          {stage === 4 && (phase === "running" || phase === "result") && <DoseBars state={state} cadet={cadet} animate={!settings.reducedMotion} />}
+
+          {phase === "play" && stage <= 5 && (
+            <footer className="action-bar">
+              <div className="aux">
+                <button className="button" disabled={!playing} onClick={() => raiseHint(hintLevel >= 1 ? 2 : 1)}>
+                  <Icon name="help" size={19} /> Ask crew
+                </button>
+                {!cadet && <button className="button" disabled={!playing} aria-pressed={scanning} onPointerDown={() => setScanning(true)} onPointerUp={() => setScanning(false)} onPointerLeave={() => setScanning(false)} onClick={() => setScanning((v) => !v)}>
+                  <Icon name="eye" size={19} /> Scan
+                </button>}
+                {(stage === 3 || stage === 4) && (
+                  <button className={`button ${goggles ? "is-selected" : ""}`} disabled={!playing} aria-pressed={goggles} onClick={() => setGoggles((v) => !v)}>
+                    <Icon name="shield" size={19} /> Particle goggles
+                  </button>
                 )}
-                <div
-                  className="planning-notice"
-                  role="status"
-                  aria-live="polite"
-                >
-                  {notice ||
-                    (preview.errors.length
-                      ? preview.errors[0]
-                      : "Your changes are a plan. Nothing is used until you run the shift.")}
+                <span className="view-turn" role="group" aria-label="Turn the view">
+                  <button className="icon-button" disabled={!playing} aria-label="Turn view left (Q)" title="Turn view left (Q)" onClick={() => turnView(-1)}>
+                    <Icon name="rotate" size={19} />
+                  </button>
+                  <button className="icon-button flip" disabled={!playing} aria-label="Turn view right (Z)" title="Turn view right (Z)" onClick={() => turnView(1)}>
+                    <Icon name="rotate" size={19} />
+                  </button>
+                </span>
+                <div className="places">
+                  <button className="button" disabled={!playing} aria-expanded={placesOpen} onClick={() => setPlacesOpen((v) => !v)}>
+                    Walk to…
+                  </button>
+                  {placesOpen && playing && (
+                    <ul className="places-list panel">
+                      {things.map((item) => (
+                        <li key={item.id}>
+                          <button
+                            className="text-button"
+                            onClick={() => {
+                              setPlacesOpen(false);
+                              pick(item.id);
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
-            </div>
-          </section>
-          <div className="view-controls" aria-label="Camera controls">
-            <button
-              className="icon-button"
-              aria-label="Zoom out"
-              onClick={() => setZoom((value) => Math.max(0.8, value - 0.1))}
-            >
-              −
-            </button>
-            <button
-              className="button small"
-              aria-pressed={overview}
-              onClick={() => {
-                setOverview((value) => !value);
-                setZoom(1);
-              }}
-            >
-              Overview
-            </button>
-            <button
-              className="icon-button"
-              aria-label="Zoom in"
-              onClick={() => setZoom((value) => Math.min(1.35, value + 0.1))}
-            >
-              +
-            </button>
-          </div>
-          {phase === "planning" && (
-            <footer className="commit-panel panel">
-              <div className="preview-row">
-                <span>After this shift</span>
-                <strong>
-                  <Icon name="food" size={18} />
-                  {preview.next.food} rations
-                </strong>
-              </div>
-              <p>
-                {state.shift === 4
-                  ? preview.next.sheltered
-                    ? "The crew will be sheltered."
-                    : "Shelter plan is not ready yet."
-                  : state.shift === 5
-                    ? preview.next.food >= 1
-                      ? "A ration remains for the final shift."
-                      : "No ration reserved for the final shift."
-                    : `${ROUTES.filter((route) => routeStatus(state, draft, route) === "available").length} air routes available.`}
-              </p>
-              <button
-                className="button primary run-button"
-                disabled={!ready || !!modal || !!preview.errors.length}
-                onClick={run}
-              >
-                Run shift {state.shift}
-                <Icon name="arrow" />
-              </button>
-              {preview.errors.length > 0 && (
-                <span className="commit-reason">{preview.errors[0]}</span>
+              {stage === 4 && (
+                <button className={`button move-crew ${plan.moveCrew ? "is-selected" : "pulse"} ${pointAt("moveCrew")}`} disabled={!playing} aria-pressed={plan.moveCrew} onClick={() => act("shelter")}>
+                  <Icon name="crew" /> {plan.moveCrew ? "Crew in shelter ✓" : "Move crew"}
+                </button>
               )}
+              <button
+                className={`button action-button ${focused && !focused.info && !focused.undo ? "ready" : ""} ${focused?.undo ? "undo" : ""} ${pointAt("act")}`}
+                disabled={!playing || !focused}
+                onClick={() => focused && act(focused.id)}
+              >
+                <kbd>E</kbd> {focused?.undo && <Icon name="rotate" size={16} />} {focused ? focused.label : "Walk to something with a ring"}
+              </button>
+              <div className="run">
+                <small className={preview.errors.length ? "blocked" : preview.risks.length ? "risky" : "ok"}>
+                  {carrying ? "Put down what you carry." : preview.errors[0] ?? preview.risks[0] ?? "Plan looks good."}
+                </small>
+                <button className={`button ${stage === 0 && slotsUsed(plan.cargo) < MAX_SLOTS ? "" : "primary"} run-button ${pointAt("run")}`} disabled={!playing || !!preview.errors.length || !!carrying} onClick={run}>
+                  {stage === 0 ? "Back to the outpost" : "Run shift"} <Icon name="arrow" />
+                </button>
+              </div>
             </footer>
           )}
-          <div className="crew-status">
-            <Icon name="crew" size={17} />3 crew ·{" "}
-            {state.crewLocation === "shelter" ? "In shelter" : "At habitat"}
-            <span>Main air ready</span>
-          </div>
         </>
+      )}
+
+      {clueCard && (
+        <aside className="clue panel" aria-label="Clue" aria-live="polite">
+          <strong className="clue-title">{clueCard.title}</strong>
+          <div className={`clue-sides ${clueCard.b ? "two" : ""}`}>
+            {[clueCard.a, clueCard.b].map(
+              (side, i) =>
+                side && (
+                  <div key={i} className={`clue-side side-${side.icon}`}>
+                    <span className="clue-label">
+                      <Icon name={side.icon} size={16} /> {side.label}
+                    </span>
+                    <span>
+                      <Rich text={side.text} />
+                    </span>
+                  </div>
+                ),
+            )}
+            {clueCard.b && <span className="clue-or">or</span>}
+          </div>
+          <p className="clue-think">
+            <Icon name="help" size={16} />
+            <span>
+              <Rich text={clueCard.think} />
+            </span>
+          </p>
+        </aside>
+      )}
+
+      {/* Brief: crew speaks, then one picture guess (never graded). */}
+      {screen === "game" && phase === "brief" && !modal && ready && !intro && !cine && (
+        <section className="brief panel" aria-label="Shift brief">
+          <span className="result-tag">{stage === 0 ? "OPENING" : `SHIFT ${stage}`} · {STAGE_TITLE[stage]}</span>
+          {stage === 0 && briefStep < lines.length && (
+            <div className="mission-card" aria-label="Mission card">
+              {[
+                { key: "supply", icon: "cargo" as IconName, title: `${state.mission.supplies} supply crate${state.mission.supplies > 1 ? "s" : ""}`, text: `*kshh* B.E.E.P., we have ${state.mission.supplies} crate${state.mission.supplies > 1 ? "s" : ""} of spare parts here. *kshh*` },
+                { key: "base", icon: "crew" as IconName, title: "Habitat, garden, workshop", text: "*kshh* Air in the habitat, a small garden, a workshop and a radio. That's our outpost. *kshh*" },
+                { key: "storm", icon: "warning" as IconName, title: "The Sun", text: "*kshh* The Sun might get stormy. Keep an ear on the radio. *kshh*" },
+              ].map((card) => (
+                <button
+                  key={card.key}
+                  className={`mission-icon ${missionInfo === card.key ? "selected" : ""}`}
+                  onClick={() => {
+                    setMissionInfo(card.key);
+                    say({ speaker: "commander", text: card.text });
+                    if (!card.text.startsWith("*kshh*")) sfx("crackle");
+                  }}
+                >
+                  <Icon name={card.icon} size={28} />
+                  <strong>{card.title}</strong>
+                </button>
+              ))}
+            </div>
+          )}
+          {briefStep < lines.length ? (
+            <>
+              <p className="brief-line">
+                <Portrait speaker={lines[briefStep].speaker} />
+                <strong>{SPEAKER[lines[briefStep].speaker]}:</strong>
+                <span className="line-text">
+                  <Rich text={lines[briefStep].text} />
+                </span>
+                <button className="icon-button small" aria-label="Read aloud" onClick={() => speak(lines[briefStep].text)}>
+                  <Icon name="speaker" size={16} />
+                </button>
+              </p>
+              <button
+                className="button primary"
+                autoFocus
+                onClick={() => {
+                  const n = briefStep + 1;
+                  setBriefStep(n);
+                  if (n < lines.length) say(lines[n]);
+                  else if (guess && cadet && settings.voice) speak(`${guess.know} ${guess.question}`);
+                }}
+              >
+                Next <Icon name="arrow" />
+              </button>
+            </>
+          ) : guessed === null && guess ? (
+            <>
+              {/* Scaffolding: the facts first, so the guess is a reasoned step and not a coin flip. */}
+              <div className="guess-know">
+                <span className="know-tag">
+                  <Icon name="star" size={14} /> What you know
+                </span>
+                <p className="know-line">
+                  <Rich text={guess.know} />
+                </p>
+                <KnowArt stage={stage} />
+                <button className="icon-button small know-say" aria-label="Read aloud" onClick={() => speak(`${guess.know} ${guess.question}`)}>
+                  <Icon name="speaker" size={16} />
+                </button>
+              </div>
+              <p className="brief-line guess-q">{guess.question}</p>
+              {stage === 3 ? (
+                <div className="grid guess-grid">
+                  {Array.from({ length: 9 }, (_, cell) =>
+                    cell === SHELTER_CELL ? (
+                      <button key={cell} disabled className="core">
+                        Crew
+                      </button>
+                    ) : (
+                      <button key={cell} className={`${VENTS.includes(cell) ? "vent" : ""} ${choice === cellName(cell) ? "picked" : ""}`} {...guessProps(cellName(cell))}>
+                        {cellName(cell)}
+                      </button>
+                    ),
+                  )}
+                </div>
+              ) : (
+                <div className="guess-options">
+                  {guess.options.map((option) => (
+                    <button key={option.label} className={`button ${choice === option.label ? "picked" : ""}`} {...guessProps(option.label)}>
+                      <Icon name={option.icon} /> {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="guess-hint" aria-live="polite">
+                {shownGuess ? (
+                  <span className="line-text">
+                    <strong>{shownGuess}: </strong>
+                    <Rich text={guessHint(shownGuess)} />
+                  </span>
+                ) : (
+                  "Any answer is fine. Tap one to see what it means."
+                )}
+              </p>
+              <button className="button primary" disabled={!choice} onClick={() => setGuessed(choice)}>
+                That's my guess <Icon name="check" />
+              </button>
+            </>
+          ) : (
+            <>
+              {guessed && (
+                <p className="brief-line">
+                  You guessed <strong>{guessed}</strong>. {stage === 3 ? "Put on the Particle goggles to check!" : "Let's find out."}
+                </p>
+              )}
+              <button
+                className="button primary"
+                autoFocus
+                onClick={() => {
+                  dispatch({ type: "begin" });
+                  // The briefing already showed this line; don't repeat it as a gameplay bubble.
+                  setBubble(null);
+                  if (stage === 3 && guessed) setGoggles(true);
+                }}
+              >
+                {stage === 0 ? "Open the cargo bay" : "Let's go"} <Icon name="arrow" />
+              </button>
+              <p className="hint">Walk with WASD or arrows, or tap the ground. Press E or tap a ringed object to use it.</p>
+            </>
+          )}
+        </section>
+      )}
+
+      {/* Hand gestures (Interaksi §6: close camera, ≤ 8 s, skippable in Cadet). */}
+      {gesture && playing && (
+        <section className="gesture panel" aria-label="Hands-on">
+          {gesture === "pipe" && (
+            <>
+              <h2>Turn the pipe joint</h2>
+              <p>Turn it until both ends line up.</p>
+              <Dial
+                value={pipeAngle}
+                target={0}
+                goal="pipe"
+                label="Pipe joint"
+                onChange={(v) => {
+                  setPipeAngle(v);
+                  if (angleGap(v, 0) < 8)
+                    setTimeout(() => {
+                      update({ ...plan, pipeFixed: true });
+                      setGesture(null);
+                      say({ speaker: "beep", text: "Bip! Air is flowing." });
+                    }, 350);
+                }}
+              />
+            </>
+          )}
+          {gesture === "antenna" && (
+            <>
+              <h2>Point the antenna at Earth</h2>
+              <p>{plan.power.length + 1 > freePower(state, plan) ? "No free power! Turn something off first." : "Turn the dish until Earth lights up, then send."}</p>
+              <Dial value={antenna} target={ANTENNA_TARGET} goal="earth" label="Antenna dish" onChange={setAntenna} />
+              <button
+                className="button primary"
+                disabled={angleGap(antenna, ANTENNA_TARGET) >= 8 || plan.power.length + 1 > freePower(state, plan)}
+                onClick={() => {
+                  addPower("radio");
+                  setGesture(null);
+                  say({ speaker: "beep", text: stage === 5 ? "Research data on its way." : "Message sent. Reply: next shift." });
+                }}
+              >
+                <Icon name="mail" /> Send · 1 power
+              </button>
+            </>
+          )}
+          {gesture === "workshop" && (
+            <>
+              <h2>The workshop</h2>
+              <p>Keep it for science, or take it apart for a battery.</p>
+              <div className="choice-row">
+                <button
+                  className={`button ${plan.workshop === "keep" ? "primary" : ""}`}
+                  aria-pressed={plan.workshop === "keep"}
+                  onClick={() => {
+                    update({ ...plan, workshop: "keep", battery: plan.battery === "workshop" ? "none" : plan.battery });
+                    setGesture(null);
+                  }}
+                >
+                  <Icon name="research" /> Keep it
+                  <small>Sample lamp for the research plants</small>
+                </button>
+                <button
+                  className={`button ${plan.workshop === "dismantle" ? "primary" : ""}`}
+                  aria-pressed={plan.workshop === "dismantle"}
+                  onClick={() => {
+                    update({ ...plan, workshop: "dismantle" });
+                    setGesture(null);
+                  }}
+                >
+                  <Icon name="power" /> Take it apart
+                  <small>Workshop battery: +1 power, or a wall cell</small>
+                </button>
+              </div>
+            </>
+          )}
+          {gesture === "harvest" && (
+            <>
+              <h2>Harvest the garden</h2>
+              <p>Tap each pot. Uses 1 power for the lights.</p>
+              <Pots
+                onDone={() => {
+                  addPower("garden");
+                  setGesture(null);
+                }}
+              />
+            </>
+          )}
+          {gesture === "foodpack" && (
+            <>
+              <h2>Open the food pack</h2>
+              <p>Hold to pull the ribbon. Once open, it can't be a wall.</p>
+              <Hold
+                label="Hold to open"
+                reducedMotion={settings.reducedMotion}
+                onDone={() => {
+                  update({ ...plan, openFood: true });
+                  setGesture(null);
+                }}
+              />
+            </>
+          )}
+          <div className="gesture-actions">
+            <button className="text-button" onClick={() => setGesture(null)}>
+              Cancel
+            </button>
+          </div>
+        </section>
+      )}
+
+      {tour !== null && screen === "game" && !cine && !modal && (
+        <HudTour
+          step={tour}
+          shift={stage}
+          onNext={() => setTour((t) => (t !== null && t + 1 < TOUR.length ? t + 1 : null))}
+          onSkip={() => setTour(null)}
+        />
+      )}
+
+      {cine && screen === "game" && ready && !modal && (
+        <section className="cine" aria-label="Cutscene" aria-live="polite">
+          <div className="bar top" />
+          {cine.shots[cine.shot].flash && !settings.reducedMotion && <div key={cine.shot} className="cine-flash" />}
+          {cine.id === "opening" && cine.shots[cine.shot].key === "base" && (
+            <h2 className="cine-title">
+              MOONSHIFT <small>{state.mission.storm.label} storm · real NASA data</small>
+            </h2>
+          )}
+          {cine.shots[cine.shot].art && (
+            <div key={`art${cine.shot}`} className="cine-art-wrap">
+              <CineArtPanel kind={cine.shots[cine.shot].art!} cadet={cadet} />
+            </div>
+          )}
+          <div className="bar bottom">
+            <div key={`${cine.id}${cine.shot}`} className="cine-text">
+              <p className="cine-caption">
+                <Rich text={cine.shots[cine.shot].caption} />
+              </p>
+            </div>
+            <span className="cine-dots" aria-hidden="true">
+              {cine.shots.map((_, i) => (
+                <span key={i} className={i === cine.shot ? "on" : ""} />
+              ))}
+            </span>
+            <button className="text-button cine-skip" autoFocus onClick={skipCine}>
+              Skip scene <Icon name="arrow" size={16} />
+            </button>
+          </div>
+        </section>
       )}
 
       {!ready && !sceneError && (
@@ -942,10 +1368,7 @@ export default function App() {
       {sceneError && (
         <section className="scene-error panel" role="alert">
           <h2>The outpost needs a moment.</h2>
-          <p>
-            3D could not start. Check that WebGL 2 is available, then try again.
-            Your committed plan is kept.
-          </p>
+          <p>3D could not start. Check that WebGL 2 is available, then try again.</p>
           <button
             className="button primary"
             onClick={() => {
@@ -961,143 +1384,140 @@ export default function App() {
           </button>
         </section>
       )}
-      {screen === "game" && phase === "resolving" && (
+      {screen === "game" && phase === "running" && !modal && (
         <div className="resolving-panel panel" role="status">
-          <Icon name={state.shift === 4 ? "crew" : "check"} size={30} />
-          <p>B.E.E.P. is on it.</p>
-          <button
-            className="text-button"
-            onClick={() => dispatch({ type: "result" })}
-          >
-            Skip feedback
+          <Icon name={stage === 4 ? "crew" : "check"} size={30} />
+          <p>{stage === 4 ? "The storm passes over the outpost…" : "B.E.E.P. is on it."}</p>
+          <button className="text-button" onClick={() => dispatch({ type: "result" })}>
+            Skip
           </button>
         </div>
       )}
-      {screen === "game" && phase === "result" && !modal && (
+
+      {/* Result card: one cause-effect sentence + "Why?" (Interaksi §5 step 6). */}
+      {screen === "game" && phase === "result" && !modal && !cine && session.last && (
         <Dialog
           returnFocus={dialogInvoker.current}
-          title={
-            state.shift === 3
-              ? "Everything has a place."
-              : state.shift === 4
-                ? state.sheltered
-                  ? "All three, safely inside."
-                  : "The storm has passed."
-                : "A thoughtful shift."
-          }
-          onClose={nextShift}
+          title={stage === PICKUP ? (ending(state) === "safe" ? "Safe and Sound!" : "Rescue at Last") : stage === 0 ? "Your cargo is in." : `Shift ${stage} done.`}
+          onClose={next}
         >
-          <span className="result-tag">SHIFT {state.shift} COMPLETE</span>
+          {stage !== PICKUP && <WhyArt stage={session.last.stage} state={state} before={session.last.before} />}
+          <BeforeAfter before={session.last.before} after={state} />
           <ul className="result-list">
-            {session.history.at(-1)?.effects.map((effect) => (
-              <li key={effect}>
-                <Icon name="check" size={16} />
-                <span>{effect}</span>
+            {session.last.effects.filter((effect) => effect !== "The crew ate one meal.").map((effect) => (
+              <li key={effect} className={`fx-${effectIcon(effect)}`}>
+                <Icon name={effectIcon(effect)} size={18} />
+                <span>
+                  <Rich text={effect} />
+                </span>
               </li>
             ))}
           </ul>
-          <p className="crew-quote">
-            {state.shift === 3
-              ? "“Room to work. Room to breathe.”"
-              : state.shift === 4
-                ? state.sheltered
-                  ? "“We made it together. Nice work, B.E.E.P.”"
-                  : "“We need a safer plan for next time.”"
-                : "“Small choices make a big difference.”"}
-          </p>
-          <button className="button primary" onClick={nextShift}>
-            {state.shift === 5
-              ? "See mission summary"
-              : `Continue to shift ${state.shift + 1}`}
-            <Icon name="arrow" />
+          {stage === PICKUP ? (
+            <p className="crew-quote">{ending(state) === "safe" ? "“You built us a wall and kept us fed. We're going home.”" : "“The rescue lander is here. Let's see what to try next.”"}</p>
+          ) : (
+            <>
+              {(() => {
+                const r = crewReaction(session.last.before, state);
+                return (
+                  r && (
+                    <p className="crew-quote">
+                      <Portrait speaker={r.speaker} /> <strong>{SPEAKER[r.speaker]}:</strong>
+                      <span className="line-text">
+                        <Rich text={r.text} />
+                      </span>
+                    </p>
+                  )
+                );
+              })()}
+            </>
+          )}
+          {WHY[session.last.stage] && stage !== PICKUP && (
+            <>
+              <button className="text-button" aria-expanded={showWhy} onClick={() => setShowWhy((v) => !v)}>
+                <Icon name="help" size={16} /> Why?
+              </button>
+              {showWhy && (
+                <p className="why">
+                  {AHA[session.last.stage] && (
+                    <>
+                      <Rich text={AHA[session.last.stage]!} />{" "}
+                    </>
+                  )}
+                  <Rich text={cadet ? WHY[session.last.stage]!.cadet : WHY[session.last.stage]!.specialist} />
+                </p>
+              )}
+            </>
+          )}
+          {TERMS[session.last.stage] && (
+            <p className="terms">
+              {TERMS[session.last.stage]!.map((t) => (
+                <button key={t} className="chip" onClick={() => setTerm(term === t ? null : t)}>
+                  {t} ?
+                </button>
+              ))}
+              {term && GLOSSARY[term] && <span className="term-def">{GLOSSARY[term]}</span>}
+            </p>
+          )}
+          <button className="button primary" autoFocus onClick={next}>
+            {stage === PICKUP ? "Debrief" : stage === 5 ? "Wait for the rescue lander" : `Start shift ${stage + 1}`} <Icon name="arrow" />
           </button>
         </Dialog>
       )}
-      {screen === "game" && phase === "summary" && !modal && (
-        <Dialog
-          returnFocus={dialogInvoker.current}
-          title={
-            readiness(state)
-              ? "Ready for the final shift."
-              : "Let’s try another plan."
+
+      {screen === "game" && stage === DEBRIEF && !modal && !treeOpen && (
+        <MissionReport
+          page={debriefPage}
+          setPage={setDebriefPage}
+          state={state}
+          cadet={cadet}
+          badges={earnedBadges(state, fastCargo)}
+          known={knownBadges.current}
+          canNewMission={progress.newMission || ending(state) === "safe"}
+          learnArt={
+            <>
+              <DoseBars state={state} cadet={cadet} animate={false} full />
+              {state.mission.storm.key === "sep2017" && <StormChainArt cadet={cadet} />}
+              <p className="fiction-note in-panel">
+                This mission was a story. The storm really happened on {state.mission.storm.label === "September 2017" ? "10 September 2017" : state.mission.storm.label}.
+              </p>
+            </>
           }
-          onClose={() => setScreen("title")}
-        >
-          <p>
-            {readiness(state)
-              ? "Three astronauts, a little more comfortable, thanks to you."
-              : "Every plan teaches us something. Here is what the crew still needs."}
-          </p>
-          <ul className="summary-list">
-            <li>
-              <Icon name="crew" />
-              <span>Storm shelter</span>
-              <strong>
-                {state.sheltered ? "All 3 protected" : "Not protected"}
-              </strong>
-            </li>
-            <li>
-              <Icon name="food" />
-              <span>Food reserve</span>
-              <strong>{state.food} rations</strong>
-            </li>
-            <li>
-              <Icon name="air" />
-              <span>Air branch</span>
-              <strong>{state.branchReady ? "Ready" : "Needs repair"}</strong>
-            </li>
-            <li>
-              <Icon name="research" />
-              <span>Research bonus</span>
-              <strong>
-                {state.message === "research"
-                  ? "Sent!"
-                  : state.sampleReady
-                    ? "Prepared"
-                    : "Not sent"}
-              </strong>
-            </li>
-          </ul>
-          <p className="cause-story">
-            {state.harvested
-              ? "One more garden care turn added two rations before the crew ate."
-              : "The garden needed one more care turn. Without its harvest, the final ration is missing."}{" "}
-            {state.sheltered === false
-              ? state.branchReady
-                ? "Air readiness and a crew movement order are separate steps."
-                : "The crew needed a clear route, fan power, and an order to move."
-              : ""}
-          </p>
-          <p className="hint">
-            This slice ends after Shift 5. Pickup has not been requested yet.
-          </p>
-          <button className="button primary" onClick={restart}>
-            Try another plan
-            <Icon name="rotate" />
-          </button>
-          <button className="text-button" onClick={() => setScreen("title")}>
-            Return to title
-          </button>
-        </Dialog>
+          onReplay={() => dispatch({ type: "replay" })}
+          onNewMission={() => startGame(randomMission())}
+          onTree={() => setTreeOpen(true)}
+          onFinish={() => setScreen("title")}
+          onDataBook={() => setModal("databook")}
+        />
+      )}
+      {treeOpen && !modal && (
+        <DecisionTree
+          found={progress.tree ?? []}
+          counts={progress.counts ?? {}}
+          runs={progress.runs ?? 0}
+          current={screen === "game" && stage === DEBRIEF ? state : null}
+          onClose={() => setTreeOpen(false)}
+        />
       )}
 
       {modal && (
         <Dialog
           returnFocus={dialogInvoker.current}
+          wide={modal === "databook"}
           title={
             modal === "pause"
               ? "A moment to think."
               : modal === "help"
-                ? "A few little pointers."
+                ? "How to play"
                 : modal === "settings"
-                  ? "Make yourself comfortable."
+                  ? "Settings"
                   : modal === "risk"
-                    ? state.shift === 4
-                      ? "Continue without shelter?"
-                      : "Food is running short."
-                    : modal === "restart"
-                      ? "Start a fresh plan?"
-                      : "Return to the title?"
+                    ? "Hmm, will this be enough?"
+                    : modal === "databook"
+                      ? "Where do these numbers come from?"
+                      : modal === "restart"
+                        ? "Start Mission again?"
+                        : "Return to the title?"
           }
           onClose={closeModal}
         >
@@ -1106,20 +1526,35 @@ export default function App() {
               <button className="button primary" onClick={() => setModal(null)}>
                 Resume
               </button>
-              <button className="button" onClick={() => openFromPause("help")}>
+              <button
+                className="button"
+                onClick={() => {
+                  setReturnToPause(true);
+                  setModal("help");
+                }}
+              >
                 How to play
               </button>
               <button
                 className="button"
-                onClick={() => openFromPause("settings")}
+                onClick={() => {
+                  setReturnToPause(true);
+                  setModal("settings");
+                }}
               >
                 Settings
               </button>
               <button
-                className="text-button"
-                onClick={() => setModal("restart")}
+                className="button"
+                onClick={() => {
+                  setModal(null);
+                  setCine({ id: "opening", shots: cutscene("opening", state), shot: 0, start: performance.now() });
+                }}
               >
-                Restart slice
+                Watch the intro again
+              </button>
+              <button className="text-button" onClick={() => setModal("restart")}>
+                Restart mission
               </button>
               <button className="text-button" onClick={() => setModal("exit")}>
                 Return to title
@@ -1129,39 +1564,59 @@ export default function App() {
           {modal === "help" && (
             <>
               <div className="help-row">
+                <Icon name="crew" size={30} />
+                <div>
+                  <h3>Walk and use</h3>
+                  <p>WASD, arrows, or tap the ground to walk. Amber rings can be used: press E or tap them.</p>
+                </div>
+              </div>
+              <div className="help-row">
+                <Icon name="shield" size={30} />
+                <div>
+                  <h3>Three meters</h3>
+                  <p>Power runs things. Food feeds the crew. Shield is how many cells around the shelter are covered.</p>
+                </div>
+              </div>
+              <div className="help-row">
                 <Icon name="cargo" size={30} />
                 <div>
-                  <h3>Choose. Place. Rotate.</h3>
-                  <p>
-                    Select cargo, then a cell. Keep the top or bottom striped
-                    vent clear. R rotates a selected crate in the grid.
-                  </p>
+                  <h3>One big choice</h3>
+                  <p>Every item is used now, or saved as a wall. Not both.</p>
                 </div>
               </div>
               <div className="help-row">
                 <Icon name="power" size={30} />
                 <div>
-                  <h3>One little unit of power.</h3>
-                  <p>
-                    The fan, garden, and radio each need one. Your battery adds
-                    one extra unit, once.
-                  </p>
+                  <h3>Power</h3>
+                  <p>Every shift brings 3 new power. The air always uses 2, so 1 is free. The radio, the garden and the sample lamp each use 1. A battery adds 1 for one shift. Power you don't use is not saved.</p>
                 </div>
               </div>
               <div className="help-row">
-                <Icon name="crew" size={30} />
+                <Icon name="food" size={30} />
                 <div>
-                  <h3>Plan, then make it happen.</h3>
-                  <p>
-                    Preview changes before running a shift. The shelter needs
-                    air and a crew movement order.
-                  </p>
+                  <h3>Food</h3>
+                  <p>The crew eats 1 meal every shift and 1 more while waiting for rescue.</p>
                 </div>
               </div>
-              <p className="hint">
-                Use Tab to reach controls, arrows in the grid, and Enter or
-                Space to choose. Escape pauses or closes a panel.
-              </p>
+              <h3>The items</h3>
+              <ul className="help-items">
+                {CARGO_IDS.map((id) => (
+                  <li key={id}>
+                    <b>
+                      <strong>{CARGO[id].name}</strong> · {CARGO[id].slots} slot{CARGO[id].slots > 1 ? "s" : ""}
+                    </b>
+                    <span>Use: {CARGO[id].use}</span>
+                    <span>{CARGO[id].wall}</span>
+                  </li>
+                ))}
+                <li>
+                  <b>
+                    <strong>Supply crate</strong> · already at the outpost
+                  </b>
+                  <span>Spare parts. Its only job: one wall cell.</span>
+                </li>
+              </ul>
+              <p className="hint">Space or Scan shows labels. G toggles Particle goggles. R turns the water tank. Escape pauses.</p>
               <button className="button primary" onClick={closeModal}>
                 Got it
               </button>
@@ -1171,37 +1626,45 @@ export default function App() {
             <>
               <label className="setting-row">
                 <span>
-                  <strong>Reduced motion</strong>
-                  <small>
-                    Use immediate feedback instead of travel animations.
-                  </small>
+                  <strong>Read lines aloud</strong>
+                  <small>Crew lines are spoken automatically.</small>
                 </span>
-                <input
-                  type="checkbox"
-                  checked={settings.reducedMotion}
-                  onChange={(event) =>
-                    setSettings({
-                      ...settings,
-                      reducedMotion: event.target.checked,
-                    })
-                  }
-                />
+                <input type="checkbox" checked={settings.voice} onChange={(e) => setSettings({ ...settings, voice: e.target.checked })} />
+              </label>
+              <label className="setting-row">
+                <span>
+                  <strong>60-second cargo timer</strong>
+                  <small>Optional challenge. Earns the Lightning badge.</small>
+                </span>
+                <input type="checkbox" checked={settings.timer} onChange={(e) => setSettings({ ...settings, timer: e.target.checked })} />
+              </label>
+              <label className="setting-row">
+                <span>
+                  <strong>Sound effects</strong>
+                  <small>Clicks, thuds and chimes.</small>
+                </span>
+                <input type="checkbox" checked={settings.sound} onChange={(e) => setSettings({ ...settings, sound: e.target.checked })} />
+              </label>
+              <label className="setting-row">
+                <span>
+                  <strong>Music</strong>
+                  <small>Calm tunes; softer and slower during the storm.</small>
+                </span>
+                <input type="checkbox" checked={settings.music} onChange={(e) => setSettings({ ...settings, music: e.target.checked })} />
+              </label>
+              <label className="setting-row">
+                <span>
+                  <strong>Reduce motion</strong>
+                  <small>No particle snow, instant camera.</small>
+                </span>
+                <input type="checkbox" checked={settings.reducedMotion} onChange={(e) => setSettings({ ...settings, reducedMotion: e.target.checked })} />
               </label>
               <label className="setting-row">
                 <span>
                   <strong>Low graphics</strong>
-                  <small>Lower drawing resolution and simplify glass.</small>
+                  <small>Lower resolution and simpler glass.</small>
                 </span>
-                <input
-                  type="checkbox"
-                  checked={settings.lowGraphics}
-                  onChange={(event) =>
-                    setSettings({
-                      ...settings,
-                      lowGraphics: event.target.checked,
-                    })
-                  }
-                />
+                <input type="checkbox" checked={settings.lowGraphics} onChange={(e) => setSettings({ ...settings, lowGraphics: e.target.checked })} />
               </label>
               <button className="button primary" onClick={closeModal}>
                 Done
@@ -1214,61 +1677,191 @@ export default function App() {
                 <Icon name="warning" />
                 {preview.risks.join(" ")}
               </div>
-              <p>
-                You can return to your plan and change it. Continuing records
-                this outcome.
-              </p>
-              <button
-                className="button primary"
-                autoFocus
-                onClick={() => setModal(null)}
-              >
-                Return to plan
+              <p>You can go back and change the plan, or keep going. The rescue lander comes either way.</p>
+              <button className="button primary" autoFocus onClick={() => setModal(null)}>
+                Change my plan
               </button>
-              <button
-                className="text-button danger-text"
-                onClick={() => {
-                  setModal(null);
-                  setSelected(null);
-                  dispatch({ type: "commit", acceptRisk: true });
-                }}
-              >
-                {state.shift === 4
-                  ? "Continue without shelter"
-                  : "Continue with this food plan"}
+              <button className="text-button" onClick={() => commit(true)}>
+                Keep going
+              </button>
+            </>
+          )}
+          {modal === "databook" && (
+            <>
+              <p className="fiction-note in-panel">The outpost, the crew and B.E.E.P. are made up. The storm, its numbers and the science come from real NASA data.</p>
+              <ul className="data-book">
+                {DATA_BOOK.map((entry) => (
+                  <li key={entry.name}>
+                    <strong>{entry.name}</strong>
+                    <span>{entry.text}</span>
+                    <small>Used for: {entry.used}</small>
+                    <a href={entry.url} target="_blank" rel="noreferrer">
+                      Source
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="hint">All storm data is archive data, replayed faster. Nothing here is live.</p>
+              <button className="button primary" onClick={closeModal}>
+                Close
               </button>
             </>
           )}
           {(modal === "restart" || modal === "exit") && (
             <>
-              <p>
-                Your current three-shift run will end. A fresh run starts with
-                the same cargo and supplies.
-              </p>
-              <button
-                className="button primary"
-                autoFocus
-                onClick={() => setModal("pause")}
-              >
+              <p>This run ends. You can always start again.</p>
+              <button className="button primary" autoFocus onClick={() => setModal("pause")}>
                 Keep playing
               </button>
               <button
-                className="text-button danger-text"
+                className="text-button"
                 onClick={() => {
-                  if (modal === "restart") restart();
+                  if (modal === "restart") startGame(state.mission);
                   else {
-                    dispatch({ type: "restart" });
                     setScreen("title");
                     setModal(null);
                   }
                 }}
               >
-                {modal === "restart" ? "Restart slice" : "Return to title"}
+                {modal === "restart" ? "Restart mission" : "Return to title"}
               </button>
             </>
           )}
         </Dialog>
       )}
     </main>
+  );
+}
+
+/** Two (S4) or three (debrief) dose bars: comparison only until real CRaTER/OSDR numbers are added. */
+type Snapshot = Parameters<typeof doseBars>[0];
+/** Visual before -> after for what changed this shift. */
+function BeforeAfter({ before, after }: { before: Snapshot; after: Snapshot }) {
+  const rows: { icon: IconName; label: string; from: string | number; to: string | number; kind: string }[] = [];
+  if (before.stage >= 1 && before.food !== after.food) rows.push({ icon: "food", label: "Meals", from: before.food, to: after.food, kind: "f" });
+  if (before.shield !== after.shield) rows.push({ icon: "shield", label: "Shield", from: before.shield, to: after.shield, kind: "s" });
+  if (before.forecast === "none" && after.forecast === "sent") rows.push({ icon: "mail", label: "Earth's reply", from: "none", to: "next shift", kind: "e" });
+  if (!before.crewMoved && after.crewMoved) rows.push({ icon: "crew", label: "Crew", from: "outside", to: "shelter", kind: "s" });
+  if (!rows.length) return null;
+  return (
+    <div className="before-after" aria-label="What changed">
+      {rows.map((r) => (
+        <span key={r.label} className={`ba kw-${r.kind}`}>
+          <Icon name={r.icon} size={18} />
+          <small>{r.label}</small>
+          <b>{r.from}</b>
+          <Icon name="arrow" size={14} />
+          <b>{r.to}</b>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function DoseBars({ state, cadet, animate, full = false }: { state: Parameters<typeof doseBars>[0]; cadet: boolean; animate: boolean; full?: boolean }) {
+  const bars = doseBars(state);
+  const rows = [
+    state.crewMoved
+      ? { key: "habitat", label: "If they stayed in the habitat", value: bars.habitat }
+      : { key: "yours", label: "Your crew (stayed in the habitat)", value: bars.yours },
+    ...(state.crewMoved ? [{ key: "yours", label: "In your shelter", value: bars.yours }] : []),
+    ...(full || !state.crewMoved ? [{ key: "full", label: "Shelter with the thickest wall", value: bars.full }] : []),
+  ];
+  return (
+    <div className={`dose panel ${animate ? "grow" : ""}`} aria-label="Particle dose comparison">
+      <span className="meter-name">Particles that reached the crew</span>
+      {rows.map((row) => (
+        <div key={row.key} className={`dose-row ${row.key}`}>
+          <span>{row.label}</span>
+          <span className="bar" style={{ ["--w" as string]: `${row.value}%` }} />
+          {!cadet && <small>{row.value}%</small>}
+        </div>
+      ))}
+      <small className="hint">
+        {cadet
+          ? "Shorter bar = fewer particles = safer. In NASA's Artemis I test, the best-protected spot got about 4 times less."
+          : "Scaled to NASA Artemis I (MARE): Orion's best-shielded spot got about 4× less than its least shielded spot, so the thickest wall here lets in 1/4. A comparison, not a measured dose."}
+      </small>
+    </div>
+  );
+}
+
+/** The HUD tour: what each panel is for, pointed at, one short line each. */
+const TOUR: { sel: string; text: (shift: number) => string }[] = [
+  { sel: '[data-tour="rescue"]', text: (s) => `**Rescue lander**: it comes after shift 5. Now it's shift ${s}.` },
+  { sel: ".meter.power", text: () => "**Power**: 3 new every shift. The air uses 2, so **1** is yours to share." },
+  { sel: ".meter.food", text: () => "**Food**: each circle is **1 meal**. The crew eats 1 every shift." },
+  { sel: ".meter.shield", text: () => "**Shield**: how thick the storm wall is. You'll build it in **shift 3**." },
+];
+function HudTour({ step, shift, onNext, onSkip }: { step: number; shift: number; onNext: () => void; onSkip: () => void }) {
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  useLayoutEffect(() => {
+    const measure = () => setRect(document.querySelector(TOUR[step].sel)?.getBoundingClientRect() ?? null);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [step]);
+  const last = step === TOUR.length - 1;
+  const pad = 6;
+  return (
+    <div className="tour" role="dialog" aria-modal="true" aria-label="What the panels show">
+      {rect && <div className="tour-hole" style={{ left: rect.left - pad, top: rect.top - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 }} />}
+      <div className="tour-tip panel" style={rect ? { left: rect.right + 18, top: Math.max(12, rect.top - 4) } : { left: 24, top: 120 }}>
+        <span className="tour-arrow" aria-hidden="true" />
+        <p>
+          <Rich text={TOUR[step].text(shift)} />
+        </p>
+        <div className="tour-actions">
+          <button className="text-button" onClick={onSkip}>
+            Skip tour
+          </button>
+          <button className="button primary" autoFocus onClick={onNext}>
+            {last ? "Got it" : `Next ${step + 1}/${TOUR.length}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+/** Title screen, top right: what is made up and what is real, side by side. */
+function TruthCard() {
+  return (
+    <aside className="truth-card" aria-label="Made-up story, real science">
+      <span className="truth-head">Made-up story · real science</span>
+      <div className="truth-row made">
+        <span className="truth-art">
+          <img src={`${import.meta.env.BASE_URL}assets/report/beep.webp`} alt="" width={64} height={64} />
+        </span>
+        <span>
+          <b>Made up</b>
+          <small>The outpost, the three astronauts and B.E.E.P.</small>
+        </span>
+      </div>
+      <div className="truth-row real">
+        <span className="truth-art sun" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <defs>
+              <radialGradient id="sun-g" cx="45%" cy="40%" r="60%">
+                <stop offset="0" stopColor="#fff3b0" />
+                <stop offset="0.55" stopColor="#f4b23a" />
+                <stop offset="1" stopColor="#e2683a" />
+              </radialGradient>
+            </defs>
+            <circle className="corona" cx="32" cy="32" r="27" fill="#f4b23a33" />
+            <circle cx="32" cy="32" r="19" fill="url(#sun-g)" />
+            <path className="flare" d="M47 22 C56 14 60 20 54 26 C50 30 48 27 50 24" fill="none" stroke="#ffd36b" strokeWidth="3" strokeLinecap="round" />
+            {[0, 1, 2, 3, 4].map((i) => (
+              <circle key={i} className="spark" cx={52 + i * 2.2} cy={14 - i * 1.6} r={1.6} fill="#ff8a3d" style={{ animationDelay: `${i * 0.25}s` }} />
+            ))}
+          </svg>
+        </span>
+        <span>
+          <b>Real</b>
+          <small>The September 2017 solar storm and its numbers, from NASA data.</small>
+        </span>
+      </div>
+    </aside>
   );
 }

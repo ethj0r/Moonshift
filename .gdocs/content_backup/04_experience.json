@@ -1,0 +1,1410 @@
+{
+  "tab": "04 Experience: UX, UI, Audio",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 04 · EXPERIENCE"
+    },
+    {
+      "t": "h1",
+      "x": "Experience: UX, UI, Audio"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what the player feels from first launch to hundredth hour, and what the interface and sound do to protect that feeling."
+    },
+    {
+      "t": "ins",
+      "x": "Start with 4.1 and 4.3; they expose missing screens before art begins. Treat 4.7 as a shipping requirement, not a polish pass."
+    },
+    {
+      "t": "h2",
+      "x": "4.1 Player journey"
+    },
+    {
+      "t": "ins",
+      "x": "Write the journey from the player's clock, not the feature list. Name what they do, what they feel, and what could break the session at each stage."
+    },
+    {
+      "t": "h3",
+      "x": "First 5 minutes"
+    },
+    {
+      "t": "p",
+      "x": "The first five minutes answer three questions without a menu: where am I, what can I do, and why care. Put the first action inside {{30 seconds}} and first success inside {{90 seconds}}. If the player watches more than plays, the opening is a trailer."
+    },
+    {
+      "t": "fill",
+      "x": "Opening: {{wake in the cargo lander and move one crate before air runs out}} · First success: {{the door opens}} · First surprise: {{the crew speaks to B.E.E.P. as if it cannot hear}}"
+    },
+    {
+      "t": "h3",
+      "x": "First session"
+    },
+    {
+      "t": "p",
+      "x": "A first session is a complete emotional unit, not a tutorial plus a game. End on a decision the player wants to return to, and make the save state legible: {{the next shift begins with air at 40 percent}}. Target {{20–40 minutes}} and test where players stop."
+    },
+    {
+      "t": "fill",
+      "x": "Length: {{25 minutes}} · Exit hook: {{the radio picks up a signal nobody can identify}} · Save prompt: {{autosave at the shift break with a one-line recap}}"
+    },
+    {
+      "t": "h3",
+      "x": "First week"
+    },
+    {
+      "t": "p",
+      "x": "The first week is about mastery and return. By session three the player has a routine, a chosen goal, and one system they understand better than the game explained. Track return after the first fail, not only the first win."
+    },
+    {
+      "t": "fill",
+      "x": "Session 3 goal: {{stabilize air for two shifts without resupply}} · Mastery moment: {{reroute a pipe without the hint}} · Return hook: {{a crew member asks a personal favour}}"
+    },
+    {
+      "t": "h3",
+      "x": "Emotional arc"
+    },
+    {
+      "t": "p",
+      "x": "Write the intended feeling as a curve with five points: {{curiosity, competence, attachment, doubt, resolve}}. Name the beat that produces each turn. If two adjacent beats produce the same feeling, one is padding."
+    },
+    {
+      "t": "p",
+      "x": "The arc must survive failure. A player who loses a shift should feel {{determined}}, not {{stupid}}. If failure produces the second feeling, the feedback blames the player for a system the game did not teach."
+    },
+    {
+      "t": "h3",
+      "x": "Moments of delight and friction"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Moment",
+        "Type",
+        "Trigger",
+        "Design response"
+      ],
+      "w": [
+        132,
+        72,
+        124,
+        176
+      ],
+      "rows": [
+        [
+          "{{First air hiss}}",
+          "{{delight}}",
+          "{{repairing the main air unit}}",
+          "{{hold the camera; let the sound finish}}"
+        ],
+        [
+          "{{Crew says B.E.E.P.'s name}}",
+          "{{delight}}",
+          "{{trust threshold}}",
+          "{{no music swell; let the line land}}"
+        ],
+        [
+          "{{Air timer turns red}}",
+          "{{friction}}",
+          "{{air below 20 percent}}",
+          "{{show the cause and one fix}}"
+        ],
+        [
+          "{{Menu opens over a live timer}}",
+          "{{friction}}",
+          "{{pausing during a shift}}",
+          "{{pause the timer with the menu}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Journey map"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Stage",
+        "Player goal",
+        "Action",
+        "Feeling and risk",
+        "Design response"
+      ],
+      "w": [
+        88,
+        100,
+        96,
+        112,
+        108
+      ],
+      "rows": [
+        [
+          "First launch",
+          "{{understand the goal}}",
+          "{{move, look, pick up}}",
+          "{{curious; control confusion}}",
+          "{{one prompt at a time}}"
+        ],
+        [
+          "First success",
+          "{{complete a shift}}",
+          "{{carry, repair, place}}",
+          "{{competent; unclear feedback}}",
+          "{{confirm every state change}}"
+        ],
+        [
+          "First failure",
+          "{{recover without restarting}}",
+          "{{triage, retry}}",
+          "{{frustrated; shame}}",
+          "{{recoverable fail, explicit cause}}"
+        ],
+        [
+          "First return",
+          "{{resume a plan}}",
+          "{{read recap, choose next}}",
+          "{{invested; forgetting}}",
+          "{{recap card with three facts}}"
+        ],
+        [
+          "Mastery",
+          "{{optimize the base}}",
+          "{{chain systems, help crew}}",
+          "{{proud; no new goal}}",
+          "{{unlock a personal quest}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4.2 UX principles and information architecture"
+    },
+    {
+      "t": "ins",
+      "x": "Write five principles that can reject a design. 'Be intuitive' cannot reject anything; 'one decision per screen' can."
+    },
+    {
+      "t": "num",
+      "x": [
+        "**One decision per screen.** Split destination, difficulty, and save-slot choices into separate screens.",
+        "**Show state before asking for input.** The player sees the relevant resources and timers before spending them.",
+        "**The world is the first menu.** Prefer a switch, door, or console over a list when the choice has a physical place.",
+        "**Every failure is visible before it is expensive.** Warn at the threshold, not after the loss.",
+        "**Two inputs to anywhere.** Any regular screen is reachable in two actions from gameplay."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Hierarchy of information"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Tier",
+        "Content",
+        "Placement",
+        "Example"
+      ],
+      "w": [
+        88,
+        140,
+        128,
+        148
+      ],
+      "rows": [
+        [
+          "Critical",
+          "{{air, time, immediate danger}}",
+          "{{HUD, persistent}}",
+          "{{air meter at 12 percent}}"
+        ],
+        [
+          "Actionable",
+          "{{current objective, interact prompt}}",
+          "{{HUD, contextual}}",
+          "{{hold to repair}}"
+        ],
+        [
+          "Reference",
+          "{{inventory, map, crew status}}",
+          "{{one input away}}",
+          "{{shift summary}}"
+        ],
+        [
+          "Optional",
+          "{{lore, stats, achievements}}",
+          "{{menu}}",
+          "{{codex entry}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Diegetic versus non-diegetic"
+    },
+    {
+      "t": "p",
+      "x": "Take a stance per system, not for the whole game. Resources can live in the world as gauges and tanks; objectives usually need a list because the world cannot narrate priority. Write the rule the UI team can apply without asking."
+    },
+    {
+      "t": "fill",
+      "x": "Diegetic: {{air, power, cargo, door locks}} · Non-diegetic: {{objectives, subtitles, settings}} · Hybrid: {{map, crew mood}}"
+    },
+    {
+      "t": "h3",
+      "x": "Cognitive load budget"
+    },
+    {
+      "t": "p",
+      "x": "Set a number for simultaneous information and test against it. A player tracking six resources is not managing a base; they are reading a dashboard."
+    },
+    {
+      "t": "fill",
+      "x": "Max HUD resources: {{3}} · Max active objectives: {{3}} · Max new terms per tutorial beat: {{1}} · Max choices per prompt: {{4}}"
+    },
+    {
+      "t": "h3",
+      "x": "Platform conventions"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "PC: hover reveals, right-click cancels, Esc pauses, and every action has a keyboard equivalent.",
+        "Console: face button confirms, B or Circle backs, triggers switch tabs, and focus never leaves the screen.",
+        "Handheld: text scales for a {{7-inch}} screen and touch targets are at least {{44 by 44 pixels}}.",
+        "Use platform controller glyphs and respect suspend and resume behaviour on every storefront."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4.3 Screen flow"
+    },
+    {
+      "t": "ins",
+      "x": "Inventory screens before wireframing. Every screen needs an owner, one entry, and a defined back target; orphan screens become bugs."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Screen",
+        "Purpose",
+        "Entry",
+        "Exit",
+        "Owner"
+      ],
+      "w": [
+        104,
+        132,
+        92,
+        108,
+        68
+      ],
+      "rows": [
+        [
+          "Title and save select",
+          "{{brand, continue, new game, slot choice}}",
+          "{{launch}}",
+          "{{gameplay}}",
+          "{{UI lead}}"
+        ],
+        [
+          "Gameplay HUD",
+          "{{play the shift}}",
+          "{{load}}",
+          "{{pause, menu, results}}",
+          "{{UX designer}}"
+        ],
+        [
+          "Pause",
+          "{{resume, settings, quit}}",
+          "{{Esc or Start}}",
+          "{{gameplay or title}}",
+          "{{UI lead}}"
+        ],
+        [
+          "Map",
+          "{{navigate the base}}",
+          "{{M or D-pad}}",
+          "{{gameplay}}",
+          "{{Systems designer}}"
+        ],
+        [
+          "Quest log",
+          "{{review objectives and rewards}}",
+          "{{J or menu}}",
+          "{{gameplay}}",
+          "{{Quest designer}}"
+        ],
+        [
+          "Settings",
+          "{{change options}}",
+          "{{pause or title}}",
+          "{{previous screen}}",
+          "{{UI lead}}"
+        ],
+        [
+          "Results and recap",
+          "{{show shift outcome}}",
+          "{{shift end}}",
+          "{{next shift or title}}",
+          "{{UX designer}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Navigation rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every screen has one primary action and one clear way back. Two competing back buttons are a coin flip.",
+        "Tabs remember their last position within a session; resetting to the first tab punishes exploration.",
+        "The pause menu opens over a frozen frame of gameplay, not a black screen; the player keeps their place."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Back behaviour"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Context",
+        "Back action",
+        "Exception"
+      ],
+      "w": [
+        148,
+        184,
+        172
+      ],
+      "rows": [
+        [
+          "Gameplay",
+          "{{open pause}}",
+          "{{during a cutscene, back skips after confirmation}}"
+        ],
+        [
+          "Settings submenu",
+          "{{return to category list}}",
+          "{{unsaved changes prompt}}"
+        ],
+        [
+          "Modal confirm",
+          "{{cancel the action}}",
+          "{{none; cancel is always safe}}"
+        ],
+        [
+          "Store or account",
+          "{{return to previous screen}}",
+          "{{purchase in progress, show progress}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Loading and transition rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Transitions under {{one second}} are cuts; over {{three seconds}} need a progress indicator and a tip.",
+        "Never show a spinner without a label; the player must know whether the game is saving, loading, or matching.",
+        "Use one transition language: {{fade to white for shift changes, fade to black for failure}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Error and empty states"
+    },
+    {
+      "t": "table",
+      "head": [
+        "State",
+        "Message",
+        "Recovery action"
+      ],
+      "w": [
+        120,
+        224,
+        160
+      ],
+      "rows": [
+        [
+          "{{No save found}}",
+          "{{No shifts yet. Start a new base.}}",
+          "{{New game, import save}}"
+        ],
+        [
+          "{{Cloud save conflict}}",
+          "{{Two saves disagree. Pick the one to keep.}}",
+          "{{Compare time and progress}}"
+        ],
+        [
+          "{{Controller disconnected}}",
+          "{{Controller lost. Reconnect or press any key.}}",
+          "{{Pause, retry}}"
+        ],
+        [
+          "{{Empty quest log}}",
+          "{{Nothing active. Talk to the crew or explore.}}",
+          "{{Show map markers}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Diagram guidance"
+    },
+    {
+      "t": "p",
+      "x": "Draw the flow as boxes and arrows with one entry and one exit per screen. Label every arrow with the input that causes it. Keep the diagram in the repository and date it; a slide-deck copy is already stale."
+    },
+    {
+      "t": "h2",
+      "x": "4.4 HUD and in-game UI"
+    },
+    {
+      "t": "ins",
+      "x": "Add a HUD element only after naming the decision it supports. If the player never acts on it, move it to a menu or remove it."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Element",
+        "Why",
+        "Location",
+        "Priority",
+        "Hide rule"
+      ],
+      "w": [
+        100,
+        116,
+        92,
+        84,
+        112
+      ],
+      "rows": [
+        [
+          "{{Air meter}}",
+          "{{survival resource}}",
+          "{{top left}}",
+          "{{critical}}",
+          "{{never}}"
+        ],
+        [
+          "{{Power meter}}",
+          "{{spending decision}}",
+          "{{top left, under air}}",
+          "{{high}}",
+          "{{hide in menus}}"
+        ],
+        [
+          "{{Shift timer}}",
+          "{{pacing}}",
+          "{{top centre}}",
+          "{{high}}",
+          "{{pause with menu}}"
+        ],
+        [
+          "{{Objective tracker}}",
+          "{{next action}}",
+          "{{right side}}",
+          "{{medium}}",
+          "{{hide during cutscene}}"
+        ],
+        [
+          "{{Interact prompt}}",
+          "{{available verb}}",
+          "{{near reticle}}",
+          "{{contextual}}",
+          "{{hide when no target}}"
+        ],
+        [
+          "{{Status icons}}",
+          "{{cause and severity}}",
+          "{{bottom centre}}",
+          "{{critical}}",
+          "{{fade after 4 seconds}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Readability at 1080p"
+    },
+    {
+      "t": "p",
+      "x": "Set minimum sizes in pixels, not points. Test on a TV at {{three metres}} and a handheld at {{30 centimetres}}. If the player leans in, the HUD is too small."
+    },
+    {
+      "t": "fill",
+      "x": "Minimum body text: {{24 px}} · Minimum HUD label: {{18 px}} · Minimum contrast: {{4.5:1}} · Maximum HUD text lines: {{2}}"
+    },
+    {
+      "t": "h3",
+      "x": "Safe zones"
+    },
+    {
+      "t": "p",
+      "x": "Keep critical UI inside the title-safe area. TVs overscan and some monitors crop edges; a timer at the edge is a timer the player cannot see."
+    },
+    {
+      "t": "fill",
+      "x": "Safe margin: {{5 percent of screen width}} · TV-safe: {{10 percent}} · Subtitle baseline: {{12 percent above the bottom edge}}"
+    },
+    {
+      "t": "h3",
+      "x": "Damage and status feedback"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Use two channels for every critical state: colour plus icon, sound plus screen edge, motion plus text.",
+        "Show direction before magnitude; the player needs to know where the problem is before how bad it is.",
+        "Fade feedback once the cause is resolved; a permanent red icon teaches the player to ignore red."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Minimalism test"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Remove the element. Can the player still make the decision it supported?",
+        "If yes, leave it removed.",
+        "If no, can the world show it instead of the HUD? If yes, move it and retest.",
+        "If no, keep it and write the reason in the HUD table."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4.5 Menus, settings, and save/load UX"
+    },
+    {
+      "t": "ins",
+      "x": "Design the menu tree as a flat list of destinations first. Group by player intent, not by internal system name."
+    },
+    {
+      "t": "h3",
+      "x": "Menu tree"
+    },
+    {
+      "t": "p",
+      "x": "Write the tree as indented text, then count the depth. The player should never be more than three choices from quitting, saving, or turning on subtitles."
+    },
+    {
+      "t": "fill",
+      "x": "Title: {{Continue · New Shift · Settings · Credits · Quit}} · Pause: {{Resume · Objectives · Map · Settings · Save · Quit}} · Settings: {{Display · Audio · Controls · Accessibility · Gameplay · Language}}"
+    },
+    {
+      "t": "h3",
+      "x": "Settings categories"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Category",
+        "Contains",
+        "Default",
+        "Apply timing"
+      ],
+      "w": [
+        104,
+        172,
+        120,
+        108
+      ],
+      "rows": [
+        [
+          "Display",
+          "{{brightness, resolution, window mode, FOV}}",
+          "{{native, fullscreen}}",
+          "{{immediate with confirm}}"
+        ],
+        [
+          "Audio",
+          "{{master, music, SFX, voice}}",
+          "{{80 percent}}",
+          "{{live preview}}"
+        ],
+        [
+          "Controls",
+          "{{bindings, sensitivity, invert, vibration}}",
+          "{{platform default}}",
+          "{{on close}}"
+        ],
+        [
+          "Accessibility",
+          "{{subtitles, text size, contrast, remap, shake}}",
+          "{{subtitles on, shake reduced}}",
+          "{{live preview}}"
+        ],
+        [
+          "Gameplay",
+          "{{difficulty, hints, timers, autosave}}",
+          "{{standard, hints on}}",
+          "{{next session or confirm}}"
+        ],
+        [
+          "Language",
+          "{{text, VO, subtitles}}",
+          "{{system language}}",
+          "{{reload UI}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Defaults"
+    },
+    {
+      "t": "p",
+      "x": "Defaults are the design. Most players never open settings, so ship the most accessible version: subtitles on, shake reduced, toggle instead of hold, and a difficulty that forgives a first mistake."
+    },
+    {
+      "t": "h3",
+      "x": "Save model"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Save type",
+        "Trigger",
+        "Slots",
+        "Cloud",
+        "Player control"
+      ],
+      "w": [
+        92,
+        148,
+        76,
+        64,
+        124
+      ],
+      "rows": [
+        [
+          "Autosave",
+          "{{shift start, choice, area change}}",
+          "{{rotating 3}}",
+          "{{yes}}",
+          "{{cannot disable entirely}}"
+        ],
+        [
+          "Manual",
+          "{{pause menu}}",
+          "{{10}}",
+          "{{yes}}",
+          "{{full}}"
+        ],
+        [
+          "Checkpoint",
+          "{{before irreversible choice}}",
+          "{{1}}",
+          "{{no}}",
+          "{{reload from pause}}"
+        ],
+        [
+          "Cloud conflict",
+          "{{launch with mismatched timestamps}}",
+          "{{2}}",
+          "{{yes}}",
+          "{{choose or compare}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Confirmations"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Confirm destructive actions only: overwrite save, quit with unsaved progress, delete a base, spend premium currency.",
+        "Do not confirm reversible actions; a prompt on every repair trains the player to mash through.",
+        "Put the consequence in the button label: {{Overwrite save 2}}, not {{OK}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Account and entitlement states"
+    },
+    {
+      "t": "table",
+      "head": [
+        "State",
+        "What the player sees",
+        "Allowed actions"
+      ],
+      "w": [
+        116,
+        208,
+        180
+      ],
+      "rows": [
+        [
+          "{{Signed out}}",
+          "{{Local save only, cloud disabled}}",
+          "{{Play, sign in later}}"
+        ],
+        [
+          "{{Offline}}",
+          "{{Cloud paused, local saves work}}",
+          "{{Play, retry sync}}"
+        ],
+        [
+          "{{Entitlement missing}}",
+          "{{Content locked with store link}}",
+          "{{View store, restore purchase}}"
+        ],
+        [
+          "{{Sync conflict}}",
+          "{{Two timestamps and progress summaries}}",
+          "{{Keep local, keep cloud, compare}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4.6 Onboarding and tutorials"
+    },
+    {
+      "t": "ins",
+      "x": "Teach one verb per beat, test it immediately, then reinforce it in a new context. If a tutorial needs a wall of text, the interaction is not ready."
+    },
+    {
+      "t": "p",
+      "x": "**Teach, test, reinforce.** Teach with a prompt and demonstration, test with a task the player cannot complete by accident, and reinforce by requiring the verb again {{ten minutes later}}. A verb taught once is a cutscene with a button."
+    },
+    {
+      "t": "h3",
+      "x": "First-run flow"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Show the title and one action: {{Continue or New Shift}}.",
+        "Load into a playable moment; no logo chain longer than {{eight seconds}}.",
+        "Teach movement and one interaction in the first {{30 seconds}}.",
+        "Give the first success before the first failure.",
+        "Ask about accessibility once, with sensible defaults and a skip."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Contextual prompts"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Show a prompt when the player is near the relevant object and has not used it yet; hide it after the first success.",
+        "Use the verb in the prompt: {{Hold E to repair}}, not {{Interact}}.",
+        "One prompt at a time; stacked prompts hide the world and make the player read instead of look."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Skip and replay"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every tutorial beat is skippable from the pause menu and replayable from the help screen.",
+        "Skipping sets the same flags as completing; the player must not be locked out of a mechanic.",
+        "Offer a practice room for timing verbs; do not gate story progress on a timing test."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Measuring comprehension"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Metric",
+        "Target",
+        "Method"
+      ],
+      "w": [
+        156,
+        160,
+        188
+      ],
+      "rows": [
+        [
+          "{{First action time}}",
+          "{{under 30 seconds}}",
+          "{{telemetry from first launch}}"
+        ],
+        [
+          "{{Tutorial completion}}",
+          "{{90 percent without help}}",
+          "{{funnel by step}}"
+        ],
+        [
+          "{{Repeat prompt rate}}",
+          "{{under 15 percent}}",
+          "{{prompt shown after success}}"
+        ],
+        [
+          "{{Support tickets}}",
+          "{{no top-3 issue about controls}}",
+          "{{tag and review weekly}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4.7 Accessibility"
+    },
+    {
+      "t": "ins",
+      "x": "Set the accessibility target before content lock. Retrofitting subtitles, remapping, and scalable text costs three to five times more than building them in."
+    },
+    {
+      "t": "p",
+      "x": "Accessibility is a set of shipping requirements with owners and test cases, not a values statement. Name the standard, the options, and the person who signs off. Test with assistive technology and with players, not only with a checklist."
+    },
+    {
+      "t": "callout",
+      "label": "Non-negotiable",
+      "x": "The player should never lose because the UI failed to communicate. Treat unreadable text, missing subtitles, and ambiguous status as gameplay bugs with the same severity as a crash."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Option",
+        "Default",
+        "Scope",
+        "Cost"
+      ],
+      "w": [
+        148,
+        132,
+        148,
+        76
+      ],
+      "rows": [
+        [
+          "Subtitles and speaker labels",
+          "{{on}}",
+          "{{all dialogue and important SFX}}",
+          "{{low}}"
+        ],
+        [
+          "Text size and UI scale",
+          "{{100 percent, up to 200}}",
+          "{{menus, HUD, subtitles}}",
+          "{{medium}}"
+        ],
+        [
+          "High contrast and colour-blind modes",
+          "{{off, three palettes}}",
+          "{{HUD, markers, puzzle zones}}",
+          "{{medium}}"
+        ],
+        [
+          "Remapping and toggle/hold",
+          "{{platform default}}",
+          "{{keyboard, controller, touch}}",
+          "{{medium}}"
+        ],
+        [
+          "Screen shake and flash reduction",
+          "{{reduced}}",
+          "{{camera, damage, alarms}}",
+          "{{low}}"
+        ],
+        [
+          "Difficulty and assist mode",
+          "{{standard, adjustable anytime}}",
+          "{{timers, damage, resources}}",
+          "{{high}}"
+        ],
+        [
+          "Audio cues as visual cues",
+          "{{on}}",
+          "{{alarms, off-screen events}}",
+          "{{medium}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Standards"
+    },
+    {
+      "t": "p",
+      "x": "Target WCAG 2.2 AA for menus and text, the Xbox Accessibility Guidelines for console input and display, and PlayStation requirements for system features. Certification is the floor, not the goal; record the guideline version in the plan."
+    },
+    {
+      "t": "h3",
+      "x": "Visual"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Minimum {{24 px}} body text at 1080p; support {{200 percent}} UI scaling without clipping.",
+        "Contrast at least {{4.5:1}} for body text and {{3:1}} for large text and icons.",
+        "Never use colour alone; pair every state with an icon, shape, or label.",
+        "Offer reduced motion, reduced flash, and a camera-shake slider."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Auditory"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Subtitles on by default, with speaker names for off-screen lines and bracketed sound descriptions.",
+        "Show a visual cue for every sound that carries gameplay information: {{alarm, air leak, door lock}}.",
+        "Provide mono audio and separate volume sliders for voice, music, SFX, and UI."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Motor"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every action is remappable; no action requires two buttons held for more than {{three seconds}}.",
+        "No quick-time event requires more than {{two presses per second}}; offer a hold alternative.",
+        "Touch targets are at least {{44 by 44 pixels}} with {{8 pixels}} spacing."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Cognitive"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Pause anywhere, including cutscenes, with a readable recap on return.",
+        "Keep three visible objectives and restate the current one in the pause menu.",
+        "Offer a story recap and controls card after an absence longer than {{seven days}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Speech"
+    },
+    {
+      "t": "p",
+      "x": "Do not require speech input. If voice commands exist, provide a full controller or keyboard equivalent and never make voice the only path. Caption all voiced content, including warning barks."
+    },
+    {
+      "t": "quote",
+      "x": "**Accessibility commitment:** 'Every screen ships readable, remappable, and captioned. If a player cannot see the state, hear the cue, or reach the button, the screen is not done.'"
+    },
+    {
+      "t": "h2",
+      "x": "4.8 Audio direction"
+    },
+    {
+      "t": "ins",
+      "x": "Describe sound as behaviour: what triggers it, what it tells the player, and what it must never mask. Loudness and budget belong here, not in a separate document nobody opens."
+    },
+    {
+      "t": "h3",
+      "x": "Music identity"
+    },
+    {
+      "t": "p",
+      "x": "Name the instrumentation, tempo range, and emotional job. A cosy base builder needs {{warm acoustic timbres, a slow pulse, and silence that feels safe rather than empty}}. Write two references and one anti-reference to stop generic epic."
+    },
+    {
+      "t": "fill",
+      "x": "Instrumentation: {{felt piano, muted strings, soft analog pad, small percussion}} · Tempo: {{70–100 BPM}} · Anti-reference: {{trailer drums and heroic brass}}"
+    },
+    {
+      "t": "h3",
+      "x": "Adaptive music layers"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Layer",
+        "Trigger",
+        "Intensity",
+        "Stems",
+        "Exit"
+      ],
+      "w": [
+        92,
+        136,
+        84,
+        100,
+        92
+      ],
+      "rows": [
+        [
+          "{{Base bed}}",
+          "{{always during a shift}}",
+          "{{low}}",
+          "{{pad, pulse}}",
+          "{{pause or cutscene}}"
+        ],
+        [
+          "{{Tension}}",
+          "{{air below 30 percent}}",
+          "{{medium}}",
+          "{{strings, ticking}}",
+          "{{air restored}}"
+        ],
+        [
+          "{{Discovery}}",
+          "{{new area or lore}}",
+          "{{medium}}",
+          "{{piano, bell}}",
+          "{{30 seconds after}}"
+        ],
+        [
+          "{{Climax}}",
+          "{{ending choice}}",
+          "{{high}}",
+          "{{full ensemble}}",
+          "{{credits}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "SFX palette"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Category",
+        "Examples",
+        "Priority",
+        "Voice limit"
+      ],
+      "w": [
+        112,
+        224,
+        80,
+        88
+      ],
+      "rows": [
+        [
+          "{{Critical alerts}}",
+          "{{air alarm, door lock, low power}}",
+          "{{1}}",
+          "{{2}}"
+        ],
+        [
+          "{{Player actions}}",
+          "{{footstep, grab, repair, place}}",
+          "{{2}}",
+          "{{6}}"
+        ],
+        [
+          "{{World ambience}}",
+          "{{air handling, creaks, dust}}",
+          "{{4}}",
+          "{{4}}"
+        ],
+        [
+          "{{UI}}",
+          "{{hover, confirm, back, error}}",
+          "{{3}}",
+          "{{3}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Voice-over scope"
+    },
+    {
+      "t": "p",
+      "x": "State recorded minutes, speaker count, and languages, then state what is text-only. A barks-only character can carry personality for a fraction of a full VO budget."
+    },
+    {
+      "t": "fill",
+      "x": "VO: {{2,500 lines, 110 minutes, 8 speakers, 5 languages}} · Text-only: {{lore, item descriptions, codex}} · Barks: {{600 lines, no lip-sync}}"
+    },
+    {
+      "t": "h3",
+      "x": "Mixing priorities"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Dialogue and critical alerts, always audible.",
+        "Player action feedback: repair, pickup, damage.",
+        "Objective and navigation cues.",
+        "Music, ducked under dialogue by {{6 dB}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Loudness targets"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Platform",
+        "Target",
+        "True peak"
+      ],
+      "w": [
+        180,
+        180,
+        144
+      ],
+      "rows": [
+        [
+          "{{PC and console}}",
+          "{{-16 LUFS integrated}}",
+          "{{-1 dBTP}}"
+        ],
+        [
+          "{{Handheld}}",
+          "{{-18 LUFS integrated}}",
+          "{{-1 dBTP}}"
+        ],
+        [
+          "{{Cinematic and trailer}}",
+          "{{-23 LUFS integrated}}",
+          "{{-2 dBTP}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Audio budget"
+    },
+    {
+      "t": "p",
+      "x": "Set the budget in megabytes, streams, and simultaneous voices. Then set the cut rule: {{ambience variants before dialogue, dialogue before critical alerts}}."
+    },
+    {
+      "t": "fill",
+      "x": "Budget: {{450 MB}} · Streams: {{2 music, 1 ambience}} · Voices: {{24 simultaneous}} · Compression: {{Vorbis for SFX, ADPCM for short UI}}"
+    },
+    {
+      "t": "h3",
+      "x": "Middleware"
+    },
+    {
+      "t": "p",
+      "x": "Choose middleware before the first sound is integrated. FMOD and Wwise both work; the choice matters less than event naming, the parameter list, and who owns the bank build. Put the version in the build notes."
+    },
+    {
+      "t": "h2",
+      "x": "4.9 Localization and text"
+    },
+    {
+      "t": "ins",
+      "x": "Write for translation from the first string. Keep sentences short, avoid variables in the middle of grammar, and never build a sentence by concatenating fragments."
+    },
+    {
+      "t": "h3",
+      "x": "Languages"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Tier",
+        "Languages",
+        "Scope",
+        "Delivery"
+      ],
+      "w": [
+        76,
+        220,
+        116,
+        92
+      ],
+      "rows": [
+        [
+          "Tier 1",
+          "{{English, French, German, Spanish, Portuguese}}",
+          "{{full text and VO}}",
+          "{{launch}}"
+        ],
+        [
+          "Tier 2",
+          "{{Italian, Polish, Russian, Japanese}}",
+          "{{full text, subtitles only}}",
+          "{{launch or patch}}"
+        ],
+        [
+          "Tier 3",
+          "{{Korean, Simplified Chinese, Traditional Chinese}}",
+          "{{text, font check}}",
+          "{{post-launch}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "String budget"
+    },
+    {
+      "t": "p",
+      "x": "Count strings and words by surface, then add a growth margin. UI labels grow faster than dialogue because there is no room to wrap."
+    },
+    {
+      "t": "fill",
+      "x": "Strings: {{8,500}} · Words: {{95,000}} · Growth margin: {{20 percent}} · Longest UI label: {{24 characters}}"
+    },
+    {
+      "t": "h3",
+      "x": "Font coverage"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Use a family with Latin, Cyrillic, Greek, and CJK coverage, or a tested fallback chain.",
+        "Test every glyph before localization lock; a missing glyph is a blank button.",
+        "Never bake text into textures or 3D assets; localize it as a string with a layout slot."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Text expansion"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Language",
+        "Expansion",
+        "Risk area"
+      ],
+      "w": [
+        148,
+        148,
+        208
+      ],
+      "rows": [
+        [
+          "{{German}}",
+          "{{+30 percent}}",
+          "{{buttons, HUD labels}}"
+        ],
+        [
+          "{{French}}",
+          "{{+20 percent}}",
+          "{{menus, objective titles}}"
+        ],
+        [
+          "{{Russian}}",
+          "{{+15 percent}}",
+          "{{long compounds}}"
+        ],
+        [
+          "{{Japanese}}",
+          "{{-10 percent, taller lines}}",
+          "{{vertical spacing}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Cultural review"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Review icons, gestures, holidays, and colour meanings per region; a thumbs-up is not universal.",
+        "Check names and number formats against target locales; dates and currency are part of the text.",
+        "Flag idioms, sarcasm, and wordplay for adaptation, not literal translation."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "VO localization"
+    },
+    {
+      "t": "p",
+      "x": "Decide whether localized VO is dubbing or subtitles only, and budget it. Dubbing needs lip-sync retiming, a local casting director, and a second QA pass. If only original VO ships, say so on the store page and language screen."
+    },
+    {
+      "t": "h3",
+      "x": "Subtitle timing"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Minimum {{one second}}, maximum {{seven seconds}} per subtitle event.",
+        "Maximum {{two lines}} and {{42 characters per line}} for Latin scripts; use per-language limits.",
+        "Reading speed {{15–20 characters per second}} for adults; lower for younger audiences.",
+        "Never split a sentence across a cutscene cut; re-time the line instead."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Do not call the experience finished until a new player can complete the first session, a returning player can resume, and an accessibility tester can use every screen."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The journey map covers first five minutes, first session, first week, and first failure.",
+        "Every screen in the inventory has an owner, one entry, and a back target.",
+        "The HUD table justifies every element and names its hide rule.",
+        "Settings ship with accessible defaults and live preview where possible.",
+        "Save, cloud conflict, and entitlement states are designed, not left to engineering.",
+        "The accessibility options table has a default, scope, and cost for every row.",
+        "Audio loudness targets and the VO budget are in the milestone plan.",
+        "Localization limits are tested with pseudo-localization before content lock."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Assign every question to one owner and one milestone. A question without a date is a preference."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "w": [
+        300,
+        104,
+        100
+      ],
+      "rows": [
+        [
+          "{{Do we ship localized VO or subtitles only at launch?}}",
+          "{{Producer}}",
+          "{{VO budget}}"
+        ],
+        [
+          "{{Which accessibility options block certification?}}",
+          "{{QA lead}}",
+          "{{cert submission}}"
+        ],
+        [
+          "{{Can the HUD scale to 200 percent without a layout rewrite?}}",
+          "{{UI lead}}",
+          "{{vertical slice}}"
+        ],
+        [
+          "{{What is the audio memory ceiling on minimum spec?}}",
+          "{{Audio lead}}",
+          "{{tech review}}"
+        ]
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

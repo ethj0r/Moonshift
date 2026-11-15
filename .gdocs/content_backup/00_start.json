@@ -1,0 +1,551 @@
+{
+  "tab": "00 Start Here",
+  "blocks": [
+    {
+      "t": "cover",
+      "title": "Game Design Document",
+      "subtitle": "A complete, production-ready template",
+      "tagline": "One document, ten tabs, and the diagrams a game team actually uses. Replace every blue placeholder. Keep the grey instructions until the section is signed off.",
+      "meta": [
+        [
+          "Project",
+          "{{Project codename}}"
+        ],
+        [
+          "Document owner",
+          "{{Game Design Lead}}"
+        ],
+        [
+          "Version",
+          "1.0 — template"
+        ],
+        [
+          "Status",
+          "{{Draft / In review / Approved}}"
+        ],
+        [
+          "Last updated",
+          "{{YYYY-MM-DD}}"
+        ],
+        [
+          "Audience",
+          "{{Core team, publisher, external partners}}"
+        ],
+        [
+          "Confidentiality",
+          "{{Internal}}"
+        ]
+      ]
+    },
+    {
+      "t": "kicker",
+      "x": "READ THIS FIRST"
+    },
+    {
+      "t": "h1",
+      "x": "How to use this document"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab explains the workflow, the typography, the quality bar, and the review gates. Read it once, then work through the numbered tabs in order."
+    },
+    {
+      "t": "ins",
+      "x": "Do not fill the whole document before the prototype. A GDD is a decision tool, not a novel. Write only what the team needs to make the next decision."
+    },
+    {
+      "t": "h2",
+      "x": "1. What this document is"
+    },
+    {
+      "t": "p",
+      "x": "A game design document is the shared source of truth for **what the game is, how it plays, and why those choices are right**. It is not a pitch deck, a technical manual, or a production schedule, although it links to all three. Its job is to keep a multidisciplinary team aligned long enough to ship."
+    },
+    {
+      "t": "p",
+      "x": "This template is organised as tabs so each discipline can work without scrolling through a hundred pages. The tabs are ordered by the decisions a project makes: vision, gameplay, narrative, experience, art, technology, production, and the diagrams that connect them. Appendices hold the memory of the project: decisions, open questions, references, and sign-off."
+    },
+    {
+      "t": "p",
+      "x": "Treat the document as **living**. Update it when a decision changes, not at the end of the milestone. A GDD that is six weeks stale is worse than no GDD because people still trust it."
+    },
+    {
+      "t": "h3",
+      "x": "Internal and external versions"
+    },
+    {
+      "t": "p",
+      "x": "Keep one canonical internal copy with the instruction blocks visible. Before sharing with a publisher, platform holder, or external contractor, make a copy, delete every grey instruction and every blue placeholder that is not relevant, and export a PDF. Never maintain two handwritten versions."
+    },
+    {
+      "t": "h2",
+      "x": "2. The ten-step workflow"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Duplicate this document (File → Make a copy). Keep one canonical copy and link it from the project hub. Do not fork it per discipline.",
+        "Fill **01 Vision & Strategy** first. Get sign-off on the one-page pitch before writing a single system.",
+        "Fill **02 Gameplay & Systems** only to the depth the current prototype can test. Mark everything else as an open question.",
+        "Use **08 Diagram Playbook** to draw the five diagrams that pay for themselves: game flow, core loop, systems map, one state machine, one level flow.",
+        "Fill **03 Narrative & World** to the scope the game can actually carry. Do not write a novel the budget cannot produce.",
+        "Fill **04 Experience: UX, UI, Audio** with the screen flow and accessibility commitments before UI production starts.",
+        "Fill **05 Art & Content** and **06 Technical Design** in parallel with the vertical slice. Each claim must be validated by a real asset or a real build.",
+        "Fill **07 Production & Launch** last, using real velocity from the prototype rather than optimism.",
+        "Review at every gate. Record decisions and rejected alternatives in **09 Appendices**, not in chat threads.",
+        "Freeze scope at alpha. After that, every change goes through the change log and a named approver."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3. Typography legend"
+    },
+    {
+      "t": "p",
+      "x": "Four type styles carry four different jobs. The style tells you whether you are reading structure, content, guidance, or an example."
+    },
+    {
+      "t": "fontdemo",
+      "items": [
+        {
+          "label": "Montserrat · Headings",
+          "sample": "Gameplay & Systems",
+          "font": "Montserrat",
+          "size": 18,
+          "bold": true,
+          "color": "NAVY",
+          "desc": "Tab names, section titles, table headers. Never use it for body copy."
+        },
+        {
+          "label": "Lato · Your content",
+          "sample": "The player crosses the ridge before the storm reaches the valley.",
+          "font": "Lato",
+          "size": 10.5,
+          "bold": false,
+          "color": "INK",
+          "desc": "Everything you write about the game. This is the voice of the document."
+        },
+        {
+          "label": "Roboto Mono · Instructions",
+          "sample": "// Write the loop as three verbs. Name the feedback for each.",
+          "font": "Roboto Mono",
+          "size": 8.5,
+          "bold": false,
+          "color": "MUTED",
+          "desc": "Grey guidance for the author. Delete before external publication."
+        },
+        {
+          "label": "Playfair Display · Examples",
+          "sample": "“A good loop is legible in one breath.”",
+          "font": "Playfair Display",
+          "size": 12.5,
+          "bold": false,
+          "italic": true,
+          "color": "NAVY",
+          "desc": "Quotes, reference copy, and worked examples. Never a requirement."
+        },
+        {
+          "label": "Lato italic · Placeholders",
+          "sample": "{{Replace this with your project's answer}}",
+          "font": "Lato",
+          "size": 10.5,
+          "bold": false,
+          "italic": true,
+          "color": "ACCENT",
+          "desc": "Blue italic text is a question to your team. Every one must be answered or deleted."
+        }
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "4. GDD versus the other documents"
+    },
+    {
+      "t": "p",
+      "x": "Teams get into trouble when one document tries to do every job. Keep these artefacts separate and link them."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Document",
+        "Question it answers",
+        "Owner",
+        "When"
+      ],
+      "w": [
+        112,
+        232,
+        80,
+        80
+      ],
+      "rows": [
+        [
+          "One-page pitch",
+          "Should we make this at all?",
+          "Studio lead",
+          "Before greenlight"
+        ],
+        [
+          "GDD (this document)",
+          "What are we making, and how does it play?",
+          "Design lead",
+          "Continuously"
+        ],
+        [
+          "Technical design doc",
+          "How is it built, and how do we keep it running?",
+          "Tech lead",
+          "From prototype"
+        ],
+        [
+          "Production plan",
+          "When, by whom, and with what budget?",
+          "Producer",
+          "After vertical slice"
+        ],
+        [
+          "Pitch deck",
+          "Why should you fund or publish this?",
+          "Studio lead",
+          "Funding rounds"
+        ],
+        [
+          "Art bible",
+          "What does it look like, exactly?",
+          "Art director",
+          "Pre-production"
+        ],
+        [
+          "Narrative bible",
+          "What is true about the world and its people?",
+          "Narrative lead",
+          "Pre-production"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "5. The quality bar"
+    },
+    {
+      "t": "p",
+      "x": "A section is ready for review when a new team member could implement or critique it without asking you what you meant. Use these six tests."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Every mechanic has a verb, an input, an immediate feedback, and a failure state.** If one is missing, the mechanic is not specified.",
+        "**Every number has a unit, a range, and an owner.** “Fast” is not a value; “0.35 s recovery, tuned by combat design” is.",
+        "**Every feature has an owner and a milestone.** Unowned work is not planned work.",
+        "**Every claim about the player is backed by a playtest, a reference, or an explicit assumption.** Label assumptions so they can be tested.",
+        "**Every diagram answers one question and carries a legend.** A diagram that needs a paragraph of explanation is a table in disguise.",
+        "**No “fun”, “engaging”, or “immersive” without a measurable definition.** Say what the player does, sees, and feels, and how you will know."
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "THE TEST",
+      "x": "If you cannot describe how you would test it, it is not a design decision yet. It is a hope."
+    },
+    {
+      "t": "h2",
+      "x": "6. Review gates"
+    },
+    {
+      "t": "p",
+      "x": "Each gate is a decision, not a status meeting. If the exit criteria are not met, the project does not advance; it cuts scope or returns to the previous gate."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Gate",
+        "What must be true",
+        "Who signs off"
+      ],
+      "w": [
+        86,
+        330,
+        88
+      ],
+      "rows": [
+        [
+          "Concept",
+          "Pillars, audience, core loop, and scope are credible for the team and budget.",
+          "Creative director + producer"
+        ],
+        [
+          "Prototype",
+          "The core loop is playable; the fun hypothesis has been tested with real players.",
+          "Design lead + producer"
+        ],
+        [
+          "Vertical slice",
+          "One polished 15-minute slice proves the pipelines, art direction, audio, and performance.",
+          "All discipline leads"
+        ],
+        [
+          "Alpha",
+          "All features are in; the game can be played start to finish, even with placeholder content.",
+          "Producer + QA lead"
+        ],
+        [
+          "Beta",
+          "Content is locked; only bugs, balance, and polish remain.",
+          "Producer + QA lead"
+        ],
+        [
+          "Launch",
+          "Certification passed; store, support, and live operations are ready.",
+          "Studio lead + publisher"
+        ],
+        [
+          "Post-launch",
+          "KPIs reviewed; patch cadence and content roadmap are operating.",
+          "Live ops + design lead"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "7. Tab map"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Tab",
+        "What it answers",
+        "Primary owner",
+        "Fill when"
+      ],
+      "w": [
+        112,
+        236,
+        78,
+        78
+      ],
+      "rows": [
+        [
+          "01 Vision & Strategy",
+          "Why does this game exist, for whom, and on what platform?",
+          "Creative director",
+          "Concept"
+        ],
+        [
+          "02 Gameplay & Systems",
+          "What does the player do, and how do the systems interact?",
+          "Design lead",
+          "Prototype"
+        ],
+        [
+          "03 Narrative & World",
+          "What is the story, the world, and how is it delivered?",
+          "Narrative lead",
+          "Pre-production"
+        ],
+        [
+          "04 Experience",
+          "How does it feel to navigate, read, hear, and access?",
+          "UX + audio leads",
+          "Pre-production"
+        ],
+        [
+          "05 Art & Content",
+          "What does it look like, and how is content produced?",
+          "Art director",
+          "Pre-production"
+        ],
+        [
+          "06 Technical Design",
+          "How is it built, and what are the technical limits?",
+          "Tech lead",
+          "Prototype"
+        ],
+        [
+          "07 Production & Launch",
+          "When, by whom, at what cost, and how does it ship?",
+          "Producer",
+          "Vertical slice"
+        ],
+        [
+          "08 Diagram Playbook",
+          "Which diagram should I draw, and how?",
+          "Design lead",
+          "On demand"
+        ],
+        [
+          "09 Appendices",
+          "What did we decide, what is unresolved, and who approved it?",
+          "Producer",
+          "Continuously"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "8. Owners and decision rights"
+    },
+    {
+      "t": "p",
+      "x": "One person is accountable for each decision. Everyone else is consulted or informed. This table prevents the most common failure mode in game development: a decision with three owners and no owner."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Decision",
+        "Accountable",
+        "Consulted",
+        "Informed"
+      ],
+      "w": [
+        166,
+        108,
+        140,
+        90
+      ],
+      "rows": [
+        [
+          "Vision, pillars, and non-goals",
+          "Creative director",
+          "Design lead, producer, marketing",
+          "Whole team"
+        ],
+        [
+          "Core loop and mechanics",
+          "Design lead",
+          "Tech lead, UX, audio",
+          "Whole team"
+        ],
+        [
+          "Scope cuts and milestone changes",
+          "Producer",
+          "Creative director, leads",
+          "Publisher"
+        ],
+        [
+          "Art direction and style",
+          "Art director",
+          "Creative director, UX",
+          "Whole team"
+        ],
+        [
+          "Engine, architecture, and tools",
+          "Tech lead",
+          "Design lead, producer",
+          "Whole team"
+        ],
+        [
+          "Launch date and release platforms",
+          "Studio lead",
+          "Producer, publisher, cert",
+          "Whole team"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "9. Change log"
+    },
+    {
+      "t": "p",
+      "x": "Log every material change: a pillar, a mechanic, a scope cut, a platform, a date. Trivial wording edits do not need an entry. The log is how a new team member understands why the game looks the way it does."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Version",
+        "Date",
+        "Author",
+        "Change",
+        "Approved by"
+      ],
+      "w": [
+        54,
+        68,
+        90,
+        220,
+        72
+      ],
+      "rows": [
+        [
+          "0.1",
+          "{{YYYY-MM-DD}}",
+          "{{Name}}",
+          "Initial vision and one-page pitch.",
+          "{{Name}}"
+        ],
+        [
+          "0.2",
+          "{{YYYY-MM-DD}}",
+          "{{Name}}",
+          "Core loop revised after prototype 2; crafting cut.",
+          "{{Name}}"
+        ],
+        [
+          "1.0",
+          "{{YYYY-MM-DD}}",
+          "{{Name}}",
+          "Baseline approved for vertical slice.",
+          "{{Name}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "10. Sign-off"
+    },
+    {
+      "t": "p",
+      "x": "Sign-off means the signatory has read the section, agrees with the decisions, and accepts the scope implied by them. It does not mean the section will never change; it means changes now require a logged decision."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Role",
+        "Name",
+        "Date",
+        "Signature"
+      ],
+      "w": [
+        130,
+        160,
+        90,
+        124
+      ],
+      "rows": [
+        [
+          "Creative director",
+          "{{Name}}",
+          "{{YYYY-MM-DD}}",
+          ""
+        ],
+        [
+          "Design lead",
+          "{{Name}}",
+          "{{YYYY-MM-DD}}",
+          ""
+        ],
+        [
+          "Technical lead",
+          "{{Name}}",
+          "{{YYYY-MM-DD}}",
+          ""
+        ],
+        [
+          "Art director",
+          "{{Name}}",
+          "{{YYYY-MM-DD}}",
+          ""
+        ],
+        [
+          "Producer",
+          "{{Name}}",
+          "{{YYYY-MM-DD}}",
+          ""
+        ]
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}

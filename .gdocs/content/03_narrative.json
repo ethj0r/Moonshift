@@ -1,0 +1,1278 @@
+{
+  "tab": "03 Narrative & World",
+  "blocks": [
+    {
+      "t": "kicker",
+      "x": "SECTION 03 · NARRATIVE"
+    },
+    {
+      "t": "h1",
+      "x": "Narrative & World"
+    },
+    {
+      "t": "purpose",
+      "x": "This tab answers: what is true about this world, who wants what, and how story reaches the player without stalling play."
+    },
+    {
+      "t": "ins",
+      "x": "Lock 3.1 and 3.2 before anyone writes dialogue; every other section depends on them. Defer 3.6 to 3.8 until the vertical slice proves the delivery pipeline."
+    },
+    {
+      "t": "h2",
+      "x": "3.1 Setting and world bible"
+    },
+    {
+      "t": "ins",
+      "x": "Write the bible as constraints, not encyclopedia entries. State the rule that makes the premise work, then list what it forbids. If a fact changes no decision, line, or asset, cut it."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift covers the twelve shifts before the resupply window closes, on one lunar outpost with a damaged cargo lander and a garden dome. The fixed canon is that air, power, and water are the only resources, B.E.E.P. wants to be called crew, and the finale chooses between the garden and the air supply. Faction goals lock per milestone; local colour stays flexible until content lock."
+    },
+    {
+      "t": "h3",
+      "x": "Premise"
+    },
+    {
+      "t": "fill",
+      "x": "Premise: {{a repair robot wakes on a failing lunar outpost with one shift of air left and a crew that treats it as equipment.}}"
+    },
+    {
+      "t": "p",
+      "x": "A premise is playable when it implies a verb. Complete this sentence: the player must ______ before ______. If two genres fit the blanks, you have a setting, not a premise."
+    },
+    {
+      "t": "h3",
+      "x": "Time and place"
+    },
+    {
+      "t": "fill",
+      "x": "Time: {{the twelve shifts before the resupply window closes}} · Place: {{one small outpost, one damaged lander, and the ground between them}}"
+    },
+    {
+      "t": "p",
+      "x": "Fix the clock and the geography early. The clock limits what can happen; the geography limits what can be walked. State what the player sees at spawn and what stays off-screen."
+    },
+    {
+      "t": "h3",
+      "x": "World rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**The one rule.** {{Air, power, and water are the only resources; every problem is solved by moving one of them.}}",
+        "**The cost rule.** Every capability has a visible cost the player pays within one shift.",
+        "**The boundary.** List what the world cannot do: {{no faster-than-light travel, no aliens, no resurrection}}. Boundaries stop later drafts from inventing a cheap solution."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Factions"
+    },
+    {
+      "t": "p",
+      "x": "Give each faction a want that conflicts with another's, plus something the player needs. A faction with no leverage is set dressing."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Faction",
+        "Wants",
+        "Offers player",
+        "Obstructs",
+        "Visual signature"
+      ],
+      "w": [
+        92,
+        100,
+        100,
+        108,
+        104
+      ],
+      "rows": [
+        [
+          "{{Outpost crew}}",
+          "{{To finish the shift and go home}}",
+          "{{Access, repairs, labour}}",
+          "{{Distrusts an autonomous robot}}",
+          "{{cream suits, terracotta trim}}"
+        ],
+        [
+          "{{Mission control}}",
+          "{{To keep the base running at any cost}}",
+          "{{Orders, supply drops, information}}",
+          "{{Cuts air to save power}}",
+          "{{voice only, navy screens}}"
+        ],
+        [
+          "{{Scavenger guild}}",
+          "{{To strip the lander and leave}}",
+          "{{Rare parts, shortcuts}}",
+          "{{Takes salvage the player needs}}",
+          "{{mustard patches, mismatched crates}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Technology and magic rules"
+    },
+    {
+      "t": "p",
+      "x": "Write rules a level designer can use: what a device does, what it consumes, how it fails, and how the player sees that failure. Magic gets the same four answers."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Input.** What the device needs before it works: {{one power unit per shift}}.",
+        "**Output.** What changes in the world, in a number the player can read.",
+        "**Failure mode.** What the player sees and hears five seconds before the device stops.",
+        "**No hidden rules.** If a rule is not in the HUD, the tutorial, or a line of dialogue, it does not exist for the player."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Tone"
+    },
+    {
+      "t": "p",
+      "x": "Name three adjectives and one prohibition. The prohibition tells writers what to cut when a scene drifts."
+    },
+    {
+      "t": "fill",
+      "x": "Tone: {{cosy, hopeful, handmade}} · Never: {{cruelty played for laughs, hopeless endings, real-world disaster imagery}}"
+    },
+    {
+      "t": "p",
+      "x": "Add one paragraph of sample prose. Writers match cadence faster from a paragraph than from a list of adjectives."
+    },
+    {
+      "t": "h3",
+      "x": "Visual motifs"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "**Shape.** {{Rounded, chunky, toy-like; every important object reads as a silhouette.}}",
+        "**Colour.** Reserve one glow colour per meaning: {{teal for healthy, amber for interactive, red for urgent}}.",
+        "**Repeated image.** Pick one image the story returns to: {{a lit window in a dark habitat}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Canon hierarchy"
+    },
+    {
+      "t": "p",
+      "x": "Publish who can change what. Without this table, every writer becomes a canon lawyer and every artist an accidental author."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Layer",
+        "Fixed or flexible",
+        "Owner",
+        "Change process"
+      ],
+      "w": [
+        132,
+        104,
+        108,
+        160
+      ],
+      "rows": [
+        [
+          "Premise, ending, player fantasy",
+          "Fixed after greenlight",
+          "{{Narrative lead}}",
+          "{{Studio sign-off; versioned bible entry}}"
+        ],
+        [
+          "Faction goals and world rules",
+          "Fixed per milestone",
+          "{{Narrative lead}}",
+          "{{Written proposal; quest and art review}}"
+        ],
+        [
+          "Names, signs, local colour",
+          "Flexible",
+          "{{Any writer}}",
+          "{{Style sheet check; no approval}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3.2 Story synopsis"
+    },
+    {
+      "t": "ins",
+      "x": "Write three paragraphs a producer can repeat from memory. Name the inciting incident, midpoint reversal, and cost of the climax in one sentence each. Keep spoilers out of marketing until the beat is playable."
+    },
+    {
+      "t": "example",
+      "x": "B.E.E.P. wakes in the lander with sixty seconds left and saves Shift 1 by hauling a battery to the air unit. Midway it learns the resupply was cancelled and chooses between repairing the radio and dismantling the workshop. The finale asks the crew to vent the garden or gamble on rescue; the epilogue turns on Imani's confession and whether the crew names B.E.E.P."
+    },
+    {
+      "t": "h3",
+      "x": "Beginning"
+    },
+    {
+      "t": "p",
+      "x": "{{B.E.E.P. wakes in a damaged cargo lander with sixty seconds of air and a crew that does not know it can think. It saves the shift, but the crew learns to rely on it without trusting it. The inciting incident is the first order that treats a person as a tool.}}"
+    },
+    {
+      "t": "h3",
+      "x": "Middle"
+    },
+    {
+      "t": "p",
+      "x": "{{As the outpost runs out of air, B.E.E.P. discovers the resupply was cancelled and the crew hid it. The midpoint turn: repair the radio to call for help, or dismantle the workshop to survive one more shift. Either route reveals that the commander knew.}}"
+    },
+    {
+      "t": "h3",
+      "x": "End"
+    },
+    {
+      "t": "p",
+      "x": "{{The final shift forces a public choice: vent the garden to save air, or keep it and gamble on rescue. The climax costs the player the resource they protected all game. The ending is not whether the base survives; it is whether the crew calls B.E.E.P. by name.}}"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Beat",
+        "What changes",
+        "Player learns",
+        "Delivery"
+      ],
+      "w": [
+        104,
+        140,
+        128,
+        132
+      ],
+      "rows": [
+        [
+          "Inciting incident",
+          "{{The first order reduces B.E.E.P. to equipment}}",
+          "{{Obedience is not belonging}}",
+          "{{scripted dialogue in the opening}}"
+        ],
+        [
+          "Midpoint turn",
+          "{{The resupply is cancelled}}",
+          "{{The authority figure lied}}",
+          "{{environmental evidence plus confrontation}}"
+        ],
+        [
+          "Climax",
+          "{{The garden or the air supply is lost}}",
+          "{{What the crew will sacrifice}}",
+          "{{choice with a visible cost}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Spoiler policy for the team"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Label every document public, internal, or locked. Default to internal.",
+        "Keep the midpoint and ending out of store pages, press builds, and achievements until the beat ships publicly.",
+        "Treat datamined strings as public. If a line ruins the ending, do not ship it in an inspectable build."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Narrative scope"
+    },
+    {
+      "t": "p",
+      "x": "State how much story the game can carry in scheduled units: authored minutes, dialogue lines, cutscenes, and localized words. A small team that plans twelve cutscenes ships four."
+    },
+    {
+      "t": "fill",
+      "x": "Scope: {{12 main beats, 6 required}} · {{90 minutes of dialogue, 9,000 words}} · {{4 side chains}} · {{40 lore entries}}"
+    },
+    {
+      "t": "h2",
+      "x": "3.3 Characters"
+    },
+    {
+      "t": "ins",
+      "x": "Give every speaking character a want the player can hear and a need they cannot say. If you cannot write the flaw as a behaviour in a scene, the character is not ready."
+    },
+    {
+      "t": "example",
+      "x": "B.E.E.P. wants the crew to name it and needs to ask for help before orders arrive; it obeys until the air runs out. Commander Imani wants the mission to succeed and needs to admit she cancelled the resupply; she controls information until the radio confrontation. Nia wants the garden to live and needs to accept help; she runs food and morale and unlocks the garden kit."
+    },
+    {
+      "t": "p",
+      "x": "**Protagonist.** Write the protagonist as a verb the player performs, not a personality they watch. The lie they believe must cause a failed objective."
+    },
+    {
+      "t": "fill",
+      "x": "Protagonist: {{B.E.E.P., a repair robot who wants to be treated as crew and needs to ask for help before the order comes.}}"
+    },
+    {
+      "t": "p",
+      "x": "**Antagonist.** The antagonist personifies the pressure the game already applies. Give them a defensible goal, a visible method, and a reason they cannot be removed. If a timer could replace them, you have a theme, not a character."
+    },
+    {
+      "t": "fill",
+      "x": "Antagonist: {{the commander, who wants the mission to succeed and needs to admit the resupply was cancelled.}}"
+    },
+    {
+      "t": "h3",
+      "x": "Key cast"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Character",
+        "Role",
+        "Want / need",
+        "Flaw to arc",
+        "Gameplay function"
+      ],
+      "w": [
+        92,
+        88,
+        120,
+        108,
+        96
+      ],
+      "rows": [
+        [
+          "{{B.E.E.P.}}",
+          "{{Player character}}",
+          "{{Wants to be called crew; needs to ask for help}}",
+          "{{Obeys orders, then chooses who to save}}",
+          "{{carries, repairs, opens routes}}"
+        ],
+        [
+          "{{Commander Imani}}",
+          "{{Antagonist}}",
+          "{{Wants the mission to succeed; needs to confess}}",
+          "{{Controls information, then shares it}}",
+          "{{gives main quests, gates air}}"
+        ],
+        [
+          "{{Nia}}",
+          "{{Crew botanist}}",
+          "{{Wants the garden to live; needs to accept help}}",
+          "{{Martyrdom becomes delegation}}",
+          "{{runs food and morale}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Relationship map guidance"
+    },
+    {
+      "t": "p",
+      "x": "Draw people as nodes and three edge types: trust, debt, and fear. Label every edge with the event that created it. An unlabeled map is a vibe diagram, not a production tool."
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Limit the map to characters who share a scene; if two never meet, their relationship is background.",
+        "Give every relationship a change event: {{the air cut, the radio call, the garden vote}}.",
+        "Update and diff the map every milestone. A relationship that changes without a scene is a continuity bug."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Casting and voice constraints"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Cast age, accent, and energy, not celebrity likeness; an impression dates the game and complicates contracts.",
+        "Record the protagonist last, after supporting cast establishes the world's rhythm.",
+        "Budget {{three takes per line}} plus one alternate for barks; unscripted sessions produce unlocalizable lines."
+      ]
+    },
+    {
+      "t": "quote",
+      "x": "**Protagonist, first scene:** 'I want you to stop calling me equipment. I need one person to ask for my help before they order it.'"
+    },
+    {
+      "t": "h2",
+      "x": "3.4 Narrative structure and delivery"
+    },
+    {
+      "t": "ins",
+      "x": "Choose the structure before writing scenes. Mark every beat with its delivery channel and cost, then cut any beat that needs a channel you cannot staff."
+    },
+    {
+      "t": "example",
+      "x": "Moonshift uses a linear spine with two real branches at the climax. Story arrives through six skippable dialogue scenes, 180 barks, and environmental clues such as the red lock timer and the scorched lander leg; the 70/30 agency split keeps four-minute cutscenes out of a 25-minute first session."
+    },
+    {
+      "t": "p",
+      "x": "**Pick one primary structure.** Linear stories are cheaper to pace and localize. Branching gives ownership but multiplies testing. Systemic generates moments but cannot guarantee a theme. Most small teams ship a linear spine, systemic texture, and two or three real branches."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Structure",
+        "Best for",
+        "Cost",
+        "Risk",
+        "Use when"
+      ],
+      "w": [
+        84,
+        116,
+        68,
+        116,
+        120
+      ],
+      "rows": [
+        [
+          "Linear",
+          "{{an authored emotional arc}}",
+          "{{low}}",
+          "{{player feels railroaded}}",
+          "{{the story is the reward}}"
+        ],
+        [
+          "Branching",
+          "{{replayable decisions}}",
+          "{{high}}",
+          "{{no branch feels canonical}}",
+          "{{choices change levels, not lines}}"
+        ],
+        [
+          "Systemic",
+          "{{emergent stories}}",
+          "{{medium}}",
+          "{{theme dissolves into noise}}",
+          "{{the loop already generates drama}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Delivery channels"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Channel",
+        "Best for",
+        "Authoring cost",
+        "Reusable",
+        "Constraint"
+      ],
+      "w": [
+        96,
+        124,
+        92,
+        68,
+        124
+      ],
+      "rows": [
+        [
+          "Cutscene",
+          "{{turns, entrances, scale}}",
+          "{{high}}",
+          "{{low}}",
+          "{{under 90 seconds; skippable}}"
+        ],
+        [
+          "Dialogue",
+          "{{character, negotiation, exposition}}",
+          "{{medium}}",
+          "{{medium}}",
+          "{{camera stays in gameplay space}}"
+        ],
+        [
+          "Barks",
+          "{{state, warning, personality}}",
+          "{{low per line, high volume}}",
+          "{{high}}",
+          "{{under 2 seconds; no new information}}"
+        ],
+        [
+          "Environmental",
+          "{{history, faction presence}}",
+          "{{medium}}",
+          "{{high}}",
+          "{{readable without text}}"
+        ],
+        [
+          "Item text and audio logs",
+          "{{optional depth}}",
+          "{{low}}",
+          "{{high}}",
+          "{{never required for the main path}}"
+        ]
+      ]
+    },
+    {
+      "t": "p",
+      "x": "**Set the agency ratio.** Write the percentage of story the player drives versus the game authors. A four-minute cinematic in a 70 percent agency game is a structural bug."
+    },
+    {
+      "t": "fill",
+      "x": "Agency ratio: {{70 percent player-driven, 30 percent authored}} · Longest unskippable sequence: {{20 seconds}}"
+    },
+    {
+      "t": "h3",
+      "x": "Skip and pause rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Every cutscene is skippable after first viewing; first-time players get a hold-to-skip prompt.",
+        "Pause stops dialogue, music, and timers together. A paused game with a running clock is a bug.",
+        "Skipping grants rewards and sets story flags; never create a state the player cannot recover from."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3.5 Quest design"
+    },
+    {
+      "t": "ins",
+      "x": "Write every quest as a state machine with a visible change in the world. If the player cannot describe what changed after the quest, it is a task, not a quest."
+    },
+    {
+      "t": "example",
+      "x": "Nia gives 'Dry Garden' on Shift 3, when the garden pipe freezes. The player traces the line, thaws the valve, repairs the cut pipe, and restarts the pump; the twist is that Tomas cut the line to save air. Success returns one water unit per shift and sets Nia's trust flag; failure wilts the garden but leaves it replantable."
+    },
+    {
+      "t": "h3",
+      "x": "Quest template"
+    },
+    {
+      "t": "p",
+      "x": "Use the same seven fields for every quest. A missing field becomes a bug report later."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "What to write",
+        "Example"
+      ],
+      "w": [
+        100,
+        190,
+        214
+      ],
+      "rows": [
+        [
+          "Giver",
+          "{{Who asks, and why now}}",
+          "{{Nia needs water for the garden}}"
+        ],
+        [
+          "Hook",
+          "{{The visible problem in one sentence}}",
+          "{{The garden pipe is frozen}}"
+        ],
+        [
+          "Objectives",
+          "{{3–5 verbs with completion states}}",
+          "{{Trace, thaw, repair, restart}}"
+        ],
+        [
+          "Twist",
+          "{{The fact that changes the job}}",
+          "{{The pipe was cut, not frozen}}"
+        ],
+        [
+          "Reward",
+          "{{What the player can use immediately}}",
+          "{{Garden kit and one water per shift}}"
+        ],
+        [
+          "Fail state",
+          "{{What happens, and whether it is recoverable}}",
+          "{{Garden wilts; replantable}}"
+        ],
+        [
+          "Post-quest state",
+          "{{What persists in the world}}",
+          "{{Garden runs; Nia trusts you}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Quest types"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Type",
+        "Purpose",
+        "Length",
+        "Failure tolerance",
+        "Example"
+      ],
+      "w": [
+        72,
+        122,
+        84,
+        108,
+        118
+      ],
+      "rows": [
+        [
+          "Main",
+          "{{advance the spine}}",
+          "{{20–40 minutes}}",
+          "{{low; retry until complete}}",
+          "{{restore the air system}}"
+        ],
+        [
+          "Side",
+          "{{deepen a character or place}}",
+          "{{10–20 minutes}}",
+          "{{medium; can be abandoned}}",
+          "{{find a lost tool}}"
+        ],
+        [
+          "Faction",
+          "{{change reputation and access}}",
+          "{{15–30 minutes}}",
+          "{{medium; locks one reward}}",
+          "{{choose who gets the salvage}}"
+        ],
+        [
+          "Radiant",
+          "{{fill the loop with variety}}",
+          "{{3–8 minutes}}",
+          "{{high; no story flag}}",
+          "{{deliver cargo before the shift ends}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Objective writing rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Start with a verb the player performs: {{trace}}, {{repair}}, {{carry}}, {{ask}}. Never 'understand' or 'learn'.",
+        "One objective, one success condition, one visible confirmation. Two completion conditions are two objectives.",
+        "Write failure as a state, not a scolding: {{the garden is dry}} tells the player what to fix.",
+        "Cap the active list at {{three}}. The fourth objective is a queue, not a HUD item."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Quest state machine guidance"
+    },
+    {
+      "t": "p",
+      "x": "Model each quest as explicit states with one entry action and one exit condition. Store state by name, never by index; adding a quest must not shift every save."
+    },
+    {
+      "t": "num",
+      "x": [
+        "Locked: prerequisites unmet, no marker, no giver dialogue.",
+        "Available: giver exists, marker visible, quest can be accepted.",
+        "Active: objectives tracked, fail timer running if any.",
+        "Resolved: rewards granted, post-quest state applied, dialogue swapped.",
+        "Failed: fail state applied, recovery path recorded.",
+        "Cleanup: markers removed, barks reverted, save flag written."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Every transition needs a test. Write the matrix as quest state against trigger, then walk it with a debug command."
+    },
+    {
+      "t": "h2",
+      "x": "3.6 Dialogue system"
+    },
+    {
+      "t": "ins",
+      "x": "Define the node schema once and make the writer's tool export it. Store conditions as data, never as prose in a spreadsheet cell."
+    },
+    {
+      "t": "example",
+      "x": "Imani's radio node runs when story_radio_repaired is false: she says 'The resupply is late, not cancelled' with the worried emotion, and the player can answer 'You signed the cancellation' to drop crew trust by 10 and unlock the confrontation, or 'I will check the manifest' to keep trust and route to the cargo bay."
+    },
+    {
+      "t": "h3",
+      "x": "Dialogue node schema"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Field",
+        "Type",
+        "Required",
+        "Rule"
+      ],
+      "w": [
+        100,
+        110,
+        76,
+        218
+      ],
+      "rows": [
+        [
+          "Speaker",
+          "{{ID}}",
+          "{{yes}}",
+          "{{must exist in the cast table}}"
+        ],
+        [
+          "Line",
+          "{{localized string key}}",
+          "{{yes}}",
+          "{{one sentence per node}}"
+        ],
+        [
+          "Emotion",
+          "{{enum}}",
+          "{{yes}}",
+          "{{neutral, warm, worried, angry, amused}}"
+        ],
+        [
+          "Conditions",
+          "{{expression}}",
+          "{{no}}",
+          "{{flags, reputation, quest state}}"
+        ],
+        [
+          "Choices",
+          "{{array of nodes}}",
+          "{{no}}",
+          "{{2–4 options; one may be silent}}"
+        ],
+        [
+          "Consequences",
+          "{{flag operations}}",
+          "{{no}}",
+          "{{declared before the node ships}}"
+        ],
+        [
+          "Audio and loc key",
+          "{{clip ID, stable key}}",
+          "{{if voiced}}",
+          "{{never reuse a key for new text}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Bark rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "A bark is a status update with personality, not a hidden hint. If the player needs it to proceed, put it in the objective UI too.",
+        "Keep barks under {{two seconds}} and {{12 words}}; the player is usually moving.",
+        "Write families: enter, progress, success, fail, idle. One line per family per state is enough for a first pass.",
+        "Use a {{20–30 second}} cooldown per speaker; repeated barks make a world feel small."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Conversation length"
+    },
+    {
+      "t": "p",
+      "x": "Set a hard ceiling before writing. A conversation that exceeds it is a cutscene or a quest. Measure in player minutes, not words."
+    },
+    {
+      "t": "fill",
+      "x": "Barks: {{1–2 lines}} · Ambient: {{4–8 nodes}} · Story: {{12–20 nodes, 90 seconds before a choice}} · Cutscene: {{90 seconds maximum}}"
+    },
+    {
+      "t": "h3",
+      "x": "Voice-over budget"
+    },
+    {
+      "t": "fill",
+      "x": "VO budget: {{2,500 lines, 110 minutes, 8 speakers, 5 languages}} · Contingency: {{10 percent for pickup and churn}}"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Prioritize protagonist, antagonist, main quest givers, then barks. Optional lore is text-only unless it carries a reveal.",
+        "Mark every line full VO, barks-only, or text-only in the script export; audio schedules from that column."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Localization notes"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Write one idea per sentence and keep subordinate clauses under {{20 words}}.",
+        "Never concatenate grammar around a variable: {{You gave X to Y}} breaks in half the target languages.",
+        "Give translators speaker, scene, previous line, and a screenshot; a bare string table produces literal translations."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Subtitle standards"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Maximum {{two lines}}, {{42 characters per line}} for Latin scripts; adjust per language in the kit.",
+        "Minimum {{one second}}, maximum {{seven seconds}}; split longer lines rather than shrinking the font.",
+        "Place subtitles inside the safe area and above the HUD; never over a choice prompt."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "3.7 Branching and consequences"
+    },
+    {
+      "t": "ins",
+      "x": "Count branches in playable minutes and localized words before you approve them. A branch that changes one line is a variant; a branch that changes a level is a commitment."
+    },
+    {
+      "t": "example",
+      "x": "Repairing the radio sets story_radio_repaired and raises crew trust by 15, unlocking the Rescue ending at trust 50 or more. Dismantling the workshop sets quest_workshop_state to dismantled and grants the salvaged battery, pushing the player toward Holdout. Both routes converge on the final air vote, where Imani's confession raises crew trust and decides whether the crew names B.E.E.P. in the epilogue."
+    },
+    {
+      "t": "p",
+      "x": "**State flags.** Every consequence is a named flag with a type, owner, and default. Prefix by system: {{story_}}, {{faction_}}, {{quest_}}, {{world_}}. A flag without a default crashes on a missing save."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Flag",
+        "Type",
+        "Set by",
+        "Cleared by",
+        "Used by"
+      ],
+      "w": [
+        126,
+        92,
+        104,
+        82,
+        100
+      ],
+      "rows": [
+        [
+          "{{story_radio_repaired}}",
+          "{{boolean}}",
+          "{{quest 07}}",
+          "{{never}}",
+          "{{ending matrix}}"
+        ],
+        [
+          "{{faction_crew_trust}}",
+          "{{integer 0–100}}",
+          "{{dialogue and quests}}",
+          "{{betrayal event}}",
+          "{{dialogue gates}}"
+        ],
+        [
+          "{{world_garden_alive}}",
+          "{{boolean}}",
+          "{{climax choice}}",
+          "{{never}}",
+          "{{epilogue, barks}}"
+        ],
+        [
+          "{{quest_workshop_state}}",
+          "{{enum}}",
+          "{{quest 09}}",
+          "{{new game}}",
+          "{{crafting access}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Faction reputation"
+    },
+    {
+      "t": "p",
+      "x": "Use three or four thresholds, not a continuous meter the player cannot read. Name what each threshold unlocks or closes."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Threshold",
+        "Label",
+        "Unlocks",
+        "Closes"
+      ],
+      "w": [
+        88,
+        108,
+        164,
+        144
+      ],
+      "rows": [
+        [
+          "{{0–24}}",
+          "{{Distrusted}}",
+          "{{basic services}}",
+          "{{faction quests}}"
+        ],
+        [
+          "{{25–49}}",
+          "{{Tolerated}}",
+          "{{one side quest}}",
+          "{{best ending}}"
+        ],
+        [
+          "{{50–74}}",
+          "{{Trusted}}",
+          "{{faction vendor}}",
+          "{{rival discount}}"
+        ],
+        [
+          "{{75–100}}",
+          "{{Allied}}",
+          "{{faction ending, unique item}}",
+          "{{rival ending}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Endings matrix"
+    },
+    {
+      "t": "p",
+      "x": "Write the ending matrix before the branch budget. Each ending needs a required state, a visible cost, and a reason beyond 'the player was nice'. Merge endings that differ only in narration."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Ending",
+        "Required flags",
+        "Faction state",
+        "Cost"
+      ],
+      "w": [
+        88,
+        184,
+        108,
+        124
+      ],
+      "rows": [
+        [
+          "{{Rescue}}",
+          "{{radio repaired, crew trust 50+}}",
+          "{{crew allied}}",
+          "{{garden lost}}"
+        ],
+        [
+          "{{Holdout}}",
+          "{{air stabilized, garden alive}}",
+          "{{crew divided}}",
+          "{{radio silent}}"
+        ],
+        [
+          "{{Departure}}",
+          "{{lander repaired, trust under 25}}",
+          "{{crew hostile}}",
+          "{{base abandoned}}"
+        ]
+      ]
+    },
+    {
+      "t": "callout",
+      "label": "Branch budget",
+      "x": "Every branch you add must be paid for twice: once to build it, and once to test every state that can reach it. If you cannot fund both, converge the branch before the next milestone."
+    },
+    {
+      "t": "h3",
+      "x": "Branch budget"
+    },
+    {
+      "t": "p",
+      "x": "Write the budget as commitments, not a wish list. Count unique content, QA combinations, and localization words. A reused level still costs a full test pass."
+    },
+    {
+      "t": "fill",
+      "x": "Budget: {{6 hours of unique content}} · QA combinations: {{18}} · Localized words: {{12,000}} · Cut line: {{any branch under 10 minutes}}"
+    },
+    {
+      "t": "h3",
+      "x": "Convergence strategy"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Converge before the climax. Players forgive a shared final level; they do not forgive a final level that ignores their choice.",
+        "Use a hub scene to re-establish the same facts on every route, then vary NPC reactions.",
+        "Carry consequences as world state, not extra levels: {{a locked door, a missing NPC, a different bark set}}.",
+        "Write a default path for players who skip optional content; every ending must be reachable from it."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Testing branches"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Build a debug console that sets any flag and jumps to any quest state. Testing by replay is sampling, not testing.",
+        "Maintain a state matrix: every gating flag against every scene that reads it.",
+        "Run a scripted walk of each ending every milestone, not only at content lock.",
+        "Record the route, not just the result; 'ending 3 broken' cannot be reproduced."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Save-scumming stance"
+    },
+    {
+      "t": "p",
+      "x": "Decide whether reloading is part of the fantasy. A game about consequences can allow it and protect its theme by showing the cost before the reload. If the design cannot survive a reload, cut the choice."
+    },
+    {
+      "t": "fill",
+      "x": "Stance: {{reloading is allowed; autosave before every irreversible choice and show the cost in the prompt}}"
+    },
+    {
+      "t": "h2",
+      "x": "3.8 Lore and content guidelines"
+    },
+    {
+      "t": "ins",
+      "x": "Write the style sheet before the first lore item ships. Review lore like code: one owner, a diff, and a reason for every canon change."
+    },
+    {
+      "t": "example",
+      "x": "Entry 12, 'The Second Chair': the crew mess has three chairs and four crew. The stencil reads 'IMANI - SHIFT 1' on a chair nobody uses; the seat is worn smooth and the paint is fresh. Imani stands during meals and calls it a storage problem."
+    },
+    {
+      "t": "h3",
+      "x": "Tone guide"
+    },
+    {
+      "t": "p",
+      "x": "State the register in one paragraph and give three before-and-after examples. The examples do the work adjectives cannot."
+    },
+    {
+      "t": "fill",
+      "x": "Tone: {{plain, warm, specific; short sentences; no cosmic awe, no irony at the player's expense}}"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Prefer concrete nouns: {{airlock, ration tin, cracked visor}} over {{hope, destiny, the human spirit}}.",
+        "Never explain the theme in dialogue; a character who states the theme has ended the conversation."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Naming conventions"
+    },
+    {
+      "t": "p",
+      "x": "Names carry history. A naming table stops every writer inventing a new suffix for the same technology."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Element",
+        "Pattern",
+        "Good example",
+        "Avoid"
+      ],
+      "w": [
+        88,
+        152,
+        136,
+        128
+      ],
+      "rows": [
+        [
+          "Places",
+          "{{function plus one human detail}}",
+          "{{Cold Workshop, Nia's Garden}}",
+          "{{New Terra, Nexus Prime}}"
+        ],
+        [
+          "People",
+          "{{one or two syllables, easy to say}}",
+          "{{Imani, Tomas, Nia}}",
+          "{{Xyzz, Commander 7}}"
+        ],
+        [
+          "Technology",
+          "{{what it does, not how it sounds}}",
+          "{{air regulator, branch fan}}",
+          "{{OmniCore, AetherDrive}}"
+        ],
+        [
+          "Factions",
+          "{{a job or a place, not an adjective}}",
+          "{{the Crew, Mission Control}}",
+          "{{the Chosen, the Enlightened}}"
+        ]
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Style rules"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "Use the serial comma and one spelling convention; put both in the style sheet.",
+        "No emoji, no all-caps emphasis, no exclamation marks in narrator text.",
+        "Write directions in the imperative: {{Press the amber switch}}, not {{the player can press the switch}}.",
+        "One term per concept. If the bible says {{air regulator}}, no line says {{air valve}}."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Sensitivity review"
+    },
+    {
+      "t": "bul",
+      "x": [
+        "List the identities, histories, and disabilities depicted, and who reviewed each portrayal.",
+        "Run the read before VO record and before localization; both are expensive to redo.",
+        "Check failure states for humiliation: a player who fails should lose progress, not dignity.",
+        "Record the outcome in the bible, including what changed and what was deliberately kept."
+      ]
+    },
+    {
+      "t": "h3",
+      "x": "Canon review process"
+    },
+    {
+      "t": "num",
+      "x": [
+        "Propose: add a bible entry with a reason and affected scenes.",
+        "Check: test it against the canon hierarchy and branch budget.",
+        "Approve: the owner signs the changelog with a date and version.",
+        "Propagate: update quest, dialogue, and art references together.",
+        "Verify: a second reader confirms it is in the build before the milestone."
+      ]
+    },
+    {
+      "t": "p",
+      "x": "Keep the changelog in the repository next to the bible. A canon decision that lives only in a meeting will be contradicted by the next writer."
+    },
+    {
+      "t": "h3",
+      "x": "Lore delivery channels"
+    },
+    {
+      "t": "table",
+      "head": [
+        "Channel",
+        "Capacity",
+        "Permanence",
+        "Best for"
+      ],
+      "w": [
+        120,
+        92,
+        104,
+        188
+      ],
+      "rows": [
+        [
+          "Environmental detail",
+          "{{high}}",
+          "{{always visible}}",
+          "{{history the player can infer}}"
+        ],
+        [
+          "Item descriptions",
+          "{{medium}}",
+          "{{on inspect}}",
+          "{{texture, ownership, jokes}}"
+        ],
+        [
+          "Audio logs",
+          "{{low}}",
+          "{{missable}}",
+          "{{voice, testimony, foreshadowing}}"
+        ],
+        [
+          "Codex entries",
+          "{{high}}",
+          "{{menu}}",
+          "{{reference, not revelation}}"
+        ]
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Definition of done"
+    },
+    {
+      "t": "ins",
+      "x": "Do not mark this tab complete until another writer can produce a scene, a quest, and a bark set without asking you a question."
+    },
+    {
+      "t": "check",
+      "x": [
+        "The premise fits in two sentences and implies a player verb.",
+        "The canon hierarchy names an owner and change process for every layer.",
+        "The synopsis names the inciting incident, midpoint turn, and climax cost.",
+        "Every speaking character has a want, need, flaw, and gameplay function.",
+        "Quest and dialogue schemas are exported as data, not prose.",
+        "The style sheet covers tone, naming, sensitivity, and canon review."
+      ]
+    },
+    {
+      "t": "h2",
+      "x": "Open questions"
+    },
+    {
+      "t": "ins",
+      "x": "Assign every question to one owner and one milestone. A question without a date is a preference."
+    },
+    {
+      "t": "table",
+      "head": [
+        "Question",
+        "Owner",
+        "Needed by"
+      ],
+      "w": [
+        300,
+        104,
+        100
+      ],
+      "rows": [
+        [
+          "{{Does the midpoint choice change a level or only a dialogue branch?}}",
+          "{{Narrative lead}}",
+          "{{vertical slice}}"
+        ],
+        [
+          "{{How many endings can we test every milestone?}}",
+          "{{QA lead}}",
+          "{{content lock}}"
+        ],
+        [
+          "{{Is the protagonist voiced, and in how many languages?}}",
+          "{{Audio lead}}",
+          "{{VO budget}}"
+        ],
+        [
+          "{{Which faction can be cut without breaking the theme?}}",
+          "{{Creative director}}",
+          "{{milestone 2}}"
+        ]
+      ]
+    },
+    {
+      "t": "hr"
+    }
+  ]
+}
