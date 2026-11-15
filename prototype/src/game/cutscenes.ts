@@ -1,5 +1,6 @@
 // Short in-engine cutscenes (Interaksi §5 "Kamera" + §9 adegan). Each shot is a
 // camera dolly from → to with one caption. Captions use Rich markup.
+import { healthCheckCaption } from "./report";
 import { ending, type State } from "./rules";
 import { BEEP_START, CREW_HOME, FACILITY, PICKUP_SPOTS, RESCUE_PAD, SHELTER, YARD } from "./world";
 
@@ -189,10 +190,18 @@ export function cutscene(id: CutsceneId, state: State): Shot[] {
           caption: "A **rescue lander** drops down from lunar orbit.",
         },
         {
+          // Health check: the same three astronauts look different for each ending (Scene draws it).
           key: "thud",
-          ms: 3000,
-          from: { pos: [P[0] + 2.6, 2.6, P[1] + 4.8], look: [P[0], 0.8, P[1]] },
-          to: { pos: [P[0] + 2.0, 2.2, P[1] + 4.0], look: [P[0], 0.8, P[1]] },
+          ms: 4600,
+          from: { pos: [P[0] + 1.6, 1.9, P[1] + 3.6], look: [P[0], 0.7, P[1]] },
+          to: { pos: [P[0] + 0.9, 1.7, P[1] + 2.9], look: [P[0], 0.75, P[1]] },
+          caption: healthCheckCaption(state),
+        },
+        {
+          key: "home",
+          ms: 3200,
+          from: { pos: [P[0] + 2.6, 2.6, P[1] + 4.8], look: [P[0] + 1.2, 0.9, P[1]] },
+          to: { pos: [P[0] + 1.4, 3.2, P[1] + 6.2], look: [P[0] + 1.8, 1.2, P[1]] },
           caption:
             ending(state) === "safe"
               ? "Everyone is {s:safe} and {f:fed}. **Time to go home!**"

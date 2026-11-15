@@ -140,13 +140,27 @@ test("Mission 1 by walking and hands-on actions ends Safe and Sound", async ({ p
   await expect(page.getByRole("heading", { name: "Safe and Sound!" })).toBeVisible();
   await expect(page.getByText("Earth: data received!")).toBeVisible();
   await page.getByRole("button", { name: "Debrief" }).click();
-  // Debrief page 1: dose bars scaled to Artemis I, and the real DONKI event chain.
+  // Mission report 1/3: the crew check, with this run's ending lit next to the other one.
+  await expect(page.getByRole("button", { name: /Crew check/ })).toHaveAttribute("aria-current", "step");
+  await expect(page.getByRole("heading", { name: "Safe and Sound" })).toBeVisible();
+  await expect(page.getByText("Everyone was shielded from the storm and ate every meal.")).toBeVisible();
+  await expect(page.getByText("Your ending")).toBeVisible();
+  // 2/3: the chain of choices; nothing went wrong, so no step is blamed.
+  await page.getByRole("button", { name: /Why did this happen/ }).click();
+  await expect(page.getByText(/heavy water tank could join the wall/)).toBeVisible();
+  await expect(page.getByText("Changed the ending")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Every choice paid off" })).toBeVisible();
+  // 3/3: dose bars scaled to Artemis I, the real DONKI event chain, badges.
+  await page.getByRole("button", { name: /What did we learn/ }).click();
   await expect(page.getByLabel("What really happened")).toContainText("16:45");
   await expect(page.getByText(/Artemis I/)).toBeVisible();
-  await page.getByRole("button", { name: /^Next/ }).click();
-  await expect(page.getByText(/water tank/)).toBeVisible();
-  await page.getByRole("button", { name: /^Next/ }).click();
   await expect(page.getByText("Moon Scientist")).toBeVisible();
+  // The decision tree shows this run's path and the branches still hidden.
+  await page.getByRole("button", { name: /Decision tree/ }).click();
+  await expect(page.getByRole("heading", { name: "Every path to the end" })).toBeVisible();
+  await expect(page.getByText("★ Your choice this run")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Not found yet" }).first()).toBeVisible();
+  await page.getByRole("button", { name: "Close decision tree" }).click();
   await page.getByRole("button", { name: /Replay from shift 1/ }).click();
   await expect(page.getByText("SHIFT 1 OF 5")).toBeVisible();
   expect(errors).toEqual([]);

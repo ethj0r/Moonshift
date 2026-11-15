@@ -2,7 +2,6 @@ import { Component, lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRedu
 import {
   BADGES,
   batteryAvailable,
-  branchPath,
   CARGO,
   CARGO_IDS,
   cellName,
@@ -14,7 +13,6 @@ import {
   foodPackAvailable,
   freePower,
   initialSession,
-  lesson,
   MAX_SLOTS,
   MISSION_1,
   PICKUP,
@@ -44,6 +42,8 @@ import { Icon, type IconName } from "./ui/Icons";
 import { plain, Rich } from "./ui/Rich";
 import { KnowArt } from "./ui/KnowArt";
 import { StormChainArt, WhyArt } from "./ui/WhyArt";
+import { DecisionTree, MissionReport } from "./ui/Report";
+import { runPath } from "./game/tree";
 import { CineArtPanel, RescueTrack } from "./ui/CineArt";
 import { initAudio, setAudio, setMusic, sfx, type Mood } from "./audio";
 import { cutscene, type Cine, type CutsceneId } from "./game/cutscenes";
@@ -65,6 +65,10 @@ interface Settings {
 interface Progress {
   badges: Badge[];
   newMission: boolean;
+  /** Decision-tree nodes found in any run, and how many runs lit each one. */
+  tree?: string[];
+  counts?: Record<string, number>;
+  runs?: number;
 }
 const TERMS: Partial<Record<number, string[]>> = { 2: ["Contact window"], 3: ["Solar flare", "Particles", "Shield"], 4: ["Dose", "Particles"], 5: ["DONKI"] };
 const STORM_DATE: Record<string, string[]> = {
@@ -190,6 +194,9 @@ export default function App() {
   const [showWhy, setShowWhy] = useState(false);
   const [term, setTerm] = useState<string | null>(null);
   const [debriefPage, setDebriefPage] = useState(0);
+  const [treeOpen, setTreeOpen] = useState(false);
+  /** Badges owned before this debrief, so new ones can say "new!". */
+  const knownBadges = useRef<Badge[]>([]);
   const [cargoStart, setCargoStart] = useState(0);
   const [fastCargo, setFastCargo] = useState(false);
   const [now, setNow] = useState(() => Date.now());
@@ -525,9 +532,15 @@ export default function App() {
   useEffect(() => {
     if (stage !== DEBRIEF) return;
     const won = earnedBadges(state, fastCargo);
+    const path = runPath(state);
+    knownBadges.current = progress.badges;
+    setDebriefPage(0);
     setProgress((p) => ({
       badges: [...new Set([...p.badges, ...won])],
       newMission: p.newMission || ending(state) === "safe",
+      tree: [...new Set([...(p.tree ?? []), ...path])],
+      counts: path.reduce((c, id) => ({ ...c, [id]: (c[id] ?? 0) + 1 }), { ...(p.counts ?? {}) }),
+      runs: (p.runs ?? 0) + 1,
     }));
   }, [stage]);
 
@@ -740,6 +753,11 @@ export default function App() {
             {progress.newMission && (
               <button className="button menu-button" disabled={!ready || sceneError} onClick={() => startGame(randomMission())}>
                 New mission · random storm
+              </button>
+            )}
+            {(progress.runs ?? 0) > 0 && (
+              <button className="button menu-button" onClick={() => setTreeOpen(true)}>
+                Decision tree
               </button>
             )}
             <button className="button menu-button" onClick={() => setModal("help")}>
@@ -1409,19 +1427,38 @@ export default function App() {
         </Dialog>
       )}
 
-      {screen === "game" && stage === DEBRIEF && !modal && (
-        <Debrief
+      {screen === "game" && stage === DEBRIEF && !modal && !treeOpen && (
+        <MissionReport
           page={debriefPage}
           setPage={setDebriefPage}
           state={state}
           cadet={cadet}
-          fast={fastCargo}
-          known={progress.badges}
+          badges={earnedBadges(state, fastCargo)}
+          known={knownBadges.current}
           canNewMission={progress.newMission || ending(state) === "safe"}
+          learnArt={
+            <>
+              <DoseBars state={state} cadet={cadet} animate={false} full />
+              {state.mission.storm.key === "sep2017" && <StormChainArt cadet={cadet} />}
+              <p className="fiction-note in-panel">
+                This mission was a story. The storm really happened on {state.mission.storm.label === "September 2017" ? "10 September 2017" : state.mission.storm.label}.
+              </p>
+            </>
+          }
           onReplay={() => dispatch({ type: "replay" })}
           onNewMission={() => startGame(randomMission())}
+          onTree={() => setTreeOpen(true)}
           onFinish={() => setScreen("title")}
           onDataBook={() => setModal("databook")}
+        />
+      )}
+      {treeOpen && !modal && (
+        <DecisionTree
+          found={progress.tree ?? []}
+          counts={progress.counts ?? {}}
+          runs={progress.runs ?? 0}
+          current={screen === "game" && stage === DEBRIEF ? state : null}
+          onClose={() => setTreeOpen(false)}
         />
       )}
 
@@ -1756,95 +1793,3 @@ function HudTour({ step, shift, onNext, onSkip }: { step: number; shift: number;
   );
 }
 
-function Debrief(props: {
-  page: number;
-  setPage: (n: number) => void;
-  state: Parameters<typeof doseBars>[0];
-  cadet: boolean;
-  fast: boolean;
-  known: Badge[];
-  canNewMission: boolean;
-  onReplay: () => void;
-  onNewMission: () => void;
-  onFinish: () => void;
-  onDataBook: () => void;
-}) {
-  const { state } = props;
-  const l = lesson(state);
-  const badges = earnedBadges(state, props.fast);
-  const titles = ["Particle dose", "One thing we learned", "Your path"];
-  const nextBadge = (["scientist", "crew", "strong"] as Badge[]).find((b) => !badges.includes(b));
-  return (
-    <Dialog title={titles[props.page]} wide onClose={props.onFinish}>
-      <span className="result-tag">
-        DEBRIEF {props.page + 1}/3 · {ending(state) === "safe" ? "SAFE AND SOUND" : "RESCUE AT LAST"}
-      </span>
-      {props.page === 0 && (
-        <>
-          <DoseBars state={state} cadet={props.cadet} animate={false} full />
-          {state.mission.storm.key === "sep2017" && <StormChainArt cadet={props.cadet} />}
-          <p className="fiction-note in-panel">This mission was a story. The storm really happened on {state.mission.storm.label === "September 2017" ? "10 September 2017" : `${state.mission.storm.label}`}.</p>
-        </>
-      )}
-      {props.page === 1 && (
-        <>
-          <p className="lesson">
-            <Rich text={l.text} />
-          </p>
-          <button className="text-button" onClick={props.onDataBook}>
-            <Icon name="help" size={16} /> Why? Where is this from?
-          </button>
-        </>
-      )}
-      {props.page === 2 && (
-        <>
-          <ol className="branch-map" aria-label="Your path">
-            {branchPath(state).map((node) => (
-              <li key={node.label} className={node.ok ? "ok" : "miss"}>
-                {node.ok ? <Icon name="check" size={14} /> : "?"} {node.label}
-              </li>
-            ))}
-          </ol>
-          <p className="tip">
-            <Rich text={l.tip} />
-          </p>
-          {nextBadge && (
-            <p className="next-badge">
-              <Icon name="star" size={16} />
-              <span>
-                Next badge to try: <strong>{BADGES[nextBadge].name}</strong>. {BADGES[nextBadge].how}
-              </span>
-            </p>
-          )}
-          <div className="badge-row">
-            {(Object.keys(BADGES) as Badge[]).map((b) => (
-              <span key={b} className={`badge ${badges.includes(b) ? "earned" : "locked"}`} title={BADGES[b].how}>
-                <Icon name={badges.includes(b) ? "star" : "lock"} size={14} /> {BADGES[b].name}
-                {badges.includes(b) && !props.known.includes(b) && <em> new!</em>}
-              </span>
-            ))}
-          </div>
-        </>
-      )}
-      {props.page < 2 ? (
-        <button className="button primary" autoFocus onClick={() => props.setPage(props.page + 1)}>
-          Next <Icon name="arrow" />
-        </button>
-      ) : (
-        <div className="debrief-actions">
-          <button className="button primary" autoFocus onClick={props.onReplay}>
-            Replay from shift 1 <Icon name="rotate" />
-          </button>
-          {props.canNewMission && (
-            <button className="button" onClick={props.onNewMission}>
-              New mission · random storm
-            </button>
-          )}
-          <button className="text-button" onClick={props.onFinish}>
-            Finish
-          </button>
-        </div>
-      )}
-    </Dialog>
-  );
-}

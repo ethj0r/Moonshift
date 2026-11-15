@@ -8,6 +8,7 @@ import {
   Color,
   Group,
   InstancedMesh,
+  Matrix4,
   Material,
   Mesh,
   MeshBasicMaterial,
@@ -19,6 +20,8 @@ import {
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import manifest from "../../asset-manifest.json";
+import { outcome } from "../game/report";
+import { makeFace, type Expression } from "./face";
 import { beforeLanding, EARTH, ease, PROLOGUE, RESCUE_AT, RESCUE_SHIFT, shotKey, shotProgress, SUN, type Cine } from "../game/cutscenes";
 import {
   CARGO,
@@ -164,14 +167,21 @@ function Model({
   scale = 1,
   rotation = 0,
   onClick,
+  face,
 }: {
   id: ModelId;
   position?: P3;
   scale?: number;
   rotation?: number;
   onClick?: () => void;
+  /** Crew only: the glowing face on the helmet visor. */
+  face?: Expression;
 }) {
-  const object = useMemo(() => models.get(id)!.clone(true), [id]);
+  const object = useMemo(() => {
+    const o = models.get(id)!.clone(true);
+    if (face) o.add(makeFace(face));
+    return o;
+  }, [id, face]);
   return (
     <primitive
       object={object}
@@ -619,6 +629,58 @@ function StormSnow() {
   );
 }
 
+/** True during the rescue cutscene's health check and the goodbye shot after it. */
+const healthCheck = (props: SceneProps) => props.cine?.id === "rescue" && ["thud", "home"].includes(shotKey(props.cine)!);
+
+/** The health check made visible: particles still clinging to the crew, or the plates that stayed empty. */
+function HealthCheck({ props }: { props: SceneProps }) {
+  const s = props.state;
+  const o = outcome(s);
+  const motes = o === "exposed" ? 46 : o === "thin" ? 18 : 0;
+  const dots = useRef<InstancedMesh>(null);
+  const seeds = useMemo(() => Array.from({ length: motes }, (_, i) => [Math.random() * 6.28, 0.3 + Math.random() * 0.75, 0.25 + Math.random() * 0.45, i % 3]), [motes]);
+  const m = useMemo(() => new Matrix4(), []);
+  useFrame(() => {
+    const mesh = dots.current;
+    if (!mesh) return;
+    const t = props.reducedMotion ? 0 : performance.now() / 1000;
+    seeds.forEach(([a, y, r, who], i) => {
+      const [x, z] = PICKUP_SPOTS[who];
+      const ang = a + t * (1.4 + r);
+      m.makeTranslation(x + Math.cos(ang) * r, y + Math.sin(t * 2 + a) * 0.08, z + Math.sin(ang) * r);
+      mesh.setMatrixAt(i, m);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+  const [px, pz] = PICKUP_SPOTS[1];
+  return (
+    <>
+      {motes > 0 && (
+        <instancedMesh ref={dots} args={[undefined, undefined, motes]}>
+          <icosahedronGeometry args={[0.05, 0]} />
+          <meshBasicMaterial color="#ff8a3d" />
+        </instancedMesh>
+      )}
+      {s.missed > 0 && (
+        <group position={[px, 1.45, pz + 0.3]}>
+          {Array.from({ length: Math.min(s.missed, 3) }, (_, i) => (
+            <group key={i} position={[(i - (Math.min(s.missed, 3) - 1) / 2) * 0.46, 0, 0]} rotation-x={0.9}>
+              <mesh>
+                <cylinderGeometry args={[0.19, 0.16, 0.04, 16]} />
+                <meshStandardMaterial color="#fff6e8" flatShading />
+              </mesh>
+              <mesh position={[0, 0.025, 0]}>
+                <torusGeometry args={[0.13, 0.012, 4, 20]} />
+                <meshBasicMaterial color="#b4441d" />
+              </mesh>
+            </group>
+          ))}
+        </group>
+      )}
+    </>
+  );
+}
+
 function Crew({ props }: { props: SceneProps }) {
   const { state, plan, mode } = props;
   const home: Vec2[] = CREW_HOME;
@@ -640,6 +702,21 @@ function Crew({ props }: { props: SceneProps }) {
               ? PICKUP_SPOTS
               : home;
   const ids: ModelId[] = ["crew-a", "crew-b", "crew-c"];
+  const check = healthCheck(props) ? outcome(state) : null;
+  const face: Expression =
+    check
+      ? check === "safe"
+        ? "happy"
+        : check === "hungry"
+          ? "tired"
+          : "worried"
+      : props.cine?.id === "opening" && shotKey(props.cine) === "crew"
+        ? "happy"
+        : props.cine?.id === "storm" || props.cine?.id === "flare" || state.stage === 3 || state.stage === 4
+          ? "worried"
+          : state.stage >= 6
+            ? "happy"
+            : "calm";
   const carryingTank = props.carrying === "tank";
   return (
     <>
@@ -650,9 +727,9 @@ function Crew({ props }: { props: SceneProps }) {
             to={spots[i]}
             reducedMotion={props.reducedMotion}
             scale={inShelter ? 0.4 : 0.5}
-            hop={props.cine?.id === "opening" && shotKey(props.cine) === "crew" ? i : null}
+            hop={(props.cine?.id === "opening" && shotKey(props.cine) === "crew") || (healthCheck(props) && outcome(state) === "safe") ? i : null}
           >
-            <Model id={id} rotation={0.2 - i * 0.2} />
+            <Model id={id} rotation={0.2 - i * 0.2} face={face} />
           </Walker>
         ),
       )}
@@ -833,7 +910,7 @@ function Beep({ props, beep }: { props: SceneProps; beep: React.RefObject<Group 
       )}
       {props.carrying === "tank" && (
         <group position={[0.75, 0, -0.2]} scale={0.5}>
-          <Model id="crew-b" />
+          <Model id="crew-b" face="worried" />
         </group>
       )}
     </group>
@@ -1466,6 +1543,7 @@ function World({ props, labels, focus }: { props: SceneProps; labels: LabelSpec[
       <Sun cine={props.cine} />
       {props.mode === "play" && props.cine?.id === "opening" && shotKey(props.cine) === "sun" && <SunBeams />}
       {props.mode === "play" && props.cine?.id === "opening" && <Prologue cine={props.cine} reducedMotion={props.reducedMotion} />}
+      {props.mode === "play" && healthCheck(props) && <HealthCheck props={props} />}
       <ShelterGrid highlight={state.stage === 3 && !!props.carrying} />
       <Fan running={state.stage === 4 && (plan.moveCrew || state.crewMoved)} animate={animate} />
       <Pipe angle={state.stage === 1 ? props.pipeAngle : 0} flowing={state.pipeFixed || plan.pipeFixed} animate={animate} />
