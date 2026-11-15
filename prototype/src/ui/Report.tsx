@@ -34,29 +34,42 @@ function CrewStage({ state }: { state: State }) {
   const level = particles(state);
   const count = level === "high" ? 18 : level === "some" ? 8 : 0;
   return (
-    <div className={`crew-stage mood-${face}`}>
+    <section className={`crew-stage mood-${face}`} aria-label="Crew requests and what they changed">
       <div className="stage-floor" aria-hidden="true" />
       {CREW.map((c, i) => (
-        <figure key={c.id} className="crew-figure" style={{ ["--i" as string]: i }}>
-          <div className={`wish-bubble ${wishes[c.id].met ? "met" : "unmet"}`}>
-            <span className="wish-mark" aria-hidden="true">
-              {wishes[c.id].met ? <Icon name="check" size={12} /> : <Icon name="close" size={10} />}
-            </span>
-            <span className="wish-text">
-              “{wishes[c.id].wish}”
-              <small>{wishes[c.id].met ? "You did it" : "Didn't happen"}</small>
-            </span>
+        <article key={c.id} className={`crew-card ${wishes[c.id].met ? "met" : "unmet"}`}>
+          <figure className="crew-figure" style={{ ["--i" as string]: i }}>
+            <div className="crew-body">
+              <img src={art(`crew-${c.file}-${face}`)} alt={`${c.name}, looking ${face}`} width={119} height={230} />
+              {motes(count, 7 + i * 31).map((m, k) => (
+                <i key={k} className="mote" style={{ left: `${m.x}%`, top: `${m.y}%`, animationDelay: `${m.d}s` }} />
+              ))}
+            </div>
+            <figcaption className={`crew-name c-${c.id}`}>{c.name}</figcaption>
+          </figure>
+          <div className="crew-brief">
+            <div className="crew-request">
+              <span className="wish-mark" aria-hidden="true">
+                {wishes[c.id].met ? <Icon name="check" size={12} /> : <Icon name="close" size={10} />}
+              </span>
+              <div>
+                <span className="crew-when">{wishes[c.id].when}</span>
+                <strong className="crew-wish">“{wishes[c.id].wish}”</strong>
+                <small className="crew-status">{wishes[c.id].met ? "You did it" : "Not this time"}</small>
+              </div>
+            </div>
+            <details className="crew-details crew-why">
+              <summary>Why it matters</summary>
+              <p>{wishes[c.id].why}</p>
+            </details>
+            <details className="crew-details crew-alternate">
+              <summary>{wishes[c.id].met ? "What if you skipped it?" : "What could you try?"}</summary>
+              <p>{wishes[c.id].alternate}</p>
+            </details>
           </div>
-          <div className="crew-body">
-            <img src={art(`crew-${c.file}-${face}`)} alt={`${c.name}, looking ${face}`} width={119} height={230} />
-            {motes(count, 7 + i * 31).map((m, k) => (
-              <i key={k} className="mote" style={{ left: `${m.x}%`, top: `${m.y}%`, animationDelay: `${m.d}s` }} />
-            ))}
-          </div>
-          <figcaption className={`crew-name c-${c.id}`}>{c.name}</figcaption>
-        </figure>
+        </article>
       ))}
-    </div>
+    </section>
   );
 }
 
