@@ -92,23 +92,34 @@ function save(key: string, value: unknown) {
 const VOICE_CLIPS: Record<string, string> = VOICE;
 const voiceKey = (text: string) => plain(text).replace(/\*kshh\*/g, "").replace(/\s+/g, " ").trim();
 let clip: HTMLAudioElement | null = null;
-function speak(text: string) {
-  try {
-    clip?.pause();
-    if ("speechSynthesis" in window) speechSynthesis.cancel();
-    const file = VOICE_CLIPS[voiceKey(text)];
-    if (file) {
-      clip = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
-      return void clip.play().catch(() => {});
+/** Read a line aloud. Resolves when it has finished, been cut off, or could not play, so a cutscene can wait for it. */
+function speak(text: string): Promise<void> {
+  return new Promise((done) => {
+    try {
+      clip?.pause();
+      if ("speechSynthesis" in window) speechSynthesis.cancel();
+      const file = VOICE_CLIPS[voiceKey(text)];
+      if (file) {
+        const audio = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
+        clip = audio;
+        for (const ev of ["ended", "pause", "error"]) audio.addEventListener(ev, () => done());
+        return void audio.play().catch(() => done());
+      }
+      if (!("speechSynthesis" in window)) return done();
+      const utterance = new SpeechSynthesisUtterance(plain(text));
+      utterance.rate = 0.9;
+      utterance.lang = "en-US";
+      utterance.onend = utterance.onerror = () => done();
+      speechSynthesis.speak(utterance);
+    } catch {
+      /* Voice is optional; text is always shown. */
+      done();
     }
-    if (!("speechSynthesis" in window)) return;
-    const utterance = new SpeechSynthesisUtterance(plain(text));
-    utterance.rate = 0.9;
-    utterance.lang = "en-US";
-    speechSynthesis.speak(utterance);
-  } catch {
-    /* Voice is optional; text is always shown. */
-  }
+  });
+}
+function stopVoice() {
+  clip?.pause();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
 
 const PORTRAIT: Record<Speaker, IconName> = { commander: "crew", technician: "air", researcher: "research", earth: "radio", beep: "star" };
@@ -272,11 +283,22 @@ export default function App() {
     if (plan.cargo.length !== was.plan.cargo.length) sfx(plan.cargo.length > was.plan.cargo.length ? "pack" : "unpack");
   }, [plan, carrying, phase, stage]);
 
-  // Cutscene: one timer per shot; Cadet hears each caption.
+  // Cutscene: each shot lasts its own time, and when Cadet hears the caption it also waits for the voice to finish.
   useEffect(() => {
     if (!cine || !ready || modal) return;
     const shot = cine.shots[cine.shot];
-    if (cadet && settings.voice) speak(shot.caption);
+    const voiced = cadet && settings.voice;
+    let live = true;
+    let timeUp = false;
+    let heard = !voiced;
+    const next = () => live && setCine((c) => (c && c.shot + 1 < c.shots.length ? { ...c, shot: c.shot + 1, start: performance.now() } : null));
+    const advance = () => timeUp && heard && next();
+    const timers: number[] = [];
+    if (voiced)
+      speak(shot.caption).then(() => {
+        // A short breath after the line, then move on.
+        timers.push(window.setTimeout(() => ((heard = true), advance()), 450));
+      });
     if (shot.shake) sfx("thud");
     if (shot.key === "beep" && cine.id === "opening") sfx("beep");
     if (shot.key === "jump") sfx("whoosh");
@@ -284,11 +306,13 @@ export default function App() {
     if (shot.key === "pad") sfx("chime");
     if (shot.flash) sfx("flare");
     if (cine.id === "rescue" && cine.shot === 0) sfx(ending(state) === "safe" ? "fanfare" : "chime");
-    const t = setTimeout(
-      () => setCine((c) => (c && c.shot + 1 < c.shots.length ? { ...c, shot: c.shot + 1, start: performance.now() } : null)),
-      cine.shots[cine.shot].ms,
-    );
-    return () => clearTimeout(t);
+    timers.push(window.setTimeout(() => ((timeUp = true), advance()), shot.ms));
+    // Safety net: a stalled clip never freezes the story.
+    if (voiced) timers.push(window.setTimeout(next, shot.ms + 12000));
+    return () => {
+      live = false;
+      timers.forEach(clearTimeout);
+    };
   }, [cine?.id, cine?.shot, ready, modal]);
   useEffect(() => {
     if (tourDone.current || stage !== 1 || phase !== "play" || cine || modal || !ready || intro) return;
@@ -298,7 +322,7 @@ export default function App() {
   function skipCine() {
     setCine(null);
     try {
-      speechSynthesis.cancel();
+      stopVoice();
     } catch {
       /* no voice */
     }
