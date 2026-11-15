@@ -48,6 +48,7 @@ import { CineArtPanel, RescueTrack } from "./ui/CineArt";
 import { initAudio, setAudio, setMusic, sfx, type Mood } from "./audio";
 import { cutscene, type Cine, type CutsceneId } from "./game/cutscenes";
 import type { Speaker } from "./game/content";
+import VOICE from "./voice.json";
 
 const Scene = lazy(() => import("./scene/Scene"));
 type Mode = "cadet" | "specialist";
@@ -87,10 +88,20 @@ function save(key: string, value: unknown) {
     /* Preferences stay in memory. */
   }
 }
+// ElevenLabs clips, one voice per speaker; keyed by the line as read aloud. Lines with live numbers fall back to the browser voice.
+const VOICE_CLIPS: Record<string, string> = VOICE;
+const voiceKey = (text: string) => plain(text).replace(/\*kshh\*/g, "").replace(/\s+/g, " ").trim();
+let clip: HTMLAudioElement | null = null;
 function speak(text: string) {
   try {
+    clip?.pause();
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    const file = VOICE_CLIPS[voiceKey(text)];
+    if (file) {
+      clip = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
+      return void clip.play().catch(() => {});
+    }
     if (!("speechSynthesis" in window)) return;
-    speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(plain(text));
     utterance.rate = 0.9;
     utterance.lang = "en-US";

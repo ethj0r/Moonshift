@@ -17,3 +17,16 @@ describe("generative music", () => {
     }
   });
 });
+
+import { existsSync } from "node:fs";
+import VOICE from "../src/voice.json";
+import { GUESS } from "../src/game/content";
+import { plain } from "../src/ui/Rich";
+
+describe("voiceover clips", () => {
+  it("has a file for every line and still matches the guess script", () => {
+    for (const file of Object.values(VOICE)) expect(existsSync(`public/assets/voice/${file}`), file).toBe(true);
+    // If a line is edited, its clip silently falls back to the browser voice: regenerate it.
+    for (const g of Object.values(GUESS)) expect(VOICE).toHaveProperty([plain(`${g.know} ${g.question}`)]);
+  });
+});
