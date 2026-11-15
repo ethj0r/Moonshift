@@ -21,6 +21,8 @@ describe("generative music", () => {
 import { existsSync } from "node:fs";
 import VOICE from "../src/voice.json";
 import { GUESS } from "../src/game/content";
+import { cutscene } from "../src/game/cutscenes";
+import { initialState } from "../src/game/rules";
 import { plain } from "../src/ui/Rich";
 
 describe("voiceover clips", () => {
@@ -28,5 +30,7 @@ describe("voiceover clips", () => {
     for (const file of Object.values(VOICE)) expect(existsSync(`public/assets/voice/${file}`), file).toBe(true);
     // If a line is edited, its clip silently falls back to the browser voice: regenerate it.
     for (const g of Object.values(GUESS)) expect(VOICE).toHaveProperty([plain(`${g.know} ${g.question}`)]);
+    // The opening teaches the goal and the shift loop: every caption must have its narrator clip.
+    for (const shot of cutscene("opening", initialState())) expect(VOICE).toHaveProperty([plain(shot.caption).replace(/\s+/g, " ").trim()]);
   });
 });
