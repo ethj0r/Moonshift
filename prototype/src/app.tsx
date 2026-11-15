@@ -240,6 +240,9 @@ export default function App() {
   const dialogInvoker = useRef<HTMLElement | null>(null);
   const { state, plan, phase } = session;
   const stage = state.stage;
+  // Compare mission content rather than object identity so equivalent mission copies do not
+  // look like a newly selected mission to the stage-entry effect.
+  const missionKey = JSON.stringify(state.mission);
   const cadet = settings.mode === "cadet";
   const preview = useMemo(() => evaluate(state, plan), [state, plan]);
   const things = useMemo(() => interactables(state, plan, carrying), [state, plan, carrying]);
@@ -299,7 +302,7 @@ export default function App() {
     setCine(scene ? { id: scene, shots: cutscene(scene, state), shot: 0, start: performance.now() } : null);
     const t = setTimeout(() => setIntro(false), settings.reducedMotion ? 0 : 1600);
     return () => clearTimeout(t);
-  }, [stage, screen, session.state.mission]);
+  }, [stage, screen, missionKey]);
 
   useEffect(initAudio, []);
   useEffect(() => setAudio({ sfx: settings.sound, music: settings.music }), [settings.sound, settings.music]);
@@ -550,6 +553,7 @@ export default function App() {
   }
   function commit(acceptRisk: boolean) {
     if (stage === 0 && settings.timer && cargoStart && Date.now() - cargoStart <= 60000) setFastCargo(true);
+    stopVoice();
     dispatch({ type: "commit", acceptRisk });
     setGoggles(false);
     setModal(null);
@@ -1195,7 +1199,8 @@ export default function App() {
                 autoFocus
                 onClick={() => {
                   dispatch({ type: "begin" });
-                  say(briefLine(state), false);
+                  // The briefing already showed this line; don't repeat it as a gameplay bubble.
+                  setBubble(null);
                   if (stage === 3 && guessed) setGoggles(true);
                 }}
               >
