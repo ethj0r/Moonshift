@@ -12,7 +12,6 @@ const PAPER = "#fff6e8";
 const CRATE = "#d9a066";
 const WOOD = "#a66a34";
 const AIR = "#2f86b9";
-const FOOD = "#4f9a55";
 
 const Sun = ({ x, y }: { x: number; y: number }) => (
   <g>
@@ -236,33 +235,6 @@ const ART: Partial<Record<Stage, { label: string; box: string; body: React.React
           <rect x={20} y={130} width={120} height={18} rx={9} />
           <rect x={180} y={130} width={120} height={18} rx={9} />
         </g>
-      </>
-    ),
-  },
-  5: {
-    label: "Shift 5 needs one meal and the rescue needs one meal. A full plate is a meal you have. A dashed plate is a missing meal. These are the same plates as the food meter at the top left.",
-    box: "0 0 320 128",
-    body: (
-      <>
-        <defs>
-          <Arrow id="k5" color={INK} />
-        </defs>
-        <Label x={58} y={16}>Shift 5</Label>
-        <Label x={178} y={16}>Rescue</Label>
-        <circle cx={58} cy={58} r={26} fill="#ffffff" stroke="#c9b48f" strokeWidth={3} />
-        <circle cx={58} cy={58} r={15} fill={FOOD} />
-        <circle cx={178} cy={58} r={26} fill="none" stroke={CORAL} strokeWidth={3} strokeDasharray="6 5" />
-        <Label x={178} y={64} size={18} color={CORAL}>?</Label>
-        <line x1={92} y1={58} x2={144} y2={58} stroke={INK} strokeWidth={2.5} markerEnd="url(#k5)" />
-        <Label x={118} y={48} size={10.5} color={SOFT}>1 each</Label>
-        <Label x={58} y={104} color={FOOD}>meal you have</Label>
-        <Label x={178} y={104} color={CORAL}>missing meal</Label>
-        <rect x={236} y={36} width={80} height={44} rx={10} fill={PAPER} stroke="#d8c6a6" strokeWidth={2} />
-        <Label x={246} y={52} anchor="start" size={9} color={TEAL}>FOOD</Label>
-        <circle cx={254} cy={66} r={7} fill={FOOD} />
-        <circle cx={274} cy={66} r={7} fill="none" stroke={CORAL} strokeWidth={2} strokeDasharray="3 3" />
-        <Label x={276} y={104}>food meter</Label>
-        <Label x={276} y={120} size={11} color={SOFT}>top left</Label>
       </>
     ),
   },

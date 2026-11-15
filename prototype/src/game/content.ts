@@ -121,14 +121,6 @@ export const GUESS: Partial<Record<Stage, Guess>> = {
       { label: "Shelter", icon: "shield", hint: "If you think the **shelter** lets more in." },
     ],
   },
-  5: {
-    know: "The crew eats 1 meal each shift. A dashed plate is a missing meal.",
-    question: "Will every plate be full?",
-    options: [
-      { label: "Yes", icon: "food", hint: "If you think every plate gets a **meal**." },
-      { label: "Not yet", icon: "food", hint: "If you think some plates stay empty." },
-    ],
-  },
 };
 /** S3 grid guess: what each square is, so a tap is a reasoned guess. */
 export const CELL_HINT = {
