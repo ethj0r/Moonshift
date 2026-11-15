@@ -96,6 +96,23 @@ function save(key: string, value: unknown) {
 const VOICE_CLIPS: Record<string, string> = VOICE;
 const voiceKey = (text: string) => plain(text).replace(/\*kshh\*/g, "").replace(/\s+/g, " ").trim();
 let clip: HTMLAudioElement | null = null;
+const clips = new Map<string, HTMLAudioElement>();
+function clipFor(file: string) {
+  let audio = clips.get(file);
+  if (!audio) {
+    audio = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
+    audio.preload = "auto";
+    clips.set(file, audio);
+  }
+  return audio;
+}
+/** Start downloading the clips for lines that are about to be read, so they play without a gap. */
+function preloadVoice(texts: string[]) {
+  for (const t of texts) {
+    const file = VOICE_CLIPS[voiceKey(t)];
+    if (file) clipFor(file);
+  }
+}
 /** Read a line aloud. Resolves when it has finished, been cut off, or could not play, so a cutscene can wait for it. */
 function speak(text: string): Promise<void> {
   return new Promise((done) => {
@@ -104,9 +121,10 @@ function speak(text: string): Promise<void> {
       if ("speechSynthesis" in window) speechSynthesis.cancel();
       const file = VOICE_CLIPS[voiceKey(text)];
       if (file) {
-        const audio = new Audio(`${import.meta.env.BASE_URL}assets/voice/${file}`);
+        const audio = clipFor(file);
         clip = audio;
-        for (const ev of ["ended", "pause", "error"]) audio.addEventListener(ev, () => done());
+        audio.currentTime = 0;
+        for (const ev of ["ended", "pause", "error"]) audio.addEventListener(ev, () => done(), { once: true });
         return void audio.play().catch(() => done());
       }
       if (!("speechSynthesis" in window)) return done();
@@ -213,6 +231,10 @@ export default function App() {
   const drag = useRef<number | null>(null);
   const turnView = (dir: 1 | -1) => setYaw((y) => y + (dir * Math.PI) / 4);
   const lastActivity = useRef(Date.now());
+  /** The stage's first brief line has been read aloud. */
+  const briefRead = useRef(false);
+  /** A hint is being read; it goes quiet once the shift is run. */
+  const hintVoice = useRef(false);
   const dialogInvoker = useRef<HTMLElement | null>(null);
   const { state, plan, phase } = session;
   const stage = state.stage;
@@ -235,6 +257,7 @@ export default function App() {
   // Say a line: show the bubble and, in Cadet mode, read it aloud.
   function say(line: Line, voice = cadet && settings.voice) {
     setBubble(line);
+    hintVoice.current = false;
     if (line.speaker === "beep") sfx("beep");
     else if (line.speaker === "earth" || line.text.startsWith("*kshh*")) sfx("crackle");
     if (voice) speak(line.text.replace(/\*kshh\*/g, ""));
@@ -263,7 +286,10 @@ export default function App() {
     setLastChoice(null);
     setIntro(true);
     lastActivity.current = Date.now();
-    if (stage <= 5) say(briefLine(state));
+    // The first brief line is read when the brief panel appears (after any cutscene), not now.
+    if (stage <= 5) setBubble(briefLine(state));
+    briefRead.current = false;
+    if (stage <= 5) preloadVoice([briefLine(state), ...extraLines(state), hint(state, 1), hint(state, 2)].map((l) => l.text));
     if (stage === 0) setCargoStart(0);
     const scene: CutsceneId | null =
       stage === 0 && !seenOpening.current ? "opening" : stage === 3 ? "flare" : stage === 4 ? "storm" : stage === PICKUP ? "rescue" : null;
@@ -294,6 +320,7 @@ export default function App() {
   useEffect(() => {
     if (!cine || !ready || modal) return;
     const shot = cine.shots[cine.shot];
+    if (cine.shot === 0) preloadVoice(cine.shots.map((s) => s.caption));
     const voiced = cadet && settings.voice;
     let live = true;
     let timeUp = false;
@@ -357,6 +384,7 @@ export default function App() {
   function raiseHint(level: 1 | 2) {
     setHintLevel(level);
     say(hint(state, level));
+    hintVoice.current = true;
     if (level === 2) {
       setScanning(true);
       setTimeout(() => setScanning(false), 4000);
@@ -577,6 +605,26 @@ export default function App() {
   });
   const shownGuess = peek ?? choice;
   const lines = [briefLine(state), ...extraLines(state)];
+  // Read the first brief line the moment the brief panel shows (after the cutscene), and get the
+  // guess clips ready so they start without a pause.
+  const briefVisible = screen === "game" && phase === "brief" && !modal && ready && !intro && !cine;
+  useEffect(() => {
+    if (!briefVisible || briefRead.current || briefStep !== 0) return;
+    // A short wait: on the first frame of a stage its cutscene hasn't started yet.
+    const t = setTimeout(() => {
+      briefRead.current = true;
+      say(lines[0]);
+      if (guess) preloadVoice([`${guess.know} ${guess.question}`, ...guess.options.map((o) => o.hint ?? "")]);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [briefVisible, stage]);
+  // A hint that is still being read when the shift runs is old news: stop it.
+  useEffect(() => {
+    if (phase !== "play" && hintVoice.current) {
+      hintVoice.current = false;
+      stopVoice();
+    }
+  }, [phase]);
   const panel = dataPanel(state);
   const date = STORM_DATE[state.mission.storm.key]?.[stage] ?? "";
   const shieldNow = stage === 3 ? shieldOf(plan.wall) : state.shield;

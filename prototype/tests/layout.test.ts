@@ -1,4 +1,4 @@
-import { expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { CARGO_IDS, initialState, makePlan, MISSION_1, type Stage, type State } from "../src/game/rules";
 import { BEEP_START, interactables, ISLAND, OBSTACLES, YARD, type Vec2 } from "../src/game/world";
 
@@ -30,4 +30,19 @@ it("every object B.E.E.P. can use is reachable in every shift", () => {
 it("loose items and the start point are reachable", () => {
   for (const [id, at] of Object.entries(YARD)) expect(reachable(at), id).toBe(true);
   expect(reachable(BEEP_START)).toBe(true);
+});
+
+describe("walled-in items after the storm", () => {
+  it("are opened or plugged in where they sit in the shelter wall, not on the yard spot", async () => {
+    const { interactables, cellPos } = await import("../src/game/world");
+    const { initialState, makePlan } = await import("../src/game/rules");
+    const s = initialState();
+    s.stage = 5;
+    s.cargo = ["food", "battery"];
+    s.wall[0] = "food";
+    s.wall[2] = "battery";
+    const things = interactables(s, makePlan(s), null);
+    expect(things.find((t) => t.id === "foodpack")!.at).toEqual(cellPos(0));
+    expect(things.find((t) => t.id === "battery")?.at ?? cellPos(2)).toEqual(cellPos(2));
+  });
 });

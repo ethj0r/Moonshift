@@ -4,6 +4,7 @@ import {
   CARGO,
   cellName,
   foodPackAvailable,
+  freePower,
   gardenAvailable,
   lampAvailable,
   MAX_SLOTS,
@@ -17,6 +18,7 @@ import {
   wallPlacementError,
   windowOpen,
   type CargoId,
+  type Device,
   type Plan,
   type State,
   type WallId,
@@ -223,19 +225,20 @@ export function interactables(
       list.push({
         id: "battery",
         label: plan.battery === "cargo" ? "Unplug the battery" : "Plug in the battery · +1 power",
-        at: YARD.battery,
+        at: placed(state, "battery") ?? YARD.battery,
       });
     if (batteryAvailable(state, plan, "workshop"))
       list.push({
         id: "workshopBattery",
         label: plan.battery === "workshop" ? "Unplug the workshop battery" : "Plug in the workshop battery · +1 power",
-        at: YARD.workshopBattery,
+        at: placed(state, "workshopBattery") ?? YARD.workshopBattery,
       });
     if (foodPackAvailable(state))
       list.push({
         id: "foodpack",
         label: plan.openFood ? "Close the food pack" : "Open the food pack · +2 meals",
-        at: YARD.food,
+        // After the storm a walled-in food pack is still in the shelter wall: open it there.
+        at: placed(state, "food") ?? YARD.food,
         gesture: plan.openFood ? undefined : "foodpack",
       });
   }
@@ -255,6 +258,12 @@ export type UiGoal = "run" | "moveCrew" | null;
  * What a child should do next (Interaksi §7 world signs): the objects the live route points at,
  * or the HUD button to press. A nudge, never a rule: other choices still work.
  */
+/** Where an item sits if it was built into the shelter wall (it stays there after the storm). */
+function placed(state: State, id: WallId): Vec2 | null {
+  const cell = state.wall.indexOf(id);
+  return cell >= 0 ? cellPos(cell) : null;
+}
+
 export function nextGoal(state: State, plan: Plan, carrying: WallId | null, things: Interactable[], blocked: boolean, vertical = false) {
   const usable = (pred: (id: string) => boolean) => things.filter((t) => !t.info && pred(t.id)).map((t) => t.id);
   const go = (targets: string[], choice = false) => ({ targets, ui: null as UiGoal, choice });
@@ -281,8 +290,14 @@ export function nextGoal(state: State, plan: Plan, carrying: WallId | null, thin
       const loose = usable((id) => id.startsWith("pick:") && !itemCell(plan, id.slice(5) as WallId));
       return loose.length ? go(loose) : done;
     }
-    case 4:
-      return plan.moveCrew ? done : { targets: ["shelter"], ui: "moveCrew" as UiGoal, choice: false };
+    case 4: {
+      if (!plan.moveCrew) return { targets: ["shelter"], ui: "moveCrew" as UiGoal, choice: false };
+      // Then the researcher's wish: plant lights (research crate) or the garden (kit), if power is left.
+      const wish = state.cargo.includes("research") ? "lamp" : state.cargo.includes("kit") ? "garden" : null;
+      const spare = freePower(state, plan) - plan.power.length > 0;
+      const open = wish && spare && !plan.power.includes(wish as Device) ? usable((id) => id === wish) : [];
+      return open.length ? go(open, true) : done;
+    }
     case 5: {
       if (radioPurpose(state) === "research" && !plan.power.includes("radio")) return go(["radio"]);
       // Two meals left to eat (tonight + pickup).

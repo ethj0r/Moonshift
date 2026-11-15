@@ -338,6 +338,8 @@ function eat(next: State, effects: string[]) {
 
 export function evaluate(state: State, plan: Plan): Evaluation {
   const next: State = structuredClone(state);
+  // Same mission object: the app treats a new mission object as a new game (and re-runs the stage intro).
+  next.mission = state.mission;
   const errors: string[] = [];
   const risks: string[] = [];
   const effects: string[] = [];
